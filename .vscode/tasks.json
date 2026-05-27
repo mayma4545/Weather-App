@@ -1,0 +1,10 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Update UI-SPEC",
+			"type": "shell",
+			"command": "echo \"Updating UI-SPEC to exactly match a Weather app context and strict design validations\""
+		}
+	]
+}

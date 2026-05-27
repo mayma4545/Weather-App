@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard - farmer dashboard</title>
+    <link rel="stylesheet" href="/css/farmer-dashboard.css">
+</head>
+<body>
+<div class="dash">
+
+    <div class="topbar">
+        <div class="topbar-brand">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 2C6 2 2 8 2 14c0 4 2.5 6 5 7h10c2.5-1 5-3 5-7 0-6-4-12-10-12z" />
+                <path d="M12 2v20M8 6c2 2 2 5 0 8M16 6c-2 2-2 5 0 8" />
+            </svg>
+            Project Weather
+        </div>
+        <div class="topbar-right">
+            <div class="loc">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                    <circle cx="12" cy="9" r="2.5" />
+                </svg>
+                <span class="dynamic-location">Detecting Location...</span> 
+            </div>
+            <div class="alert-pill" id="topbar-alert-pill">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                <span id="topbar-alert-count">0 Alerts</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <div
+                    style="width:28px;height:28px;border-radius:50%;background:#3B3B38;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#D6D3CB;">
+                    JR</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar overlay (mobile) -->
+    <!-- <div class="sidebar-overlay" id="sidebarOverlay"></div> -->
+
+    <div class="layout">
+        <!-- Desktop Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-label">Main Menu</div>
+                <a class="nav-item" href="/farmer/dashboard" id="nav-dashboard">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
+                    </svg>
+                    Dashboard
+                </a>
+                <a class="nav-item" href="/farmer/crop-management" id="nav-crop-management">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z" />
+                        <path d="M12 6v8M8 10h8" />
+                    </svg>
+                    Crop Management
+                </a>
+                <a class="nav-item" href="/farmer/weather-analytics" id="nav-weather-analytics">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                    </svg>
+                    Weather Analytics
+                </a>
+                <a class="nav-item" href="/farmer/digital-repository" id="nav-digital-repository">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    Digital Repository
+                </a>
+                <a class="nav-item" href="/farmer/profile" id="nav-profile">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    Profile Page
+                </a>
+                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 1px solid #E2DFD8; padding-top: 15px; color: #C0531A;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                    Logout
+                </a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-label">Active Fields</div>
+                <div id="sidebar-fields-container">
+                    <!-- Dynamic fields mini status will be rendered here -->
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-label">Masbate Region</div>
+                <div style="font-size: 11px; color: #7A7773; padding-left: 8px;">
+                    Station ID: <span
+                        style="font-family:monospace; font-weight:600; color:#5A8A42;">Masbate-04</span><br>
+                    Status: <span style="color:#5A8A42; font-weight:600;">CONNECTED</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main">
+<div id="page-dashboard" class="page-content active">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Good morning, Juan.</div>
+                        <div class="page-subtitle">Here's how your farm looks today.</div>
+                    </div>
+                    <div class="date-pill">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                        </svg>
+                        <span id="weather-last-updated">Loading weather data...</span>
+                    </div>
+                </div>
+
+                <!-- Weather metrics grid (LIVE from OpenWeather API) -->
+                <div class="grid-4" id="weather-metrics-grid">
+                    <div class="metric-card" id="metric-temp">
+                        <div class="metric-label">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A9790" stroke-width="2">
+                                <path d="M14 14.76V3.5a2.5 2.5 0 00-5 0v11.26a4.5 4.5 0 105 0z" />
+                            </svg>
+                            Temperature
+                        </div>
+                        <div class="metric-value" id="metric-temp-value">--<span class="metric-unit">&#8451;</span></div>
+                        <div class="metric-delta" id="metric-temp-delta"><span>Loading...</span></div>
+                    </div>
+                    <div class="metric-card" id="metric-humidity">
+                        <div class="metric-label">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A9790" stroke-width="2">
+                                <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z" />
+                            </svg>
+                            Humidity
+                        </div>
+                        <div class="metric-value" id="metric-humidity-value">--<span class="metric-unit">%</span></div>
+                        <div class="metric-delta" id="metric-humidity-delta"><span>Loading...</span></div>
+                    </div>
+                    <div class="metric-card" id="metric-wind">
+                        <div class="metric-label">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A9790" stroke-width="2">
+                                <path d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1014 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2" />
+                            </svg>
+                            Wind Speed
+                        </div>
+                        <div class="metric-value" id="metric-wind-value">--<span class="metric-unit">km/h</span></div>
+                        <div class="metric-delta" id="metric-wind-delta"><span>Loading...</span></div>
+                    </div>
+                    <div class="metric-card" id="metric-rain">
+                        <div class="metric-label">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A9790" stroke-width="2">
+                                <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z" />
+                            </svg>
+                            Rainfall
+                        </div>
+                        <div class="metric-value" id="metric-rain-value">--<span class="metric-unit">mm</span></div>
+                        <div class="metric-delta" id="metric-rain-delta"><span>Loading...</span></div>
+                    </div>
+                </div>
+
+                <!-- Main Layout Grid -->
+                <div class="grid-main">
+                    <!-- Left Column: Forecast & Active Crops -->
+                    <div class="main-left-col">
+                        <!-- Weather Forecast Card (LIVE from OpenWeather) -->
+                        <div class="card">
+                            <div class="card-title">Weather Forecast</div>
+                            <div class="card-sub"><span class="dynamic-location">Detecting Location...</span> &mdash; OpenWeather Live Feed</div>
+                            <div class="forecast-row" id="forecast-row-container">
+                                <div style="text-align:center; color:#9A9790; padding:20px; font-size:12px; width:100%;">Loading forecast...</div>
+                            </div>
+                            <div style="margin-top:12px;">
+                                <div style="font-size:11px;color:#9A9790;margin-bottom:8px;font-weight:500;letter-spacing:0.5px;text-transform:uppercase;">
+                                    Rainfall Trend (mm)</div>
+                                <div id="rainfall-trend-container">
+                                    <div style="text-align:center; color:#9A9790; padding:10px; font-size:12px;">Loading rainfall data...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Active Crops Card -->
+                        <div class="card">
+                            <div class="card-title">Active Crops</div>
+                            <div class="card-sub">Growth stage overview (Calculated from planting dates)</div>
+                            <div id="dash-active-crops-list">
+                                <!-- Rendered dynamically by script -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Alerts, Schedule & Decision Insights -->
+                    <div class="main-right-col">
+                        <!-- Active Alerts Card (LIVE from weather data) -->
+                        <div class="card alert-section" id="active-alerts-container">
+                            <div class="card-title">Active Alerts</div>
+                            <div class="card-sub">Live Meteorological Warnings</div>
+                            <div id="alerts-list">
+                                <div style="text-align:center; color:#9A9790; padding:16px; font-size:12px;">Analyzing weather conditions...</div>
+                            </div>
+                        </div>
+
+                        <!-- Upcoming Schedule Card -->
+                        <div class="card">
+                            <div class="card-title">Upcoming Schedule</div>
+                            <div class="card-sub">Next 7 days</div>
+                            <div class="schedule-item">
+                                <div class="sched-date">
+                                    <div class="sched-day">Wed</div>
+                                    <div class="sched-num">24</div>
+                                </div>
+                                <div class="sched-body">
+                                    <div class="sched-task">Soil Moisture Check &mdash; North Plot A</div>
+                                    <div class="sched-field">Palay (IR64) &middot; Tillering stage</div>
+                                </div>
+                                <div class="sched-type st-irr">IRR</div>
+                            </div>
+                            <div class="schedule-item">
+                                <div class="sched-date">
+                                    <div class="sched-day">Thu</div>
+                                    <div class="sched-num">25</div>
+                                </div>
+                                <div class="sched-body">
+                                    <div class="sched-task">Fertilizer Application &mdash; South Plot B</div>
+                                    <div class="sched-field">Corn (OPV) &middot; Vegetative (V6)</div>
+                                </div>
+                                <div class="sched-type st-fert">FERT</div>
+                            </div>
+                            <div class="schedule-item">
+                                <div class="sched-date">
+                                    <div class="sched-day">Sat</div>
+                                    <div class="sched-num">27</div>
+                                </div>
+                                <div class="sched-body">
+                                    <div class="sched-task">Foliar Spraying &mdash; East Plot C</div>
+                                    <div class="sched-field">Kangkong &middot; Early Seedling</div>
+                                </div>
+                                <div class="sched-type st-pest">PEST</div>
+                            </div>
+                        </div>
+
+                        <!-- Decision Insights Card (LIVE from weather data) -->
+                        <div class="card" id="decision-insights-card">
+                            <div class="card-title">Decision Insights</div>
+                            <div class="card-sub">Rule-based recommendations from live data</div>
+                            <div id="decision-insights-list" style="display:flex;flex-direction:column;gap:10px;">
+                                <div style="text-align:center; color:#9A9790; padding:16px; font-size:12px;">Generating insights from weather data...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</div>
+<!-- Bottom Navigation (Mobile Tabpane View) -->
+<nav class="bottom-nav" id="bottomNav" aria-label="Mobile navigation">
+    <div class="bottom-nav-inner">
+        <a class="bnav-item" href="/farmer/dashboard" id="mob-nav-dashboard">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            Dashboard
+        </a>
+        <a class="bnav-item" href="/farmer/crop-management" id="mob-nav-crop-management">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" />
+                <path d="M12 8v8M8 12h8" />
+            </svg>
+            Crops
+        </a>
+        <a class="bnav-item" href="/farmer/weather-analytics" id="mob-nav-weather-analytics">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+            Weather
+        </a>
+        <a class="bnav-item" href="/farmer/digital-repository" id="mob-nav-digital-repository">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+            Library
+        </a>
+        <a class="bnav-item" href="/farmer/profile" id="mob-nav-profile">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+            </svg>
+            Profile
+        </a>
+    </div>
+</nav>
+
+<!-- Edit Crop Modal -->
+
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let path = window.location.pathname.split("/").pop();
+        if(!path || path === "farmer") path = "dashboard";
+        let nav = document.getElementById("nav-" + path);
+        if(nav) nav.classList.add("active");
+        let mobNav = document.getElementById("mob-nav-" + path);
+        if(mobNav) mobNav.classList.add("active");
+    });
+</script>
+<script src="/js/farmer-dashboard.js"></script>
+<!-- JavaScript Engine -->
+</body>
+</html>
+

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard - digital repository</title>
+    <link rel="stylesheet" href="/css/farmer-dashboard.css">
+</head>
+<body>
+<div class="dash">
+
+    <div class="topbar">
+        <div class="topbar-brand">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 2C6 2 2 8 2 14c0 4 2.5 6 5 7h10c2.5-1 5-3 5-7 0-6-4-12-10-12z" />
+                <path d="M12 2v20M8 6c2 2 2 5 0 8M16 6c-2 2-2 5 0 8" />
+            </svg>
+            Project Weather
+        </div>
+        <div class="topbar-right">
+            <!-- <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open navigation">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D6D3CB" stroke-width="2.2">
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+            </button> -->
+            <div class="loc">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                    <circle cx="12" cy="9" r="2.5" />
+                </svg>
+                <span class="dynamic-location">Detecting Location...</span> 
+            </div>
+            <div class="alert-pill">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                2 Active Alerts
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <div
+                    style="width:28px;height:28px;border-radius:50%;background:#3B3B38;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#D6D3CB;">
+                    JR</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar overlay (mobile) -->
+    <!-- <div class="sidebar-overlay" id="sidebarOverlay"></div> -->
+
+    <div class="layout">
+        <!-- Desktop Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-label">Main Menu</div>
+                <a class="nav-item" href="/farmer/dashboard" id="nav-dashboard">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
+                    </svg>
+                    Dashboard
+                </a>
+                <a class="nav-item" href="/farmer/crop-management" id="nav-crop-management">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z" />
+                        <path d="M12 6v8M8 10h8" />
+                    </svg>
+                    Crop Management
+                </a>
+                <a class="nav-item" href="/farmer/weather-analytics" id="nav-weather-analytics">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                    </svg>
+                    Weather Analytics
+                </a>
+                <a class="nav-item" href="/farmer/digital-repository" id="nav-digital-repository">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    Digital Repository
+                </a>
+                <a class="nav-item" href="/farmer/profile" id="nav-profile">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    Profile Page
+                </a>
+                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 1px solid #E2DFD8; padding-top: 15px; color: #C0531A;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                    Logout
+                </a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-label">Active Fields</div>
+                <div id="sidebar-fields-container">
+                    <!-- Dynamic fields mini status will be rendered here -->
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-label">Masbate Region</div>
+                <div style="font-size: 11px; color: #7A7773; padding-left: 8px;">
+                    Station ID: <span
+                        style="font-family:monospace; font-weight:600; color:#5A8A42;">Masbate-04</span><br>
+                    Status: <span style="color:#5A8A42; font-weight:600;">CONNECTED ??</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main">
+<div id="page-digital-repository" class="page-content active">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Digital Repository</div>
+                        <div class="page-subtitle">Smart Crop Encyclopedia, agricultural best practices, and trivia
+                            feeds.</div>
+                    </div>
+                </div>
+
+                <!-- Recommended For You Context-Aware Banners -->
+                <div class="card"
+                    style="margin-bottom:16px; background:linear-gradient(135deg, #F2F7ED 0%, #E6F0DC 100%); border-color:#C2D9B0;">
+                    <div
+                        style="font-size:11px; font-weight:600; text-transform:uppercase; color:#3A6824; letter-spacing:0.8px;">
+                        Recommended For Your Active Farm</div>
+                    <div
+                        style="font-size:16px; font-family:'Playfair Display', serif; font-weight:600; color:#1C1C1A; margin-top:8px;">
+                        Root rot prevention guide during Masbate's rainy months</div>
+                    <p style="font-size:13px; color:#5A7A40; margin-top:4px; line-height:1.5;">Since you are growing
+                        <strong>Palay (IR64)</strong>, early seedling humidity checks can protect against bacterial soft
+                        rot. Read best drainage practices verified by DEBESMSCAT.</p>
+                </div>
+
+                <!-- Crop Encyclopedia Search and Grid -->
+                <div class="card">
+                    <div
+                        style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:10px;">
+                        <div>
+                            <div class="card-title">Crop Encyclopedia</div>
+                            <div class="card-sub">Click a crop card to expand ideal climate constraints and timeline
+                                data.</div>
+                        </div>
+                        <input type="text" id="encyclopedia-search" placeholder="Search Crop Encyclopedia..."
+                            class="form-control" style="max-width:240px; font-size:12.5px; padding:6px 12px;">
+                    </div>
+
+                    <div class="crop-ency-grid" id="encyclopedia-grid">
+                        <!-- Rice Card -->
+                        <div class="ency-card" data-name="rice palay ir64">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div style="font-weight:600; font-size:15px; color:#1C1C1A;">Rice (Palay IR64)</div>
+                                <span style="font-size:18px;">??</span>
+                            </div>
+                            <div style="font-size:12px; color:#9A9790; margin-top:2px;">Masbate Staple Variety</div>
+                            <div class="ency-details">
+                                <strong>Ideal Temperature:</strong> 22&#8451; - 32&#8451;<br>
+                                <strong>Seedling Rain Tolerance:</strong> 80mm/day max<br>
+                                <strong>Growth Timeline:</strong> Seedling (25 days)  Tillering (35 days)  Flowering
+                                (30 days)  Mature (30 days)<br>
+                                <strong>Vulnerabilities:</strong> Leaf folders, Stem blast disease, water flooding >
+                                15cm.
+                            </div>
+                        </div>
+
+                        <!-- Corn Card -->
+                        <div class="ency-card" data-name="corn opv yellow">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div style="font-weight:600; font-size:15px; color:#1C1C1A;">Corn (OPV Yellow)</div>
+                                <span style="font-size:18px;"></span>
+                            </div>
+                            <div style="font-size:12px; color:#9A9790; margin-top:2px;">Dryland grain</div>
+                            <div class="ency-details">
+                                <strong>Ideal Temperature:</strong> 20&#8451; - 30&#8451;<br>
+                                <strong>Seedling Rain Tolerance:</strong> 50mm/day max<br>
+                                <strong>Growth Timeline:</strong> Seedling (20 days)  Vegetative (35 days)  Tasseling
+                                (25 days)  Harvest (40 days)<br>
+                                <strong>Vulnerabilities:</strong> Saturated soil (drowning), cob worms, wind gust >
+                                30km/h.
+                            </div>
+                        </div>
+
+                        <!-- Tomato Card -->
+                        <div class="ency-card" data-name="tomato kamatis">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div style="font-weight:600; font-size:15px; color:#1C1C1A;">Tomato (Kamatis)</div>
+                                <span style="font-size:18px;"></span>
+                            </div>
+                            <div style="font-size:12px; color:#9A9790; margin-top:2px;">Delicate fruit crop</div>
+                            <div class="ency-details">
+                                <strong>Ideal Temperature:</strong> 18&#8451; - 28&#8451;<br>
+                                <strong>Seedling Rain Tolerance:</strong> 20mm/day max<br>
+                                <strong>Growth Timeline:</strong> Seedling (15 days)  Vegetative (30 days)  Fruiting
+                                (35 days)  Harvest (20 days)<br>
+                                <strong>Vulnerabilities:</strong> Excessive water logging (root rot), early blight
+                                fungus.
+                            </div>
+                        </div>
+
+                        <!-- Eggplant Card -->
+                        <div class="ency-card" data-name="eggplant talong">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div style="font-weight:600; font-size:15px; color:#1C1C1A;">Eggplant (Talong)</div>
+                                <span style="font-size:18px;"></span>
+                            </div>
+                            <div style="font-size:12px; color:#9A9790; margin-top:2px;">Hardy vegetable</div>
+                            <div class="ency-details">
+                                <strong>Ideal Temperature:</strong> 22&#8451; - 32&#8451;<br>
+                                <strong>Seedling Rain Tolerance:</strong> 40mm/day max<br>
+                                <strong>Growth Timeline:</strong> Seedling (20 days)  Vegetative (30 days)  Flowering
+                                (25 days)  Harvest (35 days)<br>
+                                <strong>Vulnerabilities:</strong> Thrips pest, root dehydration.
+                            </div>
+                        </div>
+
+                        <!-- Ampalaya Card -->
+                        <div class="ency-card" data-name="ampalaya bittergourd">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div style="font-weight:600; font-size:15px; color:#1C1C1A;">Ampalaya (Bitter Gourd)
+                                </div>
+                                <span style="font-size:18px;"></span>
+                            </div>
+                            <div style="font-size:12px; color:#9A9790; margin-top:2px;">Climbing vine</div>
+                            <div class="ency-details">
+                                <strong>Ideal Temperature:</strong> 24&#8451; - 35&#8451;<br>
+                                <strong>Seedling Rain Tolerance:</strong> 70mm/day max<br>
+                                <strong>Growth Timeline:</strong> Seedling (15 days)  Trellising (25 days)  Flowering
+                                (20 days)  Harvest (25 days)<br>
+                                <strong>Vulnerabilities:</strong> Downy mildew, fruit flies.
+                            </div>
+                        </div>
+
+                        <!-- Kangkong Card -->
+                        <div class="ency-card" data-name="kangkong river spinach">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div style="font-weight:600; font-size:15px; color:#1C1C1A;">Kangkong (River Spinach)
+                                </div>
+                                <span style="font-size:18px;"></span>
+                            </div>
+                            <div style="font-size:12px; color:#9A9790; margin-top:2px;">Fast-growing leafy veg</div>
+                            <div class="ency-details">
+                                <strong>Ideal Temperature:</strong> 20&#8451; - 35&#8451;<br>
+                                <strong>Seedling Rain Tolerance:</strong> 120mm/day max<br>
+                                <strong>Growth Timeline:</strong> Seedling (7 days)  Vegetative (15 days)  Harvest (8
+                                days)<br>
+                                <strong>Vulnerabilities:</strong> Leaf rust, extreme freezing conditions.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- trivia section -->
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-title">DEBESMSCAT Agricultural Trivia</div>
+                    <div class="card-sub">Daily verified farmer tips and trivia guidelines</div>
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                        <div
+                            style="padding:12px; background:#F7F5F0; border-radius:8px; font-size:13px; color:#5A5854;">
+                            ?? <strong>Duck-Rice Integration:</strong> Farmers releasing ducklings into rice fields
+                            report 25% organic fertilizing yields and natural pest reduction since ducks consume weeds
+                            and insect larvae!
+                        </div>
+                        <div
+                            style="padding:12px; background:#F7F5F0; border-radius:8px; font-size:13px; color:#5A5854;">
+                            ?? <strong>Nitrogen Fixation:</strong> Intercropping Corn with green legumes restores vital
+                            nitrates back into the soil, minimizing reliance on synthetic chemical fertilizer by up to
+                            30%.
+                        </div>
+                    </div>
+                </div>
+            </div>
+</div>
+<!-- Bottom Navigation (Mobile Tabpane View) -->
+<nav class="bottom-nav" id="bottomNav" aria-label="Mobile navigation">
+    <div class="bottom-nav-inner">
+        <a class="bnav-item" href="/farmer/dashboard" id="mob-nav-dashboard">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            Dashboard
+        </a>
+        <a class="bnav-item" href="/farmer/crop-management" id="mob-nav-crop-management">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" />
+                <path d="M12 8v8M8 12h8" />
+            </svg>
+            Crops
+        </a>
+        <a class="bnav-item" href="/farmer/weather-analytics" id="mob-nav-weather-analytics">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+            Weather
+        </a>
+        <a class="bnav-item" href="/farmer/digital-repository" id="mob-nav-digital-repository">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+            Library
+        </a>
+        <a class="bnav-item" href="/farmer/profile" id="mob-nav-profile">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+            </svg>
+            Profile
+        </a>
+    </div>
+</nav>
+
+<!-- Edit Crop Modal & CSS styling -->
+
+
+
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let path = window.location.pathname.split("/").pop();
+        if(!path || path === "farmer") path = "dashboard";
+        let nav = document.getElementById("nav-" + path);
+        if(nav) nav.classList.add("active");
+        let mobNav = document.getElementById("mob-nav-" + path);
+        if(mobNav) mobNav.classList.add("active");
+    });
+</script>
+<script src="/js/farmer-dashboard.js"></script>
+<!-- JavaScript Engine -->
+</body>
+</html>
+

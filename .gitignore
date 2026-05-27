@@ -1,0 +1,9 @@
+# Dependencies
+node_modules/
+
+# Local databases
+*.sqlite
+database.sqlite
+
+# Environment secrets
+.env

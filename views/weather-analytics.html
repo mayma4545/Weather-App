@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard - weather analytics</title>
+    <link rel="stylesheet" href="/css/farmer-dashboard.css">
+</head>
+<body>
+<div class="dash">
+
+    <div class="topbar">
+        <div class="topbar-brand">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 2C6 2 2 8 2 14c0 4 2.5 6 5 7h10c2.5-1 5-3 5-7 0-6-4-12-10-12z" />
+                <path d="M12 2v20M8 6c2 2 2 5 0 8M16 6c-2 2-2 5 0 8" />
+            </svg>
+            Project Weather
+        </div>
+        <div class="topbar-right">
+            <!-- <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open navigation">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D6D3CB" stroke-width="2.2">
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+            </button> -->
+            <div class="loc">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                    <circle cx="12" cy="9" r="2.5" />
+                </svg>
+                <span class="dynamic-location">Detecting Location...</span> 
+            </div>
+            <div class="alert-pill">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                2 Active Alerts
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <div
+                    style="width:28px;height:28px;border-radius:50%;background:#3B3B38;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#D6D3CB;">
+                    JR</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar overlay (mobile) -->
+    <!-- <div class="sidebar-overlay" id="sidebarOverlay"></div> -->
+
+    <div class="layout">
+        <!-- Desktop Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-label">Main Menu</div>
+                <a class="nav-item" href="/farmer/dashboard" id="nav-dashboard">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
+                    </svg>
+                    Dashboard
+                </a>
+                <a class="nav-item" href="/farmer/crop-management" id="nav-crop-management">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z" />
+                        <path d="M12 6v8M8 10h8" />
+                    </svg>
+                    Crop Management
+                </a>
+                <a class="nav-item" href="/farmer/weather-analytics" id="nav-weather-analytics">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                    </svg>
+                    Weather Analytics
+                </a>
+                <a class="nav-item" href="/farmer/digital-repository" id="nav-digital-repository">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    Digital Repository
+                </a>
+                <a class="nav-item" href="/farmer/profile" id="nav-profile">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    Profile Page
+                </a>
+                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 1px solid #E2DFD8; padding-top: 15px; color: #C0531A;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                    Logout
+                </a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-label">Active Fields</div>
+                <div id="sidebar-fields-container">
+                    <!-- Dynamic fields mini status will be rendered here -->
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-label">Masbate Region</div>
+                <div style="font-size: 11px; color: #7A7773; padding-left: 8px;">
+                    Station ID: <span
+                        style="font-family:monospace; font-weight:600; color:#5A8A42;">Masbate-04</span><br>
+                    Status: <span style="color:#5A8A42; font-weight:600;">CONNECTED ??</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main">
+<div id="page-weather-analytics" class="page-content active">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Weather Analytics</div>
+                        <div class="page-subtitle">Rule-based predictive analysis powered by OpenWeather live data.</div>
+                    </div>
+                    <div class="date-pill">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                        <span id="analytics-last-updated">Fetching live data...</span>
+                    </div>
+                </div>
+
+                <div class="grid-main" style="grid-template-columns: 1fr 340px;">
+                    <!-- Left Column -->
+                    <div class="main-left-col">
+                        <!-- Current Conditions Summary (LIVE) -->
+                        <div class="card" id="current-conditions-card">
+                            <div class="card-title">Current Conditions</div>
+                            <div class="card-sub">OpenWeather Live &mdash; <span class="dynamic-location">Detecting Location...</span></div>
+                            <div id="current-conditions-summary" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
+                                <div style="text-align:center; color:#9A9790; padding:20px; font-size:12px; grid-column: 1/-1;">Loading current conditions...</div>
+                            </div>
+                        </div>
+
+                        <!-- Safe to Plant Predictor -->
+                        <div class="predictor-card">
+                            <div class="card-title">"Safe to Plant" Predictor</div>
+                            <div class="card-sub">Compares live OpenWeather forecast against crop tolerance databases</div>
+
+                            <div style="margin:16px 0 10px;">
+                                <label style="font-size:11px; font-weight:600; text-transform:uppercase; color:#7A7773;"
+                                    for="predict-crop-select">Select Crop to Plant:</label>
+                                <select id="predict-crop-select" class="form-control"
+                                    style="max-width:240px; margin-top:6px;">
+                                    <option value="Rice">Rice (Palay)</option>
+                                    <option value="Corn">Corn (OPV)</option>
+                                    <option value="Tomato">Tomato</option>
+                                    <option value="Eggplant">Eggplant</option>
+                                    <option value="Ampalaya">Ampalaya</option>
+                                    <option value="Kangkong">Kangkong</option>
+                                </select>
+                            </div>
+
+                            <!-- Traffic Light Visual Signal -->
+                            <div class="traffic-light-container">
+                                <div
+                                    style="display:flex; flex-direction:column; gap:8px; background:#1C1C1A; padding:10px 8px; border-radius:18px;">
+                                    <div class="light-indicator" id="light-red"></div>
+                                    <div class="light-indicator" id="light-yellow"></div>
+                                    <div class="light-indicator" id="light-green"></div>
+                                </div>
+                                <div>
+                                    <div id="predictor-verdict-title"
+                                        style="font-size:15px; font-weight:600; color:#1C1C1A;">Fetching forecast data...</div>
+                                    <div id="predictor-verdict-desc"
+                                        style="font-size:12.5px; color:#7A7773; margin-top:4px;">Evaluating live weather data against crop tolerance limits.</div>
+                                    <div class="comparison-math" id="predictor-formula">Waiting for OpenWeather data...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Searchable Weather Logs Archive -->
+                        <div class="card">
+                            <div
+                                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <div>
+                                    <div class="card-title">Historical Weather Logs</div>
+                                    <div class="card-sub"><span class="dynamic-location-city">Local</span> Climate Archive</div>
+                                </div>
+                                <input type="text" id="weather-archive-search"
+                                    placeholder="Search archive (e.g. May 10)..." class="form-control"
+                                    style="max-width:200px; padding:6px 10px; font-size:12px;">
+                            </div>
+                            <div class="table-responsive">
+                                <table class="custom-table" id="weather-archive-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Avg Temp</th>
+                                            <th>Humidity</th>
+                                            <th>Wind Speed</th>
+                                            <th>Daily Rain</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="weather-archive-tbody">
+                                        <!-- Will be populated from forecast data -->
+                                        <tr><td colspan="6" style="text-align:center; color:#9A9790;">Loading weather data...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="main-right-col">
+                        <!-- Risk Forecast (LIVE from API) -->
+                        <div class="card">
+                            <div class="card-title">Forecast Risk Dashboard</div>
+                            <div class="card-sub">Environmental stress warnings from live forecast data</div>
+                            <div id="risk-forecast-container" style="display:flex; flex-direction:column; gap:12px;">
+                                <div style="text-align:center; color:#9A9790; padding:20px; font-size:12px;">Analyzing forecast risks...</div>
+                            </div>
+                        </div>
+
+                        <!-- Historical Rainfall Averages vs Crop Needs -->
+                        <div class="card">
+                            <div class="card-title">Forecast Summary</div>
+                            <div class="card-sub">5-day outlook from OpenWeather</div>
+                            <div id="forecast-summary-card"
+                                style="padding:12px 14px; background:#EEF4FD; border-radius:10px; border:1px solid #D0E1F9; font-size:13px; line-height:1.6; color:#2A5A90;">
+                                <div style="text-align:center; color:#9A9790; padding:10px; font-size:12px;">Loading forecast summary...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</div>
+<!-- Bottom Navigation (Mobile Tabpane View) -->
+<nav class="bottom-nav" id="bottomNav" aria-label="Mobile navigation">
+    <div class="bottom-nav-inner">
+        <a class="bnav-item" href="/farmer/dashboard" id="mob-nav-dashboard">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            Dashboard
+        </a>
+        <a class="bnav-item" href="/farmer/crop-management" id="mob-nav-crop-management">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" />
+                <path d="M12 8v8M8 12h8" />
+            </svg>
+            Crops
+        </a>
+        <a class="bnav-item" href="/farmer/weather-analytics" id="mob-nav-weather-analytics">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+            Weather
+        </a>
+        <a class="bnav-item" href="/farmer/digital-repository" id="mob-nav-digital-repository">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+            Library
+        </a>
+        <a class="bnav-item" href="/farmer/profile" id="mob-nav-profile">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+            </svg>
+            Profile
+        </a>
+    </div>
+</nav>
+
+<!-- Edit Crop Modal & CSS styling -->
+
+
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let path = window.location.pathname.split("/").pop();
+        if(!path || path === "farmer") path = "dashboard";
+        let nav = document.getElementById("nav-" + path);
+        if(nav) nav.classList.add("active");
+        let mobNav = document.getElementById("mob-nav-" + path);
+        if(mobNav) mobNav.classList.add("active");
+    });
+</script>
+<script src="/js/farmer-dashboard.js"></script>
+<!-- JavaScript Engine -->
+</body>
+</html>
+

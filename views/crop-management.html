@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard - crop management</title>
+    <link rel="stylesheet" href="/css/farmer-dashboard.css">
+    <link rel="stylesheet" href="/css/crop-management.css">
+</head>
+<body>
+<div class="dash">
+
+    <div class="topbar">
+        <div class="topbar-brand">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 2C6 2 2 8 2 14c0 4 2.5 6 5 7h10c2.5-1 5-3 5-7 0-6-4-12-10-12z" />
+                <path d="M12 2v20M8 6c2 2 2 5 0 8M16 6c-2 2-2 5 0 8" />
+            </svg>
+            Project Weather
+        </div>
+        <div class="topbar-right">
+            <!-- <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open navigation">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D6D3CB" stroke-width="2.2">
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+            </button> -->
+            <div class="loc">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                    <circle cx="12" cy="9" r="2.5" />
+                </svg>
+                <span class="dynamic-location">Detecting Location...</span> 
+            </div>
+            <div class="alert-pill">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                2 Active Alerts
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <div
+                    style="width:28px;height:28px;border-radius:50%;background:#3B3B38;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#D6D3CB;">
+                    JR</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar overlay (mobile) -->
+    <!-- <div class="sidebar-overlay" id="sidebarOverlay"></div> -->
+
+    <div class="layout">
+        <!-- Desktop Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-label">Main Menu</div>
+                <a class="nav-item" href="/farmer/dashboard" id="nav-dashboard">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
+                    </svg>
+                    Dashboard
+                </a>
+                <a class="nav-item" href="/farmer/crop-management" id="nav-crop-management">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z" />
+                        <path d="M12 6v8M8 10h8" />
+                    </svg>
+                    Crop Management
+                </a>
+                <a class="nav-item" href="/farmer/weather-analytics" id="nav-weather-analytics">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                    </svg>
+                    Weather Analytics
+                </a>
+                <a class="nav-item" href="/farmer/digital-repository" id="nav-digital-repository">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    Digital Repository
+                </a>
+                <a class="nav-item" href="/farmer/profile" id="nav-profile">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    Profile Page
+                </a>
+                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 1px solid #E2DFD8; padding-top: 15px; color: #C0531A;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                    Logout
+                </a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-label">Active Fields</div>
+                <div id="sidebar-fields-container">
+                    <!-- Dynamic fields mini status will be rendered here -->
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-label">Masbate Region</div>
+                <div style="font-size: 11px; color: #7A7773; padding-left: 8px;">
+                    Station ID: <span
+                        style="font-family:monospace; font-weight:600; color:#5A8A42;">Masbate-04</span><br>
+                    Status: <span style="color:#5A8A42; font-weight:600;">CONNECTED ??</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main">
+<div id="page-crop-management" class="page-content active">
+                <button type="button" class="mobile-fab" id="fab-open-planting" aria-label="Plant new crop">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+                <div class="page-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom: 20px;">
+                    <div>
+                        <div class="page-title">Crop Management</div>
+                        <div class="page-subtitle">Plant, monitor growth timelines, and archive your seasonal yields.</div>
+                    </div>
+                    <div style="position: relative; min-width: 240px;">
+                        <input type="text" id="plot-search" placeholder="Search plots..." class="form-control" style="width:100%; max-width: 280px; font-size:13px; padding:8px 12px 8px 34px; border-radius: 8px; border: 1px solid #E2DFD8; background-color: #FDFDFB;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A9790" stroke-width="2.5" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none;">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="grid-main">
+                    <!-- Left: Interactive Planting Batch & Plot Status Table -->
+                    <div class="main-left-col">
+                        <!-- Plot Cards Section -->
+                        <div class="card">
+                            <div class="card-title">Smart Crop Dashboard</div>
+                            <div class="card-sub">Current status of active agricultural plots</div>
+
+                            <div id="active-plots-dashboard-grid"
+                                style="display:flex; flex-direction:column; gap:14px; margin-top:8px;">
+                                <!-- Dynamic plot cards go here -->
+                            </div>
+                        </div>
+
+                        <!-- Plot Status Table -->
+                        <div class="card">
+                            <div class="card-title">Plot Status Table</div>
+                            <div class="card-sub">Calculated rain sensitivity and environmental vulnerability</div>
+                            <div class="data-table-wrapper" id="plot-status-container">
+                                <!-- Tables rendered by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Historical Yield Logs -->
+                        <div class="card">
+                            <div class="card-title">Historical Yield Archive</div>
+                            <div class="card-sub">Completed batches transferred to long-term records</div>
+                            <div class="data-table-wrapper" id="historical-yield-container">
+                                <!-- Tables/Cards rendered by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Register Planting Batch Form -->
+                    <div class="main-right-col">
+                        <div class="form-card" style="position: relative;">
+                            <button type="button" class="close-modal-btn mobile-only" id="btn-close-planting-modal" aria-label="Close modal" style="position: absolute; right: 16px; top: 16px; display: none;">&times;</button>
+                            <div class="card-title" style="margin-bottom:8px;">Plant New Crop</div>
+                            <p style="font-size:12px; color:#7A7773; margin-bottom:20px;">Register a new planting batch.
+                                Growth stage tracking begins immediately.</p>
+
+                            <form id="planting-form">
+                                <div class="form-group">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                        <label for="plant-plot" style="margin-bottom:0;">Select Active Plot</label>
+                                        <button type="button" id="btn-open-add-plot-modal" style="background:none; border:none; color:#5A8A42; cursor:pointer; display:flex; align-items:center; gap:4px; font-size:11px; font-weight:600;">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                            Add Plot
+                                        </button>
+                                    </div>
+                                    <select class="form-control" id="plant-plot" required>
+                                        <!-- Filled dynamically -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant-crop">Crop Variety</label>
+                                    <select class="form-control" id="plant-crop" required>
+                                        <!-- Filled dynamically -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant-date">Planting Date</label>
+                                    <input type="date" class="form-control" id="plant-date" required>
+                                </div>
+
+                                <button type="submit" class="btn-submit" style="margin-top:8px;">Register Planting
+                                    Batch</button>
+                            </form>
+
+                            <div id="planting-alert"
+                                style="display:none; margin-top:14px; padding:12px; border-radius:8px; font-size:12.5px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</div>
+<!-- Bottom Navigation (Mobile Tabpane View) -->
+<nav class="bottom-nav" id="bottomNav" aria-label="Mobile navigation">
+    <div class="bottom-nav-inner">
+        <a class="bnav-item" href="/farmer/dashboard" id="mob-nav-dashboard">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            Dashboard
+        </a>
+        <a class="bnav-item" href="/farmer/crop-management" id="mob-nav-crop-management">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" />
+                <path d="M12 8v8M8 12h8" />
+            </svg>
+            Crops
+        </a>
+        <a class="bnav-item" href="/farmer/weather-analytics" id="mob-nav-weather-analytics">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+            Weather
+        </a>
+        <a class="bnav-item" href="/farmer/digital-repository" id="mob-nav-digital-repository">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+            Library
+        </a>
+        <a class="bnav-item" href="/farmer/profile" id="mob-nav-profile">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+            </svg>
+            Profile
+        </a>
+    </div>
+</nav>
+
+</div> <!-- Close .layout -->
+</div> <!-- Close .dash -->
+
+<!-- Edit Crop Modal & CSS styling -->
+<div id="crop-edit-modal" class="edit-modal" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="edit-modal-content">
+        <div class="edit-modal-header">
+            <h2 class="edit-modal-title" id="modal-title">Edit Planting Details</h2>
+            <button class="close-modal-btn" id="btn-close-edit-modal" aria-label="Close modal">&times;</button>
+        </div>
+        <form id="edit-planting-form">
+            <input type="hidden" id="edit-record-id">
+            <div class="form-group">
+                <label for="edit-plant-plot">Plot</label>
+                <select class="form-control" id="edit-plant-plot" disabled>
+                    <!-- Active Plot, locked because it's tied to this plot ID -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="edit-plant-crop">Crop Variety</label>
+                <select class="form-control" id="edit-plant-crop" required>
+                    <!-- Filled dynamically -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="edit-plant-date">Planting Date</label>
+                <input type="date" class="form-control" id="edit-plant-date" required>
+            </div>
+            <button type="submit" class="btn-submit" style="margin-top:12px;">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<div id="add-plot-modal" class="edit-modal" aria-labelledby="add-plot-title" role="dialog" aria-modal="true">
+    <div class="edit-modal-content">
+        <div class="edit-modal-header">
+            <h2 class="edit-modal-title" id="add-plot-title">Add New Plot</h2>
+            <button class="close-modal-btn" id="btn-close-add-plot-modal" aria-label="Close modal">&times;</button>
+        </div>
+        <form id="add-plot-form">
+            <div class="form-group">
+                <label for="new-plot-name">Plot Name</label>
+                <input type="text" class="form-control" id="new-plot-name" required placeholder="e.g. North Plot A">
+            </div>
+            <div class="form-group">
+                <label for="new-plot-size">Area Size (ha)</label>
+                <input type="number" step="0.1" class="form-control" id="new-plot-size" required placeholder="e.g. 1.5">
+            </div>
+            <button type="submit" class="btn-submit" style="margin-top:12px;">Create Plot</button>
+        </form>
+    </div>
+</div>
+
+<div id="add-crop-modal" class="edit-modal" aria-labelledby="add-crop-title" role="dialog" aria-modal="true">
+    <div class="edit-modal-content">
+        <div class="edit-modal-header">
+            <h2 class="edit-modal-title" id="add-crop-title">Add New Crop Variety</h2>
+            <button class="close-modal-btn" id="btn-close-add-crop-modal" aria-label="Close modal">&times;</button>
+        </div>
+        <form id="add-crop-form">
+            <div class="form-group">
+                <label for="new-crop-name">Crop Name</label>
+                <input type="text" class="form-control" id="new-crop-name" required placeholder="e.g. Palay (IR64)">
+            </div>
+            <div class="form-group">
+                <label for="new-crop-temp-min">Ideal Min Temp (&#8451;)</label>
+                <input type="number" step="0.1" class="form-control" id="new-crop-temp-min" required placeholder="e.g. 20.0">
+            </div>
+            <div class="form-group">
+                <label for="new-crop-temp-max">Ideal Max Temp (&#8451;)</label>
+                <input type="number" step="0.1" class="form-control" id="new-crop-temp-max" required placeholder="e.g. 35.0">
+            </div>
+            <div class="form-group">
+                <label for="new-crop-rain-tol">Rain Tolerance (mm)</label>
+                <input type="number" step="0.1" class="form-control" id="new-crop-rain-tol" required placeholder="e.g. 80.0">
+            </div>
+            <div class="form-group">
+                <label for="new-crop-days">Days to Harvest</label>
+                <input type="number" class="form-control" id="new-crop-days" required placeholder="e.g. 110">
+            </div>
+            <div class="form-group">
+                <label for="new-crop-advice">Best Practices</label>
+                <textarea class="form-control" id="new-crop-advice" placeholder="Optional advice..."></textarea>
+            </div>
+            <button type="submit" class="btn-submit" style="margin-top:12px;">Create Crop</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let path = window.location.pathname.split("/").pop();
+        if(!path || path === "farmer") path = "dashboard";
+        let nav = document.getElementById("nav-" + path);
+        if(nav) nav.classList.add("active");
+        let mobNav = document.getElementById("mob-nav-" + path);
+        if(mobNav) mobNav.classList.add("active");
+    });
+</script>
+<script src="/js/farmer-dashboard.js"></script>
+<!-- JavaScript Engine -->
+</body>
+</html>
+

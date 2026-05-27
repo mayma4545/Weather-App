@@ -1,0 +1,1000 @@
+/* ==========================================================
+   Admin Dashboard — Project Weather
+   Design System: DM Sans + Playfair Display
+   ========================================================== */
+
+/* 1. Reset & Base
+   ========================================================== */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #F7F5F0;
+  color: #1C1C1A;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dash {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 2. Topbar
+   ========================================================== */
+.topbar {
+  background: #1C1C1A;
+  color: #F7F5F0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  position: relative;
+  z-index: 110;
+}
+
+.topbar-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #F7F5F0;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.admin-badge {
+  background: #E8A44A;
+  color: #1C1C1A;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* 3. Layout
+   ========================================================== */
+.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  flex: 1;
+}
+
+.sidebar {
+  background: #EFEDE7;
+  padding: 24px 16px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  border-right: 1px solid #E2DFD8;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar-top {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: auto;
+}
+
+.system-info-box {
+  background: #FAF9F6;
+  border: 1px solid #E2DFD8;
+  border-radius: 8px;
+  padding: 12px 10px;
+  margin-bottom: 4px !important;
+}
+
+.logout-btn {
+  color: #C0531A !important;
+  font-weight: 500;
+}
+
+.logout-btn:hover {
+  background: #FCECE6 !important;
+  color: #9C3C0F !important;
+}
+
+.main {
+  padding: 24px 28px;
+  overflow: auto;
+}
+
+/* 4. Sidebar
+   ========================================================== */
+.sidebar-section {
+  margin-bottom: 28px;
+}
+
+.sidebar-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #9A9790;
+  font-weight: 600;
+  margin-bottom: 8px;
+  padding: 0 10px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  color: #5A5854;
+  font-size: 13.5px;
+  font-weight: 400;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.nav-item:hover {
+  background: #E6E3DC;
+  color: #1C1C1A;
+  text-decoration: none;
+}
+
+.nav-item.active {
+  background: #1C1C1A;
+  color: #F7F5F0;
+  text-decoration: none;
+}
+
+.nav-item svg {
+  flex-shrink: 0;
+}
+
+/* 5. Page Navigation
+   ========================================================== */
+.page-content {
+  display: none;
+}
+
+.page-content.active {
+  display: block;
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* 6. Page Header
+   ========================================================== */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 500;
+  color: #1C1C1A;
+}
+
+.page-subtitle {
+  font-size: 13px;
+  color: #9A9790;
+  font-weight: 400;
+}
+
+/* 7. Metric Cards Grid
+   ========================================================== */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #E8E5DE;
+}
+
+.stat-card .stat-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #9A9790;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.6px;
+  font-weight: 600;
+}
+
+.stat-card .stat-value {
+  font-size: 32px;
+  font-weight: 300;
+  color: #1C1C1A;
+  letter-spacing: -1px;
+  margin: 8px 0 4px;
+}
+
+.stat-card .stat-detail {
+  font-size: 12px;
+  color: #7A7773;
+}
+
+/* 8. Status Indicator
+   ========================================================== */
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-dot.online {
+  background: #5A8A42;
+  box-shadow: 0 0 8px rgba(90, 138, 66, 0.5);
+}
+
+.status-dot.offline {
+  background: #C0531A;
+  box-shadow: 0 0 8px rgba(192, 83, 26, 0.5);
+}
+
+.status-dot.warning {
+  background: #D4870A;
+}
+
+/* 9. Cards
+   ========================================================== */
+.card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #E8E5DE;
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1C1C1A;
+}
+
+.card-sub {
+  font-size: 11px;
+  color: #9A9790;
+  margin-bottom: 16px;
+}
+
+/* 10. Tables
+   ========================================================== */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th {
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  color: #9A9790;
+  padding: 10px 14px;
+  border-bottom: 2px solid #E2DFD8;
+  text-align: left;
+}
+
+.admin-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #EFEDE7;
+  color: #3B3B38;
+  font-size: 13px;
+}
+
+.admin-table tr:hover td {
+  background: #FAFAF8;
+}
+
+.highlight-row td {
+  background: #FEF8EC !important;
+  border-left: 3px solid #E8A44A;
+}
+
+/* 11. Source Badges
+   ========================================================== */
+.source-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  display: inline-block;
+}
+
+.source-badge.api {
+  background: #D0E1F9;
+  color: #1B4A80;
+}
+
+.source-badge.station {
+  background: #E6F0DC;
+  color: #3A6824;
+}
+
+/* 12. Forms
+   ========================================================== */
+.form-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #E8E5DE;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  color: #7A7773;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #D6D3CB;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  background: #FDFDFD;
+  color: #1C1C1A;
+  transition: border 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-control:focus {
+  border-color: #1C1C1A;
+  box-shadow: 0 0 0 3px rgba(28, 28, 26, 0.08);
+  outline: none;
+}
+
+textarea.form-control {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* 13. Buttons
+   ========================================================== */
+.btn-primary {
+  padding: 11px 20px;
+  background: #1C1C1A;
+  color: #F7F5F0;
+  border: none;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-primary:hover {
+  background: #3B3B38;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-secondary {
+  padding: 11px 20px;
+  background: transparent;
+  border: 1px solid #D6D3CB;
+  color: #5A5854;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+  background: #EFEDE7;
+}
+
+.btn-secondary:active {
+  transform: scale(0.98);
+}
+
+.btn-danger {
+  padding: 11px 20px;
+  background: #C0531A;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-danger:hover {
+  background: #A0441A;
+}
+
+.btn-danger:active {
+  transform: scale(0.98);
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* 14. Trivia Feed
+   ========================================================== */
+.trivia-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.trivia-item {
+  background: #FFFFFF;
+  border: 1px solid #E8E5DE;
+  border-radius: 10px;
+  padding: 16px;
+  position: relative;
+}
+
+.trivia-item .trivia-content {
+  font-size: 13.5px;
+  color: #3B3B38;
+  line-height: 1.6;
+}
+
+.trivia-item .trivia-meta {
+  font-size: 11px;
+  color: #9A9790;
+  margin-top: 8px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.trivia-tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #E6F0DC;
+  color: #3A6824;
+  display: inline-block;
+}
+
+.trivia-tag.general {
+  background: #EFEDE7;
+  color: #5A5854;
+}
+
+.trivia-item .trivia-delete {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #9A9790;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  font-size: 14px;
+}
+
+.trivia-item:hover .trivia-delete {
+  opacity: 1;
+}
+
+/* 15. Alert Composer
+   ========================================================== */
+.audience-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.audience-option {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  border: 2px solid #E2DFD8;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+  background: #FFFFFF;
+}
+
+.audience-option:hover {
+  border-color: #9A9790;
+}
+
+.audience-option.selected {
+  border-color: #1C1C1A;
+  background: #F7F5F0;
+}
+
+.audience-option .ao-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1C1C1A;
+}
+
+.audience-option .ao-desc {
+  font-size: 11px;
+  color: #9A9790;
+  margin-top: 2px;
+}
+
+/* 16. Sent Alerts List
+   ========================================================== */
+.alert-history {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.alert-history-item {
+  padding: 14px;
+  border-radius: 10px;
+  background: #FEF8EC;
+  border: 1px solid #F5E6C8;
+}
+
+.alert-history-item .ahi-message {
+  font-size: 13px;
+  color: #3B3B38;
+  font-weight: 500;
+}
+
+.alert-history-item .ahi-meta {
+  font-size: 11px;
+  color: #9A9790;
+  margin-top: 6px;
+  display: flex;
+  gap: 12px;
+}
+
+/* 17. Modal Overlay
+   ========================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal-content {
+  background: #FFFFFF;
+  border-radius: 14px;
+  padding: 28px;
+  max-width: 520px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.modal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.modal-sub {
+  font-size: 11px;
+  color: #9A9790;
+  margin-bottom: 20px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #9A9790;
+  font-size: 18px;
+}
+
+/* 18. Toast
+   ========================================================== */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1C1C1A;
+  color: #F7F5F0;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  z-index: 300;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.toast.show {
+  opacity: 1;
+}
+
+/* 19. Empty State
+   ========================================================== */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #9A9790;
+}
+
+.empty-state svg {
+  opacity: 0.4;
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  font-size: 13px;
+}
+
+/* 20. Date Range Picker
+   ========================================================== */
+.date-range-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.date-range-bar label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #7A7773;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.date-range-bar input[type="date"] {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #D6D3CB;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  background: #FDFDFD;
+  color: #1C1C1A;
+  transition: border 0.15s ease, box-shadow 0.15s ease;
+}
+
+.date-range-bar input[type="date"]:focus {
+  border-color: #1C1C1A;
+  box-shadow: 0 0 0 3px rgba(28, 28, 26, 0.08);
+  outline: none;
+}
+
+.date-range-bar .btn-filter {
+  padding: 6px 12px;
+  font-size: 12px;
+  background: #1C1C1A;
+  color: #F7F5F0;
+  border: none;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.date-range-bar .btn-filter:hover {
+  background: #3B3B38;
+}
+
+/* 21. Bottom Nav (mobile)
+   ========================================================== */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1C1C1A;
+  border-top: 1px solid #3B3B38;
+  z-index: 80;
+  height: 60px;
+}
+
+.bottom-nav-inner {
+  display: flex;
+  height: 100%;
+}
+
+.bnav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #7A7773;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  text-decoration: none;
+  padding: 8px 4px;
+}
+
+.bnav-item:hover {
+  text-decoration: none;
+}
+
+.bnav-item.active {
+  color: #F7F5F0;
+}
+
+.bnav-item svg {
+  flex-shrink: 0;
+}
+
+/* 22. Hamburger
+   ========================================================== */
+.hamburger-btn {
+  display: none;
+  width: 34px;
+  height: 34px;
+  background: #3B3B38;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 90;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.sidebar-overlay.open {
+  opacity: 1;
+}
+
+/* 23. Responsive — Tablet & Mobile
+   ========================================================== */
+@media (max-width: 768px) {
+  .topbar {
+    padding: 11px 16px;
+  }
+
+  .topbar-brand {
+    font-size: 15px;
+  }
+
+  .hamburger-btn {
+    display: flex;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: -260px;
+    width: 260px;
+    z-index: 100;
+    padding: 72px 16px 24px;
+    transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .sidebar.open {
+    left: 0;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+
+  .main {
+    padding: 16px 14px 24px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .page-title {
+    font-size: 21px;
+  }
+
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-card .stat-value {
+    font-size: 26px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 16px 14px;
+  }
+
+  .audience-selector {
+    flex-direction: column;
+  }
+
+  .bottom-nav {
+    display: none !important;
+  }
+
+  .modal-content {
+    padding: 20px;
+    margin: 16px;
+  }
+
+  .date-range-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .trivia-item .trivia-delete {
+    opacity: 1;
+  }
+
+  .admin-table {
+    font-size: 12px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 8px 10px;
+  }
+
+  .dashboard-grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .date-pill {
+    font-size: 11px !important;
+    padding: 5px 12px !important;
+  }
+}
+
+/* 24. Responsive — Small Phones
+   ========================================================== */
+@media (max-width: 400px) {
+  .stat-card .stat-value {
+    font-size: 22px;
+  }
+
+  .topbar-brand {
+    font-size: 14px;
+  }
+
+  .grid-3 {
+    gap: 8px;
+  }
+}
+
+/* 25. Scrollbar
+   ========================================================== */
+.main::-webkit-scrollbar {
+  width: 6px;
+}
+
+.main::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.main::-webkit-scrollbar-thumb {
+  background: #D6D3CB;
+  border-radius: 3px;
+}
+
+/* 26. Animations
+   ========================================================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
