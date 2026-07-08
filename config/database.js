@@ -9,33 +9,33 @@ const isProduction = process.env.NODE_ENV === 'production' || process.env.DB_ENV
 if (isProduction) {
   console.log('Connecting to Production Database (MySQL from Aiven.io)...');
   
-  if (process.env.DATABASE_URL) {
+  if (process.env.PROD_DATABASE_URL) {
     // Connect using connection string/URI
-    sequelize = new Sequelize(process.env.DATABASE_URL, {
+    sequelize = new Sequelize(process.env.PROD_DATABASE_URL, {
       dialect: 'mysql',
       logging: console.log,
       dialectOptions: {
         ssl: {
           rejectUnauthorized: true, // Required for SSL connections to Aiven
-          ca: process.env.DB_SSL_CA
+          ca: process.env.PROD_DB_SSL_CA
         }
       }
     });
   } else {
     // Connect using individual parameters
     sequelize = new Sequelize(
-      process.env.DB_NAME || 'weather_app',
-      process.env.DB_USER || 'admin',
-      process.env.DB_PASSWORD,
+      process.env.PROD_DB_NAME || 'weather_app_prod',
+      process.env.PROD_DB_USER || 'admin',
+      process.env.PROD_DB_PASSWORD,
       {
-        host: process.env.DB_HOST || 'localhost',
-        port: process.env.DB_PORT || 3306,
+        host: process.env.PROD_DB_HOST || 'localhost',
+        port: process.env.PROD_DB_PORT || 3306,
         dialect: 'mysql',
         logging: console.log,
         dialectOptions: {
           ssl: {
             rejectUnauthorized: true,
-            ca: process.env.DB_SSL_CA
+            ca: process.env.PROD_DB_SSL_CA
           }
         }
       }
