@@ -1,14 +1,13 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const FarmPlot = sequelize.define('FarmPlot', {
-  plot_id: {
-    type: DataTypes.INTEGER,
+const StationDevice = sequelize.define('StationDevice', {
+  device_id: {
+    type: DataTypes.STRING(50),
     primaryKey: true,
-    autoIncrement: true,
     allowNull: false
   },
-  user_id: {
+  owner_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -16,16 +15,8 @@ const FarmPlot = sequelize.define('FarmPlot', {
       key: 'user_id'
     }
   },
-  plot_name: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  area_size: {
-    type: DataTypes.DECIMAL(10, 2),
-    allowNull: false
-  },
-  soil_type: {
-    type: DataTypes.STRING(50),
+  location_name: {
+    type: DataTypes.STRING(100),
     allowNull: true
   },
   latitude: {
@@ -35,11 +26,15 @@ const FarmPlot = sequelize.define('FarmPlot', {
   longitude: {
     type: DataTypes.DECIMAL(9, 6),
     allowNull: true
+  },
+  last_seen: {
+    type: DataTypes.DATE,
+    allowNull: true
   }
 }, {
-  tableName: 'farm_plots',
+  tableName: 'station_devices',
   timestamps: true,
   underscored: true
 });
 
-module.exports = FarmPlot;
+module.exports = StationDevice;

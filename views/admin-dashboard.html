@@ -13,7 +13,7 @@
     <div class="topbar">
         <div style="display:flex;align-items:center;gap:12px;">
             <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle menu">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F7F5F0" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </button>
             <div class="topbar-brand">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2C6 2 2 8 2 14c0 4 2.5 6 5 7h10c2.5-1 5-3 5-7 0-6-4-12-10-12z"/><path d="M12 2v20M8 6c2 2 2 5 0 8M16 6c-2 2-2 5 0 8"/></svg>
@@ -21,10 +21,8 @@
             </div>
         </div>
         <div class="topbar-right">
-            <span class="admin-badge">Admin</span>
-            <div style="display:flex;align-items:center;gap:8px;">
-                <div style="width:28px;height:28px;border-radius:50%;background:#E8A44A;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#1C1C1A;">AD</div>
-            </div>
+            <span class="admin-badge">Administrator</span>
+            <div class="topbar-avatar">AD</div>
         </div>
     </div>
 
@@ -62,10 +60,14 @@
 
             <div class="sidebar-bottom">
                 <div class="sidebar-section system-info-box">
-                    <div class="sidebar-label">System Info</div>
-                    <div style="font-size:11px;color:#7A7773;padding-left:8px;line-height:1.6;">
-                        Station ID: <span style="font-family:monospace;font-weight:600;color:#5A8A42;">Masbate-04</span><br>
-                        Role: <span style="color:#E8A44A;font-weight:600;">ADMINISTRATOR</span>
+                    <div class="sidebar-label" style="padding-left:0;">System Info</div>
+                    <div class="info-row">
+                        <span>Station ID</span>
+                        <strong style="font-family:'Outfit',monospace;">Masbate-04</strong>
+                    </div>
+                    <div class="info-row">
+                        <span>Role</span>
+                        <span class="role-tag">Admin</span>
                     </div>
                 </div>
                 <a class="nav-item logout-btn" href="/login">
@@ -85,7 +87,7 @@
                         <div class="page-title">System Overview</div>
                         <div class="page-subtitle">DEBESMSCAT Farm System Health at a Glance</div>
                     </div>
-                    <div class="date-pill" style="font-size:12px;color:#7A7773;background:white;border:1px solid #E2DFD8;padding:6px 14px;border-radius:20px;display:flex;align-items:center;gap:6px;">
+                    <div class="date-pill">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
                         <span id="admin-date">Loading...</span>
                     </div>
@@ -94,45 +96,45 @@
                 <!-- Stat cards -->
                 <div class="grid-3">
                     <div class="stat-card">
-                        <div class="stat-label">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A9790" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                            Registered Farmers
+                        <div class="stat-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                         </div>
+                        <div class="stat-label">Registered Farmers</div>
                         <div class="stat-value" id="stat-farmers">--</div>
                         <div class="stat-detail">Agriculturist accounts</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A9790" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
-                            Active Farm Plots
+                        <div class="stat-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
                         </div>
+                        <div class="stat-label">Active Farm Plots</div>
                         <div class="stat-value" id="stat-plots">--</div>
                         <div class="stat-detail">Currently growing crops</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A9790" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                            OpenWeather API
+                        <div class="stat-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                         </div>
-                        <div class="stat-value" id="stat-api-status"><span class="status-dot" id="api-status-dot"></span> <span id="api-status-text">Checking...</span></div>
+                        <div class="stat-label">OpenWeather API</div>
+                        <div class="stat-value compact"><span class="status-dot" id="api-status-dot"></span> <span id="api-status-text">Checking...</span></div>
                         <div class="stat-detail" id="api-last-log">Last data: checking...</div>
                     </div>
                 </div>
 
                 <!-- Recent Activity & Quick Stats -->
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" class="dashboard-grid-2">
-                    <div class="card">
+                    <div class="card" style="margin-bottom:0;">
                         <div class="card-title">Recent Weather Logs</div>
                         <div class="card-sub">Last 5 data entries</div>
-                        <div id="dash-recent-logs">
-                            <div class="empty-state"><p>Loading recent logs...</p></div>
+                        <div class="activity-list" id="dash-recent-logs">
+                            <div class="empty-state" style="padding:24px;"><p>Loading recent logs...</p></div>
                         </div>
                     </div>
-                    <div class="card">
+                    <div class="card" style="margin-bottom:0;">
                         <div class="card-title">Recent Alerts Sent</div>
                         <div class="card-sub">Last 5 admin broadcasts</div>
-                        <div id="dash-recent-alerts">
-                            <div class="empty-state"><p>Loading recent alerts...</p></div>
+                        <div class="activity-list" id="dash-recent-alerts">
+                            <div class="empty-state" style="padding:24px;"><p>Loading recent alerts...</p></div>
                         </div>
                     </div>
                 </div>
@@ -147,28 +149,24 @@
                         <div class="page-subtitle">Manage crop guidelines, temperature thresholds, and rain tolerances</div>
                     </div>
                     <button class="btn-primary" id="btn-add-crop" style="white-space:nowrap;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         Add Crop
                     </button>
                 </div>
 
                 <div class="card">
-                    <div class="table-wrapper">
-                        <table class="admin-table" id="crop-table">
-                            <thead>
-                                <tr>
-                                    <th>Crop Name</th>
-                                    <th>Min Temp (°C)</th>
-                                    <th>Max Temp (°C)</th>
-                                    <th>Rain Tolerance (mm)</th>
-                                    <th>Days to Harvest</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="crop-table-body">
-                                <tr><td colspan="6" style="text-align:center;color:#9A9790;padding:30px;">Loading crops...</td></tr>
-                            </tbody>
-                        </table>
+                    <div class="crop-toolbar">
+                        <div class="crop-search">
+                            <span class="search-icon">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            </span>
+                            <input type="text" id="crop-search-input" placeholder="Search crops by name...">
+                        </div>
+                        <span class="crop-count-pill" id="crop-count-pill">0 crops</span>
+                    </div>
+
+                    <div class="crop-grid" id="crop-grid">
+                        <!-- Crop cards rendered by JS -->
                     </div>
                 </div>
             </div>
@@ -184,7 +182,7 @@
                 </div>
 
                 <!-- Compose Section -->
-                <div class="form-card" style="margin-bottom:20px;">
+                <div class="form-card" style="margin-bottom:18px;">
                     <div class="card-title">Publish New Tip</div>
                     <div class="card-sub">Write a farming tip or trivia that will appear on farmers' feeds</div>
                     <div class="form-group">
@@ -198,15 +196,15 @@
                                 <option value="General">General</option>
                             </select>
                         </div>
-                        <button class="btn-primary" id="btn-publish-trivia" style="height:40px;">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        <button class="btn-primary" id="btn-publish-trivia" style="height:42px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                             Publish
                         </button>
                     </div>
                 </div>
 
                 <!-- Feed -->
-                <div class="card">
+                <div class="card" style="margin-bottom:0;">
                     <div class="card-title">Published Tips</div>
                     <div class="card-sub">Shown on the farmer's Digital Repository page</div>
                     <div class="trivia-feed" id="trivia-feed">
@@ -225,36 +223,23 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card" style="margin-bottom:0;">
                     <div class="date-range-bar">
                         <div style="display:flex;align-items:center;gap:8px;">
                             <label>From</label>
-                            <input type="date" class="form-control" id="weather-from" style="width:auto;padding:8px 12px;font-size:12px;">
+                            <input type="date" id="weather-from">
                         </div>
                         <div style="display:flex;align-items:center;gap:8px;">
                             <label>To</label>
-                            <input type="date" class="form-control" id="weather-to" style="width:auto;padding:8px 12px;font-size:12px;">
+                            <input type="date" id="weather-to">
                         </div>
                         <button class="btn-primary btn-sm" id="btn-filter-logs">Filter</button>
                         <button class="btn-secondary btn-sm" id="btn-reset-logs">Reset</button>
+                        <span style="margin-left:auto;font-size:12px;color:var(--admin-text-muted);font-weight:600;" id="weather-log-count-pill">Loading...</span>
                     </div>
 
-                    <div class="table-wrapper">
-                        <table class="admin-table" id="weather-table">
-                            <thead>
-                                <tr>
-                                    <th>Timestamp</th>
-                                    <th>Temperature (°C)</th>
-                                    <th>Humidity (%)</th>
-                                    <th>Wind (km/h)</th>
-                                    <th>Rainfall (mm)</th>
-                                    <th>Source</th>
-                                </tr>
-                            </thead>
-                            <tbody id="weather-table-body">
-                                <tr><td colspan="6" style="text-align:center;color:#9A9790;padding:30px;">Loading weather logs...</td></tr>
-                            </tbody>
-                        </table>
+                    <div class="weather-log-list" id="weather-log-list">
+                        <div class="empty-state"><p>Loading weather logs...</p></div>
                     </div>
                 </div>
             </div>
@@ -270,7 +255,7 @@
                 </div>
 
                 <!-- Compose Section -->
-                <div class="form-card" style="margin-bottom:20px;">
+                <div class="form-card" style="margin-bottom:18px;">
                     <div class="card-title">Compose Advisory</div>
                     <div class="card-sub">Write a custom warning or announcement for farmers</div>
 
@@ -300,18 +285,38 @@
                         <textarea class="form-control" id="alert-message" placeholder="e.g., Classes suspended, please secure your plots." rows="4"></textarea>
                     </div>
 
-                    <button class="btn-primary" id="btn-send-alert" style="width:100%;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                    <button class="btn-primary" id="btn-send-alert" style="width:100%;height:44px;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
                         Send Advisory
                     </button>
                 </div>
 
                 <!-- Sent Alerts History -->
-                <div class="card">
-                    <div class="card-title">Sent Advisories</div>
+                <div class="card" style="margin-bottom:0;">
+                    <div class="card-title" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                        <span>Sent Advisories</span>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <input type="text" id="alert-search" class="form-control" placeholder="Search advisories..." style="max-width:200px; height:34px; font-size:13px; margin:0;">
+                            <select id="alert-sort" class="form-control" style="width:120px; height:34px; font-size:13px; margin:0; padding: 0 10px;">
+                                <option value="DESC">Newest First</option>
+                                <option value="ASC">Oldest First</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="card-sub">History of admin broadcasts</div>
                     <div class="alert-history" id="alert-history">
                         <div class="empty-state"><p>Loading sent alerts...</p></div>
+                    </div>
+                    
+                    <!-- Pagination Controls -->
+                    <div id="alert-pagination" style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:16px; border-top:1px solid #eeeeee;">
+                        <button class="btn-secondary" id="btn-alert-prev" style="height:32px; padding:0 12px; font-size:12px; display:flex; align-items:center; gap:4px; margin:0;">
+                            &larr; Prev
+                        </button>
+                        <span id="alert-page-info" style="font-size:13px; color:var(--admin-text-muted);">Page 1 of 1</span>
+                        <button class="btn-secondary" id="btn-alert-next" style="height:32px; padding:0 12px; font-size:12px; display:flex; align-items:center; gap:4px; margin:0;">
+                            Next &rarr;
+                        </button>
                     </div>
                 </div>
             </div>
@@ -322,7 +327,7 @@
 
 <!-- Crop Form Modal -->
 <div class="modal-overlay" id="cropModal">
-    <div class="modal-content" style="position:relative;">
+    <div class="modal-content">
         <button class="modal-close" id="cropModalClose">&times;</button>
         <div class="modal-title" id="cropModalTitle">Add New Crop</div>
         <div class="modal-sub">Define temperature thresholds and growing parameters</div>
@@ -355,10 +360,32 @@
                 </div>
             </div>
             <div class="btn-row">
-                <button type="submit" class="btn-primary" style="flex:1;">Save Crop</button>
+                <button type="submit" class="btn-primary" style="flex:1;height:42px;">Save Crop</button>
                 <button type="button" class="btn-secondary" id="cropModalCancel">Cancel</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Advisory Loading Modal -->
+<div class="modal-overlay" id="advisoryLoadingModal" style="z-index: 300;">
+    <div class="modal-content" style="max-width: 420px; text-align: center; padding: 40px 30px; border-radius: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);">
+        <!-- Beautiful animated spinner container -->
+        <div class="spinner-container" style="margin-bottom: 24px; display: inline-flex; justify-content: center; align-items: center; position: relative; width: 80px; height: 80px;">
+            <div style="box-sizing: border-box; display: block; position: absolute; width: 64px; height: 64px; margin: 8px; border: 6px solid var(--admin-primary, #2e7d32); border-radius: 50%; animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; border-color: var(--admin-primary, #2e7d32) transparent transparent transparent;"></div>
+            <div style="box-sizing: border-box; display: block; position: absolute; width: 64px; height: 64px; margin: 8px; border: 6px solid var(--admin-primary, #2e7d32); border-radius: 50%; animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; border-color: var(--admin-primary, #2e7d32) transparent transparent transparent; animation-delay: -0.3s;"></div>
+            <div style="box-sizing: border-box; display: block; position: absolute; width: 64px; height: 64px; margin: 8px; border: 6px solid var(--admin-primary, #2e7d32); border-radius: 50%; animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; border-color: var(--admin-primary, #2e7d32) transparent transparent transparent; animation-delay: -0.15s;"></div>
+            <div style="box-sizing: border-box; display: block; position: absolute; width: 64px; height: 64px; margin: 8px; border: 6px solid var(--admin-primary, #2e7d32); border-radius: 50%; animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; border-color: var(--admin-primary, #2e7d32) transparent transparent transparent; animation-delay: -0.45s;"></div>
+        </div>
+        <div class="modal-title" style="font-size: 18px; margin-bottom: 8px; font-weight: 700; font-family: 'Outfit', sans-serif;">Sending Advisories...</div>
+        <div class="modal-sub" id="advisory-loading-status" style="font-size: 14px; color: var(--admin-text-muted); line-height: 1.5; margin-bottom: 0; min-height: 42px; word-break: break-all; font-family: inherit;">Initializing connection...</div>
+        
+        <style>
+            @keyframes lds-ring {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
     </div>
 </div>
 

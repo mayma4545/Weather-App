@@ -35,7 +35,7 @@
             </div>
             <div style="display:flex;align-items:center;gap:8px;">
                 <div
-                    style="width:28px;height:28px;border-radius:50%;background:#3B3B38;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#D6D3CB;">
+                    style="width:34px;height:34px;border-radius:50%;background:#1BE035;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#FFFFFF;">
                     JR</div>
             </div>
         </div>
@@ -70,14 +70,14 @@
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
                     </svg>
-                    Weather Analytics
+                    Weather
                 </a>
                 <a class="nav-item" href="/farmer/digital-repository" id="nav-digital-repository">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
                     </svg>
-                    Digital Repository
+                    Library
                 </a>
                 <a class="nav-item" href="/farmer/profile" id="nav-profile">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -86,7 +86,7 @@
                     </svg>
                     Profile Page
                 </a>
-                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 1px solid #E2DFD8; padding-top: 15px; color: #C0531A;">
+                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 2px solid #C8F0C8; padding-top: 18px; color: #D44A1A;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                         <polyline points="16 17 21 12 16 7" />
@@ -105,10 +105,10 @@
 
             <div class="sidebar-section">
                 <div class="sidebar-label">Masbate Region</div>
-                <div style="font-size: 11px; color: #7A7773; padding-left: 8px;">
+                <div style="font-size: 12px; color: #4A8A4A; padding-left: 12px;">
                     Station ID: <span
-                        style="font-family:monospace; font-weight:600; color:#5A8A42;">Masbate-04</span><br>
-                    Status: <span style="color:#5A8A42; font-weight:600;">CONNECTED</span>
+                        style="font-family:monospace; font-weight:700; color:#1BE035;">Masbate-04</span><br>
+                    Status: <span style="color:#1BE035; font-weight:700;">CONNECTED</span>
                 </div>
             </div>
         </div>
@@ -137,43 +137,59 @@
                 <div class="grid-4" id="weather-metrics-grid">
                     <div class="metric-card" id="metric-temp">
                         <div class="metric-label">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A9790" stroke-width="2">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1BE035" stroke-width="2">
                                 <path d="M14 14.76V3.5a2.5 2.5 0 00-5 0v11.26a4.5 4.5 0 105 0z" />
                             </svg>
-                            Temperature
+                            Heat
                         </div>
                         <div class="metric-value" id="metric-temp-value">--<span class="metric-unit">&#8451;</span></div>
-                        <div class="metric-delta" id="metric-temp-delta"><span>Loading...</span></div>
+                        <div class="metric-delta" id="metric-temp-delta" style="font-size: 14px;"><span>Loading...</span></div>
                     </div>
                     <div class="metric-card" id="metric-humidity">
                         <div class="metric-label">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A9790" stroke-width="2">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1BE035" stroke-width="2">
                                 <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z" />
                             </svg>
-                            Humidity
+                            Moisture
                         </div>
                         <div class="metric-value" id="metric-humidity-value">--<span class="metric-unit">%</span></div>
-                        <div class="metric-delta" id="metric-humidity-delta"><span>Loading...</span></div>
+                        <div class="metric-delta" id="metric-humidity-delta" style="font-size: 14px;"><span>Loading...</span></div>
                     </div>
                     <div class="metric-card" id="metric-wind">
                         <div class="metric-label">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A9790" stroke-width="2">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1BE035" stroke-width="2">
                                 <path d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1014 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2" />
                             </svg>
-                            Wind Speed
+                            Wind
                         </div>
                         <div class="metric-value" id="metric-wind-value">--<span class="metric-unit">km/h</span></div>
-                        <div class="metric-delta" id="metric-wind-delta"><span>Loading...</span></div>
+                        <div class="metric-delta" id="metric-wind-delta" style="font-size: 14px;"><span>Loading...</span></div>
                     </div>
                     <div class="metric-card" id="metric-rain">
                         <div class="metric-label">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A9790" stroke-width="2">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1BE035" stroke-width="2">
                                 <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z" />
                             </svg>
-                            Rainfall
+                            Rain
                         </div>
                         <div class="metric-value" id="metric-rain-value">--<span class="metric-unit">mm</span></div>
-                        <div class="metric-delta" id="metric-rain-delta"><span>Loading...</span></div>
+                        <div class="metric-delta" id="metric-rain-delta" style="font-size: 14px;"><span>Loading...</span></div>
+                    </div>
+                </div>
+
+                <!-- Typhoon & Extreme Weather Alert Banner (hidden by default) -->
+                <div id="typhoon-banner-container" style="display:none; margin-bottom: 20px; padding: 16px 20px; background: #FFF3F3; border: 1.5px solid #D9381E; border-radius: 12px; box-shadow: 0 4px 12px rgba(217,56,30,0.15);">
+                    <div style="display:flex; align-items:center; gap: 12px; margin-bottom: 8px;">
+                        <span style="font-size: 24px;">🚨</span>
+                        <div>
+                            <div id="typhoon-banner-title" style="font-weight: 700; color: #D9381E; font-size: 18px; text-transform: uppercase;">Typhoon / Extreme Weather Warning</div>
+                            <div id="typhoon-banner-sub" style="font-size: 15px; color: #5C5850;">Important Weather Update</div>
+                        </div>
+                    </div>
+                    <div id="typhoon-banner-body" style="font-size: 13.5px; color: #2C2B29; margin-bottom: 12px; line-height: 1.5;"></div>
+                    <div style="background: #FFFFFF; padding: 12px; border-radius: 8px; border: 1px solid #F0C4BC;">
+                        <div style="font-weight: 600; font-size: 12px; color: #D9381E; text-transform: uppercase; margin-bottom: 6px;">⚡ Farm Emergency Protocol Checklist:</div>
+                        <ul id="typhoon-banner-checklist" style="margin: 0; padding-left: 20px; font-size: 13px; color: #3B3B38; display: flex; flex-direction: column; gap: 4px;"></ul>
                     </div>
                 </div>
 
@@ -186,23 +202,43 @@
                             <div class="card-title">Weather Forecast</div>
                             <div class="card-sub"><span class="dynamic-location">Detecting Location...</span> &mdash; OpenWeather Live Feed</div>
                             <div class="forecast-row" id="forecast-row-container">
-                                <div style="text-align:center; color:#9A9790; padding:20px; font-size:12px; width:100%;">Loading forecast...</div>
+                                <div style="text-align:center; color:#6A9A6A; padding:20px; font-size:13px; width:100%;">Loading forecast...</div>
                             </div>
-                            <div style="margin-top:12px;">
-                                <div style="font-size:11px;color:#9A9790;margin-bottom:8px;font-weight:500;letter-spacing:0.5px;text-transform:uppercase;">
+                            <div style="margin-top:14px;">
+                                <div style="font-size:12px;color:#5A8A5A;margin-bottom:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;">
                                     Rainfall Trend (mm)</div>
                                 <div id="rainfall-trend-container">
-                                    <div style="text-align:center; color:#9A9790; padding:10px; font-size:12px;">Loading rainfall data...</div>
+                                    <div style="text-align:center; color:#6A9A6A; padding:12px; font-size:13px;">Loading rainfall data...</div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Active Crops Card -->
+                        <!-- Quick Plant Card -->
                         <div class="card">
-                            <div class="card-title">Active Crops</div>
-                            <div class="card-sub">Growth stage overview (Calculated from planting dates)</div>
-                            <div id="dash-active-crops-list">
-                                <!-- Rendered dynamically by script -->
+                            <div class="card-title" style="font-size: 20px;">Fast Planting</div>
+                            <div class="card-sub" style="font-size: 15px;">Add a new crop easily</div>
+                            <div id="quick-plant-container">
+                                <div class="qp-field">
+                                    <label class="qp-label">Plot</label>
+                                    <select id="qp-plot" class="qp-input"><option value="">Select plot...</option></select>
+                                </div>
+                                <div class="qp-field">
+                                    <label class="qp-label">Crop</label>
+                                    <select id="qp-crop" class="qp-input"><option value="">Select crop...</option></select>
+                                </div>
+                                <div class="qp-field">
+                                    <label class="qp-label">Planting Date</label>
+                                    <input type="date" id="qp-date" class="qp-input">
+                                </div>
+                                <button class="qp-btn" id="qp-plant-btn">Plant Now</button>
+                                <div id="qp-result" class="qp-result"></div>
+                            </div>
+                            <div class="qp-quick-actions">
+                                <div class="qp-qa-label">Quick Actions</div>
+                                <div class="qp-qa-buttons">
+                                    <button class="qa-btn" id="qa-full-planting">+ New Planting</button>
+                                    <button class="qa-btn" id="qa-add-plot">+ Add Plot</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -211,58 +247,47 @@
                     <div class="main-right-col">
                         <!-- Active Alerts Card (LIVE from weather data) -->
                         <div class="card alert-section" id="active-alerts-container">
-                            <div class="card-title">Active Alerts</div>
-                            <div class="card-sub">Live Meteorological Warnings</div>
+                            <div class="card-title" style="font-size: 20px;">Important Warnings</div>
+                            <div class="card-sub" style="font-size: 15px;">Weather warnings you need to know</div>
                             <div id="alerts-list">
-                                <div style="text-align:center; color:#9A9790; padding:16px; font-size:12px;">Analyzing weather conditions...</div>
+                                <div style="text-align:center; color:#6A9A6A; padding:18px; font-size:13px; font-weight:600;">Analyzing weather conditions...</div>
                             </div>
                         </div>
 
-                        <!-- Upcoming Schedule Card -->
-                        <div class="card">
-                            <div class="card-title">Upcoming Schedule</div>
-                            <div class="card-sub">Next 7 days</div>
-                            <div class="schedule-item">
-                                <div class="sched-date">
-                                    <div class="sched-day">Wed</div>
-                                    <div class="sched-num">24</div>
-                                </div>
-                                <div class="sched-body">
-                                    <div class="sched-task">Soil Moisture Check &mdash; North Plot A</div>
-                                    <div class="sched-field">Palay (IR64) &middot; Tillering stage</div>
-                                </div>
-                                <div class="sched-type st-irr">IRR</div>
-                            </div>
-                            <div class="schedule-item">
-                                <div class="sched-date">
-                                    <div class="sched-day">Thu</div>
-                                    <div class="sched-num">25</div>
-                                </div>
-                                <div class="sched-body">
-                                    <div class="sched-task">Fertilizer Application &mdash; South Plot B</div>
-                                    <div class="sched-field">Corn (OPV) &middot; Vegetative (V6)</div>
-                                </div>
-                                <div class="sched-type st-fert">FERT</div>
-                            </div>
-                            <div class="schedule-item">
-                                <div class="sched-date">
-                                    <div class="sched-day">Sat</div>
-                                    <div class="sched-num">27</div>
-                                </div>
-                                <div class="sched-body">
-                                    <div class="sched-task">Foliar Spraying &mdash; East Plot C</div>
-                                    <div class="sched-field">Kangkong &middot; Early Seedling</div>
-                                </div>
-                                <div class="sched-type st-pest">PEST</div>
+                        <!-- Upcoming Schedule Card (Dynamic Smart To-Do List) -->
+                        <div class="card" id="todo-card">
+                            <div class="card-title" style="font-size: 20px;">To-Do List</div>
+                            <div class="card-sub" style="font-size: 15px;">Smart tasks based on your crops &amp; weather</div>
+                            <div id="todo-list-container">
+                                <div style="text-align:center; color:#6A9A6A; padding:18px; font-size:13px; font-weight:600;">Generating smart tasks from your farm data...</div>
                             </div>
                         </div>
 
                         <!-- Decision Insights Card (LIVE from weather data) -->
                         <div class="card" id="decision-insights-card">
-                            <div class="card-title">Decision Insights</div>
-                            <div class="card-sub">Rule-based recommendations from live data</div>
+                            <div class="card-title" style="font-size: 20px;">Smart Tips</div>
+                            <div class="card-sub" style="font-size: 15px;">Tips for your farm based on today's weather</div>
                             <div id="decision-insights-list" style="display:flex;flex-direction:column;gap:10px;">
-                                <div style="text-align:center; color:#9A9790; padding:16px; font-size:12px;">Generating insights from weather data...</div>
+                                <div style="text-align:center; color:#6A9A6A; padding:18px; font-size:13px; font-weight:600;">Generating insights from weather data...</div>
+                            </div>
+                        </div>
+
+                        <!-- Agricultural Advisor Card (Real-world Agronomic Intelligence) -->
+                        <div class="card" id="agri-advisor-card" style="border-top: 4px solid #1BE035;">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 14px;">
+                                <div>
+                                    <div class="card-title" style="color: #0D5E1A; display:flex; align-items:center; gap:8px; font-size: 20px;">
+                                        <span>🌾</span> Farm Advice
+                                    </div>
+                                    <div class="card-sub" style="font-size: 15px;">Growth stage and daily advice</div>
+                                </div>
+                                <select id="advisor-plot-select" style="padding: 8px 12px; border-radius: 10px; border: 2px solid #C8F0C8; font-size: 13px; background: #FAFFFA; color: #1A3D1A; font-family: 'Nunito', sans-serif; font-weight: 600;">
+                                    <option value="">Select plot...</option>
+                                </select>
+                            </div>
+
+                            <div id="advisor-content" style="display:flex; flex-direction:column; gap: 14px;">
+                                <div style="text-align:center; color:#6A9A6A; padding:22px; font-size:13px; font-weight:600;">Select an active plot to load agronomic models...</div>
                             </div>
                         </div>
                     </div>

@@ -31,6 +31,14 @@ const CropRepository = sequelize.define('CropRepository', {
   best_practices: {
     type: DataTypes.TEXT,
     allowNull: true
+  },
+  growth_stages: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  vulnerabilities: {
+    type: DataTypes.TEXT,
+    allowNull: true
   }
 }, {
   tableName: 'crop_repository',

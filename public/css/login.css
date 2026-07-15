@@ -160,3 +160,118 @@ h2 {
 .register-prompt a:hover {
     color: var(--brand-hover);
 }
+
+/* ==========================================
+   REGISTRATION PAGE ENHANCED STYLES
+   ========================================== */
+
+.register-card {
+    max-width: 480px;
+}
+
+.password-requirements {
+    margin-top: 10px;
+    padding: 12px;
+    background: #F8FAFC;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    display: none;
+    text-align: left;
+}
+
+.password-requirements .req-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.password-requirements ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.password-requirements .req-item {
+    font-size: 12px;
+    color: #EF4444;
+    padding: 2px 0;
+    padding-left: 18px;
+    position: relative;
+    transition: color 0.2s;
+}
+
+.password-requirements .req-item::before {
+    content: '✕';
+    position: absolute;
+    left: 0;
+    font-size: 11px;
+    color: #EF4444;
+}
+
+.password-requirements .req-item.req-met {
+    color: #22C55E;
+}
+
+.password-requirements .req-item.req-met::before {
+    content: '✓';
+    color: #22C55E;
+}
+
+.password-requirements.show {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.password-match-msg {
+    display: block;
+    font-size: 13px;
+    margin-top: 6px;
+    font-weight: 500;
+    min-height: 20px;
+}
+
+.password-match-msg.match-ok {
+    color: #22C55E;
+}
+
+.password-match-msg.match-error {
+    color: #EF4444;
+}
+
+.form-error {
+    color: #EF4444;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 16px;
+    min-height: 20px;
+    animation: shakeError 0.4s ease;
+}
+
+@keyframes shakeError {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 16px;
+    }
+
+    .login-card {
+        padding: 24px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+}

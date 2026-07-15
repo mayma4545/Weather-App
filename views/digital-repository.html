@@ -42,7 +42,7 @@
             </div>
             <div style="display:flex;align-items:center;gap:8px;">
                 <div
-                    style="width:28px;height:28px;border-radius:50%;background:#3B3B38;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#D6D3CB;">
+                    style="width:34px;height:34px;border-radius:50%;background:#1BE035;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#FFFFFF;">
                     JR</div>
             </div>
         </div>
@@ -93,7 +93,7 @@
                     </svg>
                     Profile Page
                 </a>
-                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 1px solid #E2DFD8; padding-top: 15px; color: #C0531A;">
+                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 2px solid #C8F0C8; padding-top: 18px; color: #D44A1A;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                         <polyline points="16 17 21 12 16 7" />
@@ -112,10 +112,10 @@
 
             <div class="sidebar-section">
                 <div class="sidebar-label">Masbate Region</div>
-                <div style="font-size: 11px; color: #7A7773; padding-left: 8px;">
+                <div style="font-size: 12px; color: #4A8A4A; padding-left: 12px;">
                     Station ID: <span
-                        style="font-family:monospace; font-weight:600; color:#5A8A42;">Masbate-04</span><br>
-                    Status: <span style="color:#5A8A42; font-weight:600;">CONNECTED ??</span>
+                        style="font-family:monospace; font-weight:700; color:#1BE035;">Masbate-04</span><br>
+                    Status: <span style="color:#1BE035; font-weight:700;">CONNECTED</span>
                 </div>
             </div>
         </div>
@@ -132,157 +132,50 @@
                 </div>
 
                 <!-- Recommended For You Context-Aware Banners -->
-                <div class="card"
-                    style="margin-bottom:16px; background:linear-gradient(135deg, #F2F7ED 0%, #E6F0DC 100%); border-color:#C2D9B0;">
-                    <div
-                        style="font-size:11px; font-weight:600; text-transform:uppercase; color:#3A6824; letter-spacing:0.8px;">
-                        Recommended For Your Active Farm</div>
-                    <div
-                        style="font-size:16px; font-family:'Playfair Display', serif; font-weight:600; color:#1C1C1A; margin-top:8px;">
-                        Root rot prevention guide during Masbate's rainy months</div>
-                    <p style="font-size:13px; color:#5A7A40; margin-top:4px; line-height:1.5;">Since you are growing
-                        <strong>Palay (IR64)</strong>, early seedling humidity checks can protect against bacterial soft
-                        rot. Read best drainage practices verified by DEBESMSCAT.</p>
+                <div class="recommendation-banner">
+                    <div class="recommendation-badge">
+                        <svg class="recommendation-badge-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        Recommended For Your Active Farm
+                    </div>
+                    <div class="recommendation-title">Root rot prevention guide during Masbate's rainy months</div>
+                    <p class="recommendation-desc">Since you are growing <strong>Palay (IR64)</strong>, early seedling humidity checks can protect against bacterial soft rot. Read best drainage practices verified by DEBESMSCAT.</p>
                 </div>
 
                 <!-- Crop Encyclopedia Search and Grid -->
-                <div class="card">
-                    <div
-                        style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:10px;">
+                <div class="card ency-main-card">
+                    <div class="ency-section-header-row">
                         <div>
-                            <div class="card-title">Crop Encyclopedia</div>
-                            <div class="card-sub">Click a crop card to expand ideal climate constraints and timeline
-                                data.</div>
+                            <div class="card-title ency-title">Crop Encyclopedia</div>
+                            <div class="card-sub ency-subtitle">Comprehensive crop profiles with climate constraints, growth timelines, and vulnerability data.</div>
                         </div>
-                        <input type="text" id="encyclopedia-search" placeholder="Search Crop Encyclopedia..."
-                            class="form-control" style="max-width:240px; font-size:12.5px; padding:6px 12px;">
+                        <div class="ency-search-wrapper">
+                            <input type="text" id="encyclopedia-search" placeholder="Search Crop Encyclopedia..." class="form-control ency-search-input">
+                        </div>
                     </div>
 
-                    <div class="crop-ency-grid" id="encyclopedia-grid">
-                        <!-- Rice Card -->
-                        <div class="ency-card" data-name="rice palay ir64">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <div style="font-weight:600; font-size:15px; color:#1C1C1A;">Rice (Palay IR64)</div>
-                                <span style="font-size:18px;">??</span>
-                            </div>
-                            <div style="font-size:12px; color:#9A9790; margin-top:2px;">Masbate Staple Variety</div>
-                            <div class="ency-details">
-                                <strong>Ideal Temperature:</strong> 22&#8451; - 32&#8451;<br>
-                                <strong>Seedling Rain Tolerance:</strong> 80mm/day max<br>
-                                <strong>Growth Timeline:</strong> Seedling (25 days)  Tillering (35 days)  Flowering
-                                (30 days)  Mature (30 days)<br>
-                                <strong>Vulnerabilities:</strong> Leaf folders, Stem blast disease, water flooding >
-                                15cm.
-                            </div>
-                        </div>
+                    <div class="crop-ency-grid" id="encyclopedia-grid"></div>
 
-                        <!-- Corn Card -->
-                        <div class="ency-card" data-name="corn opv yellow">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <div style="font-weight:600; font-size:15px; color:#1C1C1A;">Corn (OPV Yellow)</div>
-                                <span style="font-size:18px;"></span>
-                            </div>
-                            <div style="font-size:12px; color:#9A9790; margin-top:2px;">Dryland grain</div>
-                            <div class="ency-details">
-                                <strong>Ideal Temperature:</strong> 20&#8451; - 30&#8451;<br>
-                                <strong>Seedling Rain Tolerance:</strong> 50mm/day max<br>
-                                <strong>Growth Timeline:</strong> Seedling (20 days)  Vegetative (35 days)  Tasseling
-                                (25 days)  Harvest (40 days)<br>
-                                <strong>Vulnerabilities:</strong> Saturated soil (drowning), cob worms, wind gust >
-                                30km/h.
-                            </div>
-                        </div>
-
-                        <!-- Tomato Card -->
-                        <div class="ency-card" data-name="tomato kamatis">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <div style="font-weight:600; font-size:15px; color:#1C1C1A;">Tomato (Kamatis)</div>
-                                <span style="font-size:18px;"></span>
-                            </div>
-                            <div style="font-size:12px; color:#9A9790; margin-top:2px;">Delicate fruit crop</div>
-                            <div class="ency-details">
-                                <strong>Ideal Temperature:</strong> 18&#8451; - 28&#8451;<br>
-                                <strong>Seedling Rain Tolerance:</strong> 20mm/day max<br>
-                                <strong>Growth Timeline:</strong> Seedling (15 days)  Vegetative (30 days)  Fruiting
-                                (35 days)  Harvest (20 days)<br>
-                                <strong>Vulnerabilities:</strong> Excessive water logging (root rot), early blight
-                                fungus.
-                            </div>
-                        </div>
-
-                        <!-- Eggplant Card -->
-                        <div class="ency-card" data-name="eggplant talong">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <div style="font-weight:600; font-size:15px; color:#1C1C1A;">Eggplant (Talong)</div>
-                                <span style="font-size:18px;"></span>
-                            </div>
-                            <div style="font-size:12px; color:#9A9790; margin-top:2px;">Hardy vegetable</div>
-                            <div class="ency-details">
-                                <strong>Ideal Temperature:</strong> 22&#8451; - 32&#8451;<br>
-                                <strong>Seedling Rain Tolerance:</strong> 40mm/day max<br>
-                                <strong>Growth Timeline:</strong> Seedling (20 days)  Vegetative (30 days)  Flowering
-                                (25 days)  Harvest (35 days)<br>
-                                <strong>Vulnerabilities:</strong> Thrips pest, root dehydration.
-                            </div>
-                        </div>
-
-                        <!-- Ampalaya Card -->
-                        <div class="ency-card" data-name="ampalaya bittergourd">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <div style="font-weight:600; font-size:15px; color:#1C1C1A;">Ampalaya (Bitter Gourd)
-                                </div>
-                                <span style="font-size:18px;"></span>
-                            </div>
-                            <div style="font-size:12px; color:#9A9790; margin-top:2px;">Climbing vine</div>
-                            <div class="ency-details">
-                                <strong>Ideal Temperature:</strong> 24&#8451; - 35&#8451;<br>
-                                <strong>Seedling Rain Tolerance:</strong> 70mm/day max<br>
-                                <strong>Growth Timeline:</strong> Seedling (15 days)  Trellising (25 days)  Flowering
-                                (20 days)  Harvest (25 days)<br>
-                                <strong>Vulnerabilities:</strong> Downy mildew, fruit flies.
-                            </div>
-                        </div>
-
-                        <!-- Kangkong Card -->
-                        <div class="ency-card" data-name="kangkong river spinach">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <div style="font-weight:600; font-size:15px; color:#1C1C1A;">Kangkong (River Spinach)
-                                </div>
-                                <span style="font-size:18px;"></span>
-                            </div>
-                            <div style="font-size:12px; color:#9A9790; margin-top:2px;">Fast-growing leafy veg</div>
-                            <div class="ency-details">
-                                <strong>Ideal Temperature:</strong> 20&#8451; - 35&#8451;<br>
-                                <strong>Seedling Rain Tolerance:</strong> 120mm/day max<br>
-                                <strong>Growth Timeline:</strong> Seedling (7 days)  Vegetative (15 days)  Harvest (8
-                                days)<br>
-                                <strong>Vulnerabilities:</strong> Leaf rust, extreme freezing conditions.
-                            </div>
-                        </div>
+                    <div class="ency-pagination" id="encyclopedia-pagination">
+                        <button class="ency-pg-btn" id="ency-pg-prev" disabled>Previous</button>
+                        <div class="ency-pg-pages" id="ency-pg-pages"></div>
+                        <button class="ency-pg-btn" id="ency-pg-next">Next</button>
                     </div>
                 </div>
 
-                <!-- trivia section -->
-                <div class="card" style="margin-top:16px;">
-                    <div class="card-title">DEBESMSCAT Agricultural Trivia</div>
-                    <div class="card-sub">Daily verified farmer tips and trivia guidelines</div>
-                    <div style="display:flex; flex-direction:column; gap:10px;">
-                        <div
-                            style="padding:12px; background:#F7F5F0; border-radius:8px; font-size:13px; color:#5A5854;">
-                            ?? <strong>Duck-Rice Integration:</strong> Farmers releasing ducklings into rice fields
-                            report 25% organic fertilizing yields and natural pest reduction since ducks consume weeds
-                            and insect larvae!
-                        </div>
-                        <div
-                            style="padding:12px; background:#F7F5F0; border-radius:8px; font-size:13px; color:#5A5854;">
-                            ?? <strong>Nitrogen Fixation:</strong> Intercropping Corn with green legumes restores vital
-                            nitrates back into the soil, minimizing reliance on synthetic chemical fertilizer by up to
-                            30%.
-                        </div>
-                    </div>
-                </div>
             </div>
 </div>
+
+<!-- Tips Modal Overlay -->
+<div id="tips-modal-overlay" class="tips-modal-overlay" style="display:none;">
+    <div class="tips-modal">
+        <div class="tips-modal-header">
+            <span id="tips-modal-title"></span>
+            <button id="tips-modal-close" class="tips-modal-close">&times;</button>
+        </div>
+        <div id="tips-modal-body" class="tips-modal-body"></div>
+    </div>
+</div>
+
 <!-- Bottom Navigation (Mobile Tabpane View) -->
 <nav class="bottom-nav" id="bottomNav" aria-label="Mobile navigation">
     <div class="bottom-nav-inner">

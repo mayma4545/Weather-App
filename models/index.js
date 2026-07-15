@@ -9,6 +9,8 @@ const PlantingRecord = require('./PlantingRecord');
 const WeatherLog = require('./WeatherLog');
 const Alert = require('./Alert');
 const Trivia = require('./Trivia');
+const SoilProfile = require('./SoilProfile');
+const StationDevice = require('./StationDevice');
 
 // Define Associations
 
@@ -32,6 +34,18 @@ PlantingRecord.belongsTo(CropRepository, { foreignKey: 'crop_id', as: 'crop' });
 User.hasMany(Trivia, { foreignKey: 'published_by', as: 'trivia', onDelete: 'CASCADE' });
 Trivia.belongsTo(User, { foreignKey: 'published_by', as: 'publisher' });
 
+// FarmPlot <-> SoilProfile (One-to-Many — a plot can have multiple soil tests over time)
+FarmPlot.hasMany(SoilProfile, { foreignKey: 'plot_id', as: 'soilProfiles', onDelete: 'CASCADE' });
+SoilProfile.belongsTo(FarmPlot, { foreignKey: 'plot_id', as: 'plot' });
+
+// User <-> StationDevice (One-to-Many)
+User.hasMany(StationDevice, { foreignKey: 'owner_id', as: 'stations', onDelete: 'CASCADE' });
+StationDevice.belongsTo(User, { foreignKey: 'owner_id', as: 'owner' });
+
+// StationDevice <-> WeatherLog (One-to-Many)
+StationDevice.hasMany(WeatherLog, { foreignKey: 'station_id', as: 'logs' });
+WeatherLog.belongsTo(StationDevice, { foreignKey: 'station_id', as: 'station' });
+
 module.exports = {
   sequelize,
   Sequelize,
@@ -41,5 +55,7 @@ module.exports = {
   PlantingRecord,
   WeatherLog,
   Alert,
-  Trivia
+  Trivia,
+  SoilProfile,
+  StationDevice
 };

@@ -23,6 +23,8 @@
             <h2>Log in to Weather App</h2>
             <p class="subtitle">Enter your details to view your daily forecast.</p>
             
+            <div id="error-message" class="form-error" style="display: none;"></div>
+
             <form action="/login" method="POST" class="login-form">
                 <div class="form-group">
                     <label for="email">Email</label>
@@ -44,8 +46,20 @@
                 
                 <button type="submit" class="login-btn">Log In</button>
             </form>
+
+            <script>
+                (function() {
+                    var params = new URLSearchParams(window.location.search);
+                    var errorMsg = params.get('error');
+                    if (errorMsg) {
+                        var el = document.getElementById('error-message');
+                        el.textContent = decodeURIComponent(errorMsg);
+                        el.style.display = 'block';
+                    }
+                })();
+            </script>
             
-            <p class="register-prompt">Don't have an account? <a href="#">Sign up</a></p>
+            <p class="register-prompt">Don't have an account? <a href="/register">Sign up</a></p>
         </div>
     </div>
 </body>

@@ -41,10 +41,8 @@
                 </svg>
                 2 Active Alerts
             </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-                <div
-                    style="width:28px;height:28px;border-radius:50%;background:#3B3B38;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#D6D3CB;">
-                    JR</div>
+            <div class="topbar-avatar-wrap">
+                <div class="topbar-avatar">JR</div>
             </div>
         </div>
     </div>
@@ -94,7 +92,7 @@
                     </svg>
                     Profile Page
                 </a>
-                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 1px solid #E2DFD8; padding-top: 15px; color: #C0531A;">
+                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 2px solid #C8F0C8; padding-top: 18px; color: #D44A1A;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                         <polyline points="16 17 21 12 16 7" />
@@ -113,10 +111,10 @@
 
             <div class="sidebar-section">
                 <div class="sidebar-label">Masbate Region</div>
-                <div style="font-size: 11px; color: #7A7773; padding-left: 8px;">
+                <div style="font-size: 12px; color: #4A8A4A; padding-left: 12px;">
                     Station ID: <span
-                        style="font-family:monospace; font-weight:600; color:#5A8A42;">Masbate-04</span><br>
-                    Status: <span style="color:#5A8A42; font-weight:600;">CONNECTED ??</span>
+                        style="font-family:monospace; font-weight:700; color:#1BE035;">Masbate-04</span><br>
+                    Status: <span style="color:#1BE035; font-weight:700;">CONNECTED</span>
                 </div>
             </div>
         </div>
@@ -127,17 +125,10 @@
                 <button type="button" class="mobile-fab" id="fab-open-planting" aria-label="Plant new crop">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 </button>
-                <div class="page-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom: 20px;">
+                <div class="page-header">
                     <div>
                         <div class="page-title">Crop Management</div>
                         <div class="page-subtitle">Plant, monitor growth timelines, and archive your seasonal yields.</div>
-                    </div>
-                    <div style="position: relative; min-width: 240px;">
-                        <input type="text" id="plot-search" placeholder="Search plots..." class="form-control" style="width:100%; max-width: 280px; font-size:13px; padding:8px 12px 8px 34px; border-radius: 8px; border: 1px solid #E2DFD8; background-color: #FDFDFB;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A9790" stroke-width="2.5" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none;">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
                     </div>
                 </div>
 
@@ -149,9 +140,30 @@
                             <div class="card-title">Smart Crop Dashboard</div>
                             <div class="card-sub">Current status of active agricultural plots</div>
 
-                            <div id="active-plots-dashboard-grid"
-                                style="display:flex; flex-direction:column; gap:14px; margin-top:8px;">
+                            <div class="crop-filter-bar">
+                                <div class="filter-search-wrap">
+                                    <svg class="filter-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    </svg>
+                                    <input type="text" id="plot-search" placeholder="Search by plot or crop name...">
+                                </div>
+                                <select id="crop-filter-status" class="filter-select">
+                                    <option value="all">All Status</option>
+                                    <option value="healthy">Healthy</option>
+                                    <option value="satisfactory">Satisfactory</option>
+                                    <option value="at-risk">At Risk</option>
+                                    <option value="critical">Critical</option>
+                                    <option value="available">Available</option>
+                                </select>
+                                <span class="filter-result-count" id="filter-result-count">0 results</span>
+                            </div>
+
+                            <div id="active-plots-dashboard-grid" class="plots-grid">
                                 <!-- Dynamic plot cards go here -->
+                            </div>
+                            <div class="crop-pagination" id="crop-pagination">
+                                <!-- Pagination controls rendered by JS -->
                             </div>
                         </div>
 
@@ -176,17 +188,16 @@
 
                     <!-- Right: Register Planting Batch Form -->
                     <div class="main-right-col">
-                        <div class="form-card" style="position: relative;">
-                            <button type="button" class="close-modal-btn mobile-only" id="btn-close-planting-modal" aria-label="Close modal" style="position: absolute; right: 16px; top: 16px; display: none;">&times;</button>
-                            <div class="card-title" style="margin-bottom:8px;">Plant New Crop</div>
-                            <p style="font-size:12px; color:#7A7773; margin-bottom:20px;">Register a new planting batch.
-                                Growth stage tracking begins immediately.</p>
+                        <div class="form-card">
+                            <button type="button" class="close-modal-btn mobile-only" id="btn-close-planting-modal" aria-label="Close modal">&times;</button>
+                            <div class="card-title">Plant New Crop</div>
+                            <div class="card-sub">Register a new planting batch. Growth stage tracking begins immediately.</div>
 
                             <form id="planting-form">
                                 <div class="form-group">
-                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                                        <label for="plant-plot" style="margin-bottom:0;">Select Active Plot</label>
-                                        <button type="button" id="btn-open-add-plot-modal" style="background:none; border:none; color:#5A8A42; cursor:pointer; display:flex; align-items:center; gap:4px; font-size:11px; font-weight:600;">
+                                    <div class="form-row">
+                                        <label for="plant-plot">Select Active Plot</label>
+                                        <button type="button" id="btn-open-add-plot-modal" class="form-add-btn">
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                                             Add Plot
                                         </button>
@@ -196,7 +207,13 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="plant-crop">Crop Variety</label>
+                                    <div class="form-row">
+                                        <label for="plant-crop">Crop Variety</label>
+                                        <button type="button" id="btn-open-add-crop-modal" class="form-add-btn">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                            Add Crop
+                                        </button>
+                                    </div>
                                     <select class="form-control" id="plant-crop" required>
                                         <!-- Filled dynamically -->
                                     </select>
@@ -206,13 +223,10 @@
                                     <input type="date" class="form-control" id="plant-date" required>
                                 </div>
 
-                                <button type="submit" class="btn-submit" style="margin-top:8px;">Register Planting
-                                    Batch</button>
+                                <button type="submit" class="btn-submit">Register Planting Batch</button>
                             </form>
 
-                            <div id="planting-alert"
-                                style="display:none; margin-top:14px; padding:12px; border-radius:8px; font-size:12.5px;">
-                            </div>
+                            <div id="planting-alert" class="planting-alert"></div>
                         </div>
                     </div>
                 </div>
@@ -274,21 +288,17 @@
             <input type="hidden" id="edit-record-id">
             <div class="form-group">
                 <label for="edit-plant-plot">Plot</label>
-                <select class="form-control" id="edit-plant-plot" disabled>
-                    <!-- Active Plot, locked because it's tied to this plot ID -->
-                </select>
+                <select class="form-control" id="edit-plant-plot" disabled></select>
             </div>
             <div class="form-group">
                 <label for="edit-plant-crop">Crop Variety</label>
-                <select class="form-control" id="edit-plant-crop" required>
-                    <!-- Filled dynamically -->
-                </select>
+                <select class="form-control" id="edit-plant-crop" required></select>
             </div>
             <div class="form-group">
                 <label for="edit-plant-date">Planting Date</label>
                 <input type="date" class="form-control" id="edit-plant-date" required>
             </div>
-            <button type="submit" class="btn-submit" style="margin-top:12px;">Save Changes</button>
+            <button type="submit" class="btn-submit">Save Changes</button>
         </form>
     </div>
 </div>
@@ -308,7 +318,7 @@
                 <label for="new-plot-size">Area Size (ha)</label>
                 <input type="number" step="0.1" class="form-control" id="new-plot-size" required placeholder="e.g. 1.5">
             </div>
-            <button type="submit" class="btn-submit" style="margin-top:12px;">Create Plot</button>
+            <button type="submit" class="btn-submit">Create Plot</button>
         </form>
     </div>
 </div>
@@ -344,7 +354,7 @@
                 <label for="new-crop-advice">Best Practices</label>
                 <textarea class="form-control" id="new-crop-advice" placeholder="Optional advice..."></textarea>
             </div>
-            <button type="submit" class="btn-submit" style="margin-top:12px;">Create Crop</button>
+            <button type="submit" class="btn-submit">Create Crop</button>
         </form>
     </div>
 </div>

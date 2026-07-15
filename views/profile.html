@@ -42,7 +42,7 @@
             </div>
             <div style="display:flex;align-items:center;gap:8px;">
                 <div
-                    style="width:28px;height:28px;border-radius:50%;background:#3B3B38;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#D6D3CB;">
+                    style="width:34px;height:34px;border-radius:50%;background:#1BE035;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#FFFFFF;">
                     JR</div>
             </div>
         </div>
@@ -93,7 +93,7 @@
                     </svg>
                     Profile Page
                 </a>
-                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 1px solid #E2DFD8; padding-top: 15px; color: #C0531A;">
+                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 2px solid #C8F0C8; padding-top: 18px; color: #D44A1A;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                         <polyline points="16 17 21 12 16 7" />
@@ -112,10 +112,10 @@
 
             <div class="sidebar-section">
                 <div class="sidebar-label">Masbate Region</div>
-                <div style="font-size: 11px; color: #7A7773; padding-left: 8px;">
+                <div style="font-size: 12px; color: #4A8A4A; padding-left: 12px;">
                     Station ID: <span
-                        style="font-family:monospace; font-weight:600; color:#5A8A42;">Masbate-04</span><br>
-                    Status: <span style="color:#5A8A42; font-weight:600;">CONNECTED ??</span>
+                        style="font-family:monospace; font-weight:700; color:#1BE035;">Masbate-04</span><br>
+                    Status: <span style="color:#1BE035; font-weight:700;">CONNECTED</span>
                 </div>
             </div>
         </div>
@@ -130,15 +130,14 @@
                     </div>
                 </div>
 
-                <div class="grid-main" style="grid-template-columns: 280px 1fr;">
+                <div class="grid-profile">
                     <!-- Left Column: Avatar & Quick Info -->
                     <div class="main-left-col">
                         <div class="profile-card" style="flex-direction:column; text-align:center; padding:30px 20px;">
-                            <div class="profile-avatar">JR</div>
+                            <div class="profile-avatar" id="profile-avatar-large">JR</div>
                             <div class="profile-info" style="margin-top:10px;">
-                                <h3>Juan Ramos</h3>
-                                <p style="color:#5A8A42; font-weight:600; font-size:12px; margin-bottom:2px;">Masbate
-                                    Precision Partner</p>
+                                <h3 id="profile-display-name">Juan Ramos</h3>
+                                <p style="color:#1BE035; font-weight:700; font-size:13px; margin-bottom:2px;" id="profile-display-role">Masbate Precision Partner</p>
                                 <p><span class="dynamic-location">Detecting Location...</span> </p>
                             </div>
                         </div>
@@ -148,17 +147,17 @@
                             <div class="card-title">Season Overview</div>
                             <div class="card-sub">Key agricultural stats</div>
                             <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px;">
-                                <div style="display:flex; justify-content:space-between; font-size:13px;">
-                                    <span style="color:#7A7773;">Total Farm Size:</span>
-                                    <span style="font-weight:600; color:#1C1C1A;">6.0 Hectares</span>
+                                <div style="display:flex; justify-content:space-between; font-size:14px;">
+                                    <span style="color:#5A8A5A; font-weight:600;">Total Farm Size:</span>
+                                    <span style="font-weight:700; color:#0D5E1A;" id="profile-farm-size">0.0 Hectares</span>
                                 </div>
-                                <div style="display:flex; justify-content:space-between; font-size:13px;">
-                                    <span style="color:#7A7773;">Active Fields:</span>
-                                    <span style="font-weight:600; color:#1C1C1A;">3 Plots</span>
+                                <div style="display:flex; justify-content:space-between; font-size:14px;">
+                                    <span style="color:#5A8A5A; font-weight:600;">Active Fields:</span>
+                                    <span style="font-weight:700; color:#0D5E1A;" id="profile-active-plots">0 Plots</span>
                                 </div>
-                                <div style="display:flex; justify-content:space-between; font-size:13px;">
-                                    <span style="color:#7A7773;">Harvest Rate MTD:</span>
-                                    <span style="font-weight:600; color:#5A8A42;">94.8% Success ??</span>
+                                <div style="display:flex; justify-content:space-between; font-size:14px;">
+                                    <span style="color:#5A8A5A; font-weight:600;">Harvest Rate MTD:</span>
+                                    <span style="font-weight:700; color:#1BE035;" id="profile-harvest-rate">100.0% Success</span>
                                 </div>
                             </div>
                         </div>
@@ -172,9 +171,9 @@
 
                             <div class="toggle-row">
                                 <div>
-                                    <div style="font-size:13.5px; font-weight:600; color:#1C1C1A;">SMS Alert
+                                    <div style="font-size:15px; font-weight:700; color:#0D5E1A;">SMS Alert
                                         Notification</div>
-                                    <div style="font-size:12px; color:#7A7773; margin-top:2px;">Receive direct sms
+                                    <div style="font-size:13px; color:#5A8A5A; margin-top:3px; font-weight:500;">Receive direct sms
                                         warnings on unseasonal heatwaves or heavy rains.</div>
                                 </div>
                                 <label class="switch">
@@ -185,9 +184,9 @@
 
                             <div class="toggle-row">
                                 <div>
-                                    <div style="font-size:13.5px; font-weight:600; color:#1C1C1A;">Automated Irrigation
+                                    <div style="font-size:15px; font-weight:700; color:#0D5E1A;">Automated Irrigation
                                         Prompts</div>
-                                    <div style="font-size:12px; color:#7A7773; margin-top:2px;">Allow our decision
+                                    <div style="font-size:13px; color:#5A8A5A; margin-top:3px; font-weight:500;">Allow our decision
                                         models to automatically suggest irrigation sequences.</div>
                                 </div>
                                 <label class="switch">
@@ -198,9 +197,9 @@
 
                             <div class="toggle-row">
                                 <div>
-                                    <div style="font-size:13.5px; font-weight:600; color:#1C1C1A;">Station Cloud Linkage
+                                    <div style="font-size:15px; font-weight:700; color:#0D5E1A;">Station Cloud Linkage
                                     </div>
-                                    <div style="font-size:12px; color:#7A7773; margin-top:2px;">Connect to on-site
+                                    <div style="font-size:13px; color:#5A8A5A; margin-top:3px; font-weight:500;">Connect to on-site
                                         physical barometers and soil moisture sensors.</div>
                                 </div>
                                 <label class="switch">
@@ -210,23 +209,39 @@
                             </div>
                         </div>
 
+                        <div class="card" id="card-language-settings">
+                            <div class="card-title">Language Selection</div>
+                            <div class="card-sub">Select your preferred language for the system.</div>
+                            <div class="form-group" style="margin-top: 15px; margin-bottom: 0;">
+                                <label for="language-select">System Language</label>
+                                <select id="language-select" class="form-control" style="cursor: pointer;">
+                                    <option value="filipino">Filipino (Default)</option>
+                                    <option value="minasbate">Minasbate</option>
+                                    <option value="english">English</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="card">
                             <div class="card-title">Contact & Regional Details</div>
                             <div class="card-sub">Change account identification</div>
-                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px; margin-top:8px;">
-                                <div class="form-group">
-                                    <label>First Name</label>
-                                    <input type="text" class="form-control" value="Juan" readonly>
+                            <form id="profile-details-form" style="margin-top:8px; display:flex; flex-direction:column; gap:14px;">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label>Full Name</label>
+                                    <input type="text" id="profile-fullname" class="form-control" placeholder="Enter Full Name" required>
                                 </div>
-                                <div class="form-group">
-                                    <label>Last Name</label>
-                                    <input type="text" class="form-control" value="Ramos" readonly>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label>Contact Number</label>
+                                    <input type="text" id="profile-contact" class="form-control" placeholder="Enter Phone/Contact Number">
                                 </div>
-                            </div>
-                            <div class="form-group" style="margin-bottom:0;">
-                                <label>Email Address</label>
-                                <input type="email" class="form-control" value="juan.ramos@masbatefarming.ph" readonly>
-                            </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label>Email Address</label>
+                                    <input type="email" id="profile-email" class="form-control" readonly style="opacity: 0.7; cursor: not-allowed; background: #fafafa;">
+                                </div>
+                                <div style="margin-top: 6px;">
+                                    <button type="submit" id="btn-save-profile" class="btn-submit" style="width: auto; padding: 12px 24px; font-size: 14px; border-radius: 10px;">Save Profile</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

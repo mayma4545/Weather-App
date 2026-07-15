@@ -19,11 +19,8 @@ var substringKeys = [
   "Pressure",
   "Clouds:",
   "Clouds",
-  "Rain",
   "Rainfall:",
   "Rainfall",
-  "Heat",
-  "Moisture",
   "Hectares",
   "Success",
   "Plots",
@@ -38,8 +35,8 @@ var translations = {
     "Main Menu": "Pangunahing Menu",
     "Dashboard": "Dashboard",
     "Crop Management": "Pamamahala ng Pananim",
-    "Weather": "Pagsusuri ng Panahon",
-    "Library": "Digital na Imbakan",
+    "Weather Analytics": "Pagsusuri ng Panahon",
+    "Digital Repository": "Digital na Imbakan",
     "Profile Page": "Pahina ng Profile",
     "Logout": "Mag-log Out",
     "Active Fields": "Aktibong mga Bukid",
@@ -90,10 +87,10 @@ var translations = {
     "Good morning, Juan.": "Magandang umaga, Juan.",
     "Here's how your farm looks today.": "Narito ang hitsura ng iyong bukid ngayon.",
     "Loading weather data...": "Naglo-load ng data ng panahon...",
-    "Heat": "Temperatura",
-    "Moisture": "Halumigmig",
+    "Temperature": "Temperatura",
+    "Humidity": "Halumigmig",
     "Wind Speed": "Bilis ng Hangin",
-    "Rain": "Ulan",
+    "Rainfall": "Ulan",
     "Active Crop Telemetry": "Aktibong Telemetry ng Pananim",
     "Real-time monitoring of crop growth and health metrics": "Real-time na pagsubaybay sa paglaki ng pananim at mga sukatan ng kalusugan",
     "Estimated Yield": "Tantyang Ani",
@@ -103,26 +100,25 @@ var translations = {
     "Masbate Precision Partner": "Kasosyo sa Katumpakan sa Masbate",
     "Active Alerts:": "Aktibong mga Babala:",
     "Weather Forecast": "Ulat ng Panahon",
-    "Fast Planting": "Mabilisang Pagtatanim",
-    "Add a new crop easily": "Magrehistro ng bagong batch ng pananim sa ilang segundo",
+    "Quick Plant": "Mabilisang Pagtatanim",
+    "Register a new planting batch in seconds": "Magrehistro ng bagong batch ng pananim sa ilang segundo",
     "Plot": "Plot",
     "Crop": "Pananim",
     "Plant Now": "Itanim Ngayon",
     "Quick Actions": "Mabilisang Aksyon",
     "+ New Planting": "+ Bagong Pagtatanim",
     "+ Add Plot": "+ Magdagdag ng Plot",
-    "To-Do List": "Darating na Iskedyul",
-    "Tasks for the next 7 days": "Mga gawain para sa susunod na 7 araw",
+    "Upcoming Schedule": "Darating na Iskedyul",
     "Rainfall Trend (mm)": "Trend ng Ulan (mm)",
     "Loading forecast...": "Naglo-load ng forecast...",
     "Loading rainfall data...": "Naglo-load ng data ng ulan...",
     "Select plot...": "Pumili ng plot...",
     "Select crop...": "Pumili ng pananim...",
     "Select an active plot to load agronomic models...": "Pumili ng aktibong plot para mag-load ng mga agronomic model...",
-    "Farm Advice": "Katalinuhang Agronomiko",
-    "Growth stage and daily advice": "FAO-56 at GDD Phenology Models",
-    "Smart Tips": "Mga Insights sa Desisyon",
-    "Tips for your farm based on today's weather": "Mga rekomendasyon batay sa panuntunan mula sa live na data",
+    "Agronomic Intelligence": "Katalinuhang Agronomiko",
+    "FAO-56 & GDD Phenology Models": "FAO-56 at GDD Phenology Models",
+    "Decision Insights": "Mga Insights sa Desisyon",
+    "Rule-based recommendations from live data": "Mga rekomendasyon batay sa panuntunan mula sa live na data",
     "Generating insights from weather data...": "Bumubuo ng mga insight mula sa data ng panahon...",
     "Temperature:": "Temperatura:",
     "Feels like": "Pakiramdam ay",
@@ -181,15 +177,71 @@ var translations = {
     "Fun facts and local farming stories": "Kagiliw-giliw na katotohanan at lokal na kwento ng pagsasaka",
     "Crop Guidelines": "Mga Alituntunin sa Pananim",
     "Best practices for local growers": "Pinakamahusay na kasanayan para sa mga lokal na magsasaka",
-    "Smart Crop Encyclopedia, agricultural best practices, and trivia": "Matalinong Ensayklopidiya ng Pananim, mga pinakamahusay na kasanayan sa agrikultura, at trivia"
+    "Smart Crop Encyclopedia, agricultural best practices, and trivia": "Matalinong Ensayklopidiya ng Pananim, mga pinakamahusay na kasanayan sa agrikultura, at trivia",
+    "Daily Farming Advice": "Araw-araw na Payo sa Pagsasaka",
+    "Watering & Crop Growth Guide": "Gabay sa Pagtubig at Paglaki ng Pananim",
+    "Crop Health & Status": "Kalusugan at Katayuan ng Pananim",
+    "Register Planting": "Magrehistro ng Pagtatanim",
+    "Weather Station Connected": "Estasyon ng Panahon: Nakakonekta",
+    "Today's Farm Outlook": "Kondisyon ng Bukid Ngayong Araw",
+    "Optimal for Rice tillering": "Optimal para sa pagsuwi ng Palay",
+    "Heat stress risk for crops": "Panganib sa stress sa init para sa mga pananim",
+    "Extreme heat — irrigate immediately": "Sobrang init — magdilig agad",
+    "Cold stress — protect seedlings": "Cold stress — protektahan ang mga punla",
+    "Comfortable growing temperature": "Komportableng temperatura sa paglaki",
+    "Within normal range": "Nasa normal na saklaw",
+    "Moderate humidity": "Katamtamang halumigmig",
+    "Calm conditions": "Kalmadong kondisyon",
+    "No significant precipitation": "Walang makabuluhang ulan",
+    "Very High — Fungal/blast risk critical": "Napakataas — Kritikal ang panganib ng fungal/blast",
+    "High — Fungal risk elevated": "Mataas — Tumaas ang panganib ng fungal",
+    "Ideal moisture for growth": "Mainam na kahalumigmigan para sa paglaki",
+    "Low — Consider irrigation": "Mababa — Isaalang-alang ang pagdidilig",
+    "Safe spray window active": "Ligtas na mag-spray ng gamot o pataba",
+    "Moderate — Delay aerial spraying": "Katamtaman — Ipagpaliban ang pag-spray",
+    "High winds — Secure structures": "Malakas na hangin — I-secure ang mga istraktura",
+    "No precipitation detected": "Walang natukoy na ulan",
+    "Light rain — Beneficial for crops": "Mahinang ulan — Kapaki-pakinabang sa pananim",
+    "Moderate precipitation": "Katamtamang ulan",
+    "Heavy rainfall — Flood risk": "Malakas na ulan — Panganib sa baha",
+    "Extreme Weather Alert": "Babala ng Matinding Panahon",
+    "Prepare emergency protocols. Secure structures and clear drainage channels.": "Ihanda ang mga emergency protocol. I-secure ang mga istraktura at linisin ang mga kanal.",
+    "Heavy Rain Expected": "Inaasahan ang Malakas na Ulan",
+    "Check drainage to prevent waterlogging. Avoid spraying fertilizer or pesticides.": "Suriin ang mga kanal para maiwasan ang pagbaha. Iwasan ang pag-spray ng pataba o pestisidyo.",
+    "Crops will experience heat stress. Increase watering/irrigation cycles today.": "Makakaranas ng stress sa init ang mga pananim. Dagdagan ang pagdidilig ngayon.",
+    "Strong Wind Warning": "Babala ng Malakas na Hangin",
+    "Strong winds detected. Postpone foliar spraying of fertilizers or pesticides.": "Natukoy ang malakas na hangin. Ipagpaliban ang pag-spray ng mga pataba o pestisidyo.",
+    "All Clear & Favorable": "Ligtas at Maganda ang Panahon",
+    "Weather conditions are optimal today. Great day to irrigate, fertilize, or spray!": "Mainam ang kondisyon ng panahon ngayon. Magandang araw para magdilig, magpataba, o mag-spray!",
+    "Extreme Temperature": "Matinding Temperatura",
+    "Temperature Warning": "Babala sa Temperatura",
+    "Critical Humidity": "Kritikal na Katubigan ng Hangin",
+    "High Humidity Watch": "Bantay sa Mataas na Katubigan ng Hangin",
+    "High Wind Alert": "Babala sa Malakas na Hangin",
+    "Wind Advisory": "Advisory sa Hangin",
+    "Heavy Rainfall": "Malakas na Ulan",
+    "Rain Advisory": "Advisory sa Ulan",
+    "All Clear": "Ligtas",
+    "No weather alerts at this time. Conditions are favorable for farming.": "Walang mga babala sa panahon sa ngayon. Maganda ang kondisyon para sa pagsasaka.",
+    "Analyzing weather conditions...": "Sinusuri ang kondisyon ng panahon...",
+    "Generating insights from weather data...": "Bumubuo ng payo mula sa data ng panahon...",
+    "Irrigate immediately and protect sensitive crops.": "Magdilig agad at protektahan ang mga sensitibong pananim.",
+    "Monitor crop stress levels.": "Subaybayan ang antas ng stress ng pananim.",
+    "Apply fungicide to vulnerable crops.": "Maglagay ng pamatay-peste sa mga apektadong pananim.",
+    "Check rice plots for root and stem rot.": "Suriin ang mga plot ng palay para sa nabulok na ugat at tangkay.",
+    "Drainage check required.": "Kinakailangan ang pagsusuri sa kanal at paagusan.",
+    "ALERT": "BABALA",
+    "WATCH": "BANTAY",
+    "My Plots": "Aking mga Plot",
+    "Select Language": "Pumili ng Wika"
   },
   minasbate: {
     // Sidebar / Common
     "Main Menu": "Pang-una na Menu",
     "Dashboard": "Dashboard",
     "Crop Management": "Pangasi sang Tanom",
-    "Weather": "Analisis sang Panahon",
-    "Library": "Digital na Burutangan",
+    "Weather Analytics": "Analisis sang Panahon",
+    "Digital Repository": "Digital na Burutangan",
     "Profile Page": "Pahina sang Profile",
     "Logout": "Mag-log Out",
     "Active Fields": "Aktibo na mga Talamnan",
@@ -240,10 +292,10 @@ var translations = {
     "Good morning, Juan.": "Maayo na aga, Juan.",
     "Here's how your farm looks today.": "Kadi an hitsura sang imo talamnan subong na adlaw.",
     "Loading weather data...": "Ginaload an data sang panahon...",
-    "Heat": "Temperatura",
-    "Moisture": "Halumigmig",
+    "Temperature": "Temperatura",
+    "Humidity": "Halumigmig",
     "Wind Speed": "Kabilisan sang Hangin",
-    "Rain": "Uran",
+    "Rainfall": "Uran",
     "Active Crop Telemetry": "Aktibo na Telemetry sang Tanom",
     "Real-time monitoring of crop growth and health metrics": "Real-time na pagsubaybay sa pagtubo sang tanom kag sukatan sang kalusugan",
     "Estimated Yield": "Tantya na Ani",
@@ -253,26 +305,25 @@ var translations = {
     "Masbate Precision Partner": "Katimbang sa Precision sa Masbate",
     "Active Alerts:": "Aktibo na mga Alerto:",
     "Weather Forecast": "Uran kag Panahon",
-    "Fast Planting": "Dalian na Pagtanom",
-    "Add a new crop easily": "Magrehistro sang bag-o na tanom sa pira ka segundo",
+    "Quick Plant": "Dalian na Pagtanom",
+    "Register a new planting batch in seconds": "Magrehistro sang bag-o na tanom sa pira ka segundo",
     "Plot": "Plot",
     "Crop": "Tanom",
     "Plant Now": "Itanom Subong",
     "Quick Actions": "Dalian na Aksyon",
     "+ New Planting": "+ Bag-o na Pagtanom",
     "+ Add Plot": "+ Magdugang sang Plot",
-    "To-Do List": "Kadi na mga Iskedyul",
-    "Tasks for the next 7 days": "Mga buluhaton sa masunod na 7 ka adlaw",
+    "Upcoming Schedule": "Kadi na mga Iskedyul",
     "Rainfall Trend (mm)": "Dagan sang Uran (mm)",
     "Loading forecast...": "Ginaload an forecast...",
     "Loading rainfall data...": "Ginaload an data sang uran...",
     "Select plot...": "Pili-a an plot...",
     "Select crop...": "Pili-a an tanom...",
     "Select an active plot to load agronomic models...": "Pili-a an aktibo na plot para mag-load sang mga model sang uma...",
-    "Farm Advice": "Katalinuhan sa Pag-uma",
-    "Growth stage and daily advice": "FAO-56 kag GDD Phenology Models",
-    "Smart Tips": "Giya sa Padesisyon",
-    "Tips for your farm based on today's weather": "Mga rekomendasyon base sa data sang panahon",
+    "Agronomic Intelligence": "Katalinuhan sa Pag-uma",
+    "FAO-56 & GDD Phenology Models": "FAO-56 kag GDD Phenology Models",
+    "Decision Insights": "Giya sa Padesisyon",
+    "Rule-based recommendations from live data": "Mga rekomendasyon base sa data sang panahon",
     "Generating insights from weather data...": "Ginahimo an mga giya hali sa data sang panahon...",
     "Temperature:": "Temperatura:",
     "Feels like": "Namamatian",
@@ -331,10 +382,73 @@ var translations = {
     "Fun facts and local farming stories": "Mga makalingaw na katotohanan kag kwento sang pag-uma",
     "Crop Guidelines": "Mga Alituntunin sa Tanom",
     "Best practices for local growers": "Pinakamaayo na kasanayan para sa mga lokal na parauma",
-    "Smart Crop Encyclopedia, agricultural best practices, and trivia": "Matalino na Ensayklopidiya sang Tanom, mga pinakamaayo na kasanayan sa pag-uma, kag trivia"
+    "Smart Crop Encyclopedia, agricultural best practices, and trivia": "Matalino na Ensayklopidiya sang Tanom, mga pinakamaayo na kasanayan sa pag-uma, kag trivia",
+    "Daily Farming Advice": "Adlaw-adlaw na Giya sa Pag-uma",
+    "Watering & Crop Growth Guide": "Giya sa Pagtubo kag Pagbisibis sang Tanom",
+    "Crop Health & Status": "Kalusugan kag Estado sang Tanom",
+    "Register Planting": "Magrehistro sang Pagtanom",
+    "Weather Station Connected": "Estasyon sang Panahon: Nakasumpay",
+    "Today's Farm Outlook": "Subong na Estado sang Talamnan",
+    "Optimal for Rice tillering": "Optimal para sa pagsuwi sang Paray",
+    "Heat stress risk for crops": "Panganib sa stress sa init para sa mga tanom",
+    "Extreme heat — irrigate immediately": "Sobrang init — magbisibis tulos",
+    "Cold stress — protect seedlings": "Cold stress — protektahan an mga similya",
+    "Comfortable growing temperature": "Komportable na temperatura sa pagtubo",
+    "Within normal range": "Nasa normal na saklaw",
+    "Moderate humidity": "Katamtaman na halumigmig",
+    "Calm conditions": "Kalmado na kondisyon",
+    "No significant precipitation": "Wara masyado na uran",
+    "Very High — Fungal/blast risk critical": "Napakataas — Kritikal an panganib sang fungal/blast",
+    "High — Fungal risk elevated": "Mataas — Tumaas an panganib sang fungal",
+    "Ideal moisture for growth": "Mainam na basa sang duta sa pagtubo",
+    "Low — Consider irrigation": "Mababa — Magbisibis sang talamnan",
+    "Safe spray window active": "Ligtas na mag-spray sang pataba o hilo",
+    "Moderate — Delay aerial spraying": "Katamtaman — Ipadugay an pag-spray",
+    "High winds — Secure structures": "Makusog na hangin — I-secure an mga payag",
+    "No precipitation detected": "Wara natukoy na uran",
+    "Light rain — Beneficial for crops": "Mahina na uran — Maayo para sa mga tanom",
+    "Moderate precipitation": "Katamtaman na uran",
+    "Heavy rainfall — Flood risk": "Makusog na uran — Panganib sa baha",
+    "Extreme Weather Alert": "Alerto sa Makusog na Panahon",
+    "Prepare emergency protocols. Secure structures and clear drainage channels.": "Ihanda an mga emergency protocol. I-secure an mga istraktura kag linisan an mga kanal.",
+    "Heavy Rain Expected": "Inaasahan an Makusog na Uran",
+    "Check drainage to prevent waterlogging. Avoid spraying fertilizer or pesticides.": "Lantawon an mga kanal para malikayan an baha. Likayi an pagbisibag sang pataba o hilo.",
+    "Crops will experience heat stress. Increase watering/irrigation cycles today.": "Mabatyagan sang tanom an stress sa init. Dugangan an pagbisibis subong na adlaw.",
+    "Strong Wind Warning": "Babala sa Makusog na Hangin",
+    "Strong winds detected. Postpone foliar spraying of fertilizers or pesticides.": "May makusog na hangin. Ipadugay an pag-spray sang pataba o hilo sa tanom.",
+    "All Clear & Favorable": "Mapag-on kag Maayo na Panahon",
+    "Weather conditions are optimal today. Great day to irrigate, fertilize, or spray!": "Maayo na gayo an panahon subong. Manami magbisibis, magpataba, o mag-spray!",
+    "Extreme Temperature": "Sobra na Temperatura",
+    "Temperature Warning": "Pahimatngon sa Temperatura",
+    "Critical Humidity": "Kritikal na Katubigan sang Hangin",
+    "High Humidity Watch": "Bantay sa Mataas na Katubigan sang Hangin",
+    "High Wind Alert": "Babala sa Makusog na Hangin",
+    "Wind Advisory": "Abiso sa Hangin",
+    "Heavy Rainfall": "Makusog na Uran",
+    "Rain Advisory": "Abiso sa Uran",
+    "All Clear": "Ligtas",
+    "No weather alerts at this time. Conditions are favorable for farming.": "Wara sa subong sang abiso sa panahon. Maayo an kondisyon para sa pag-uma.",
+    "Analyzing weather conditions...": "Ginalantaw an kondisyon sang panahon...",
+    "Generating insights from weather data...": "Ginahimo an mga giya hali sa data sang panahon...",
+    "Irrigate immediately and protect sensitive crops.": "Magbisibis tulos kag protektahan an mga tanom.",
+    "Monitor crop stress levels.": "Lantawon an antas sang stress sang tanom.",
+    "Apply fungicide to vulnerable crops.": "Magbutang sang hilo sa mga apektado na tanom.",
+    "Check rice plots for root and stem rot.": "Lantawon an mga parayan kung may nabulok na ugat.",
+    "Drainage check required.": "Kinahanglan suriin an mga kanal.",
+    "ALERT": "BABALA",
+    "WATCH": "BANTAY",
+    "My Plots": "Akon mga Plot",
+    "Select Language": "Pili-a an Wika"
   },
-  english: {}
 };
+
+function t(str) {
+    if (!str) return '';
+    var trimmed = str.trim();
+    if (currentLanguage === 'english') return trimmed;
+    var map = translations[currentLanguage] || {};
+    return map[trimmed] || trimmed;
+}
 
 function applyTranslations(lang) {
     if (!lang) lang = 'filipino';
@@ -421,7 +535,6 @@ var activeCrops = [];
                     fetch('/api/weather/current'),
                     fetch('/api/weather/forecast')
                 ]);
-
                 if (currentRes.ok) {
                     liveWeather = await currentRes.json();
                     forecastedRain = liveWeather.rainfall || 0;
@@ -455,11 +568,11 @@ var activeCrops = [];
                     renderRiskForecast(liveForecast);
                     renderForecastSummary(liveForecast);
                     renderWeatherArchive(liveForecast);
+                    renderFarmOutlook(liveWeather, liveForecast);
                     // Re-run predictor and re-render plot health with live data
                     updatePredictor();
                     renderAllViews();
                     loadTyphoonAdvisor();
-                    loadTodoList();
                 }
 
             } catch (err) {
@@ -468,86 +581,45 @@ var activeCrops = [];
             }
         }
 
-        //
-        // SMART TO-DO LIST
-        //
-
-        async function loadTodoList() {
-            try {
-                var res = await fetch('/api/todo');
-                if (res.ok) {
-                    var data = await res.json();
-                    renderTodoList(data);
-                }
-            } catch (err) {
-                console.warn('Todo list unavailable:', err);
-            }
-        }
-
-        function renderTodoList(data) {
-            var container = document.getElementById('todo-list-container');
-            if (!container) return;
-
-            if (!data.all || data.all.length === 0) {
-                container.innerHTML = '<div style="text-align:center; color:#6A9A6A; padding:18px; font-size:13px; font-weight:600;">' +
-                    (data.message || 'No tasks for today. Add a planting to receive smart task suggestions.') + '</div>';
-                return;
-            }
-
-            var html = '';
-            var todayDate = new Date().toISOString().split('T')[0];
-            var count = 0;
-
-            for (var i = 0; i < data.all.length && count < 8; i++) {
-                var task = data.all[i];
-                if (task.date < todayDate) continue;
-                count++;
-
-                var typeColors = {
-                    'IRR': { bg: '#E3F0FF', color: '#1A5A9A', label: 'IRR' },
-                    'FERT': { bg: '#FFF3E0', color: '#8A5A00', label: 'FERT' },
-                    'PEST': { bg: '#FEE9E7', color: '#B03A20', label: 'PEST' },
-                    'HARVEST': { bg: '#FFF8E1', color: '#8A7A20', label: 'HARV' },
-                    'DRAIN': { bg: '#E8F5E9', color: '#2E7D32', label: 'DRAIN' },
-                    'GENERAL': { bg: '#F3E5F5', color: '#6A1B9A', label: 'CARE' }
-                };
-                var tc = typeColors[task.type] || { bg: '#F5F5F5', color: '#555', label: task.type };
-
-                var priorityDot = task.priority === 'high'
-                    ? '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#D32F2F;margin-right:6px;" title="High priority"></span>'
-                    : task.priority === 'medium'
-                    ? '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#F9A825;margin-right:6px;" title="Medium priority"></span>'
-                    : '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#7CB342;margin-right:6px;" title="Low priority"></span>';
-
-                var fieldInfo = '';
-                if (task.crop && task.crop !== '—' && task.stage && task.stage !== '—') {
-                    fieldInfo = '<div class="sched-field">' + escapeHtml(task.crop) + ' &middot; ' + escapeHtml(task.stage) + '</div>';
-                }
-
-                html += '<div class="schedule-item" title="' + escapeAttr(task.reason || '') + '">' +
-                    '<div class="sched-date">' +
-                        '<div class="sched-day">' + task.dayName + '</div>' +
-                        '<div class="sched-num">' + task.dayNum + '</div>' +
-                    '</div>' +
-                    '<div class="sched-body">' +
-                        '<div class="sched-task">' + priorityDot + escapeHtml(task.task) + '</div>' +
-                        fieldInfo +
-                    '</div>' +
-                    '<div class="sched-type" style="background:' + tc.bg + ';color:' + tc.color + ';">' + tc.label + '</div>' +
-                '</div>';
-            }
-
-            if (count === 0) {
-                container.innerHTML = '<div style="text-align:center; color:#6A9A6A; padding:18px; font-size:13px; font-weight:600;">All tasks complete for today. Great work!</div>';
-                return;
-            }
-
-            container.innerHTML = html;
-        }
-
         // 
         // WEATHER RENDERING FUNCTIONS
         // 
+
+        function renderFarmOutlook(weatherData, forecastData) {
+            var banner = document.getElementById('farm-outlook-banner');
+            var iconEl = document.getElementById('farm-outlook-icon');
+            var titleEl = document.getElementById('farm-outlook-title');
+            var descEl = document.getElementById('farm-outlook-desc');
+            if (!banner || !iconEl || !titleEl || !descEl) return;
+
+            var icon = '✅';
+            var title = 'All Clear & Favorable';
+            var desc = 'Weather conditions are optimal today. Great day to irrigate, fertilize, or spray!';
+
+            // Check conditions
+            var hasRainWarning = (weatherData.rainfall >= 10) || (forecastData && forecastData.days && forecastData.days.some(function(d) { return d.rainfall >= 15; }));
+            var isExtremelyHot = weatherData.temperature >= 34;
+            var isExtremelyWindy = weatherData.wind_speed >= 20;
+
+            if (hasRainWarning) {
+                icon = '🌧️';
+                title = 'Heavy Rain Expected';
+                desc = 'Check drainage to prevent waterlogging. Avoid spraying fertilizer or pesticides.';
+            } else if (isExtremelyHot) {
+                icon = '🔥';
+                title = 'High Temperature Alert';
+                desc = 'Crops will experience heat stress. Increase watering/irrigation cycles today.';
+            } else if (isExtremelyWindy) {
+                icon = '💨';
+                title = 'Strong Wind Warning';
+                desc = 'Strong winds detected. Postpone foliar spraying of fertilizers or pesticides.';
+            }
+
+            iconEl.textContent = icon;
+            titleEl.textContent = t(title);
+            descEl.textContent = t(desc);
+            banner.style.display = 'flex';
+        }
 
         function updateLastUpdated(timestamp) {
             var el = document.getElementById('weather-last-updated');
@@ -564,14 +636,14 @@ var activeCrops = [];
             // Temperature
             var tempVal = document.getElementById('metric-temp-value');
             var tempDelta = document.getElementById('metric-temp-delta');
-            if (tempVal) tempVal.innerHTML = data.temperature + '<span class="metric-unit">\u00B0C</span>';
+            if (tempVal) tempVal.innerHTML = data.temperature + '<span class="metric-unit">&#8451;</span>';
             if (tempDelta) {
                 var ti = data.insights.temperature;
-                tempDelta.className = 'metric-delta' + (ti.direction === 'down' ? ' down' : '');
-                var arrow = ti.direction === 'down'
+                tempDelta.className = 'metric-delta' + (ti.status === 'danger' ? ' down' : '');
+                var arrow = ti.status === 'danger'
                     ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>'
                     : '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>';
-                tempDelta.innerHTML = arrow + ' ' + ti.message;
+                tempDelta.innerHTML = arrow + ' ' + t(ti.message);
             }
 
             // Humidity
@@ -580,11 +652,11 @@ var activeCrops = [];
             if (humVal) humVal.innerHTML = data.humidity + '<span class="metric-unit">%</span>';
             if (humDelta) {
                 var hi = data.insights.humidity;
-                humDelta.className = 'metric-delta' + (hi.direction === 'down' ? ' down' : '');
-                var arrow2 = hi.direction === 'down'
+                humDelta.className = 'metric-delta' + (hi.status === 'danger' ? ' down' : '');
+                var arrow2 = hi.status === 'danger'
                     ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>'
                     : '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>';
-                humDelta.innerHTML = arrow2 + ' ' + hi.message;
+                humDelta.innerHTML = arrow2 + ' ' + t(hi.message);
             }
 
             // Wind Speed
@@ -593,11 +665,11 @@ var activeCrops = [];
             if (windVal) windVal.innerHTML = data.wind_speed + '<span class="metric-unit">km/h</span>';
             if (windDelta) {
                 var wi = data.insights.wind;
-                windDelta.className = 'metric-delta' + (wi.direction === 'down' ? ' down' : '');
-                var arrow3 = wi.direction === 'down'
+                windDelta.className = 'metric-delta' + (wi.status === 'danger' ? ' down' : '');
+                var arrow3 = wi.status === 'danger'
                     ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>'
                     : '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>';
-                windDelta.innerHTML = arrow3 + ' ' + wi.message;
+                windDelta.innerHTML = arrow3 + ' ' + t(wi.message);
             }
 
             // Rainfall
@@ -606,11 +678,11 @@ var activeCrops = [];
             if (rainVal) rainVal.innerHTML = data.rainfall + '<span class="metric-unit">mm</span>';
             if (rainDelta) {
                 var ri = data.insights.rainfall;
-                rainDelta.className = 'metric-delta' + (ri.direction === 'down' ? ' down' : '');
-                var arrow4 = ri.direction === 'down'
+                rainDelta.className = 'metric-delta' + (ri.status === 'danger' ? ' down' : '');
+                var arrow4 = ri.status === 'danger'
                     ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>'
                     : '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>';
-                rainDelta.innerHTML = arrow4 + ' ' + ri.message;
+                rainDelta.innerHTML = arrow4 + ' ' + t(ri.message);
             }
 
             // Update topbar alert count
@@ -620,7 +692,7 @@ var activeCrops = [];
             if (data.insights.wind.status === 'danger' || data.insights.wind.status === 'warning') alertCount++;
             if (data.insights.rainfall.status === 'danger' || data.insights.rainfall.status === 'warning') alertCount++;
             var alertCountEl = document.getElementById('topbar-alert-count');
-            if (alertCountEl) alertCountEl.textContent = alertCount + ' Alert' + (alertCount !== 1 ? 's' : '');
+            if (alertCountEl) alertCountEl.textContent = alertCount + ' ' + (alertCount === 1 ? t('ALERT') : t('Alerts'));
         }
 
         function renderForecastRow(forecast) {
@@ -666,30 +738,30 @@ var activeCrops = [];
             var ins = data.insights;
 
             if (ins.temperature.status === 'danger') {
-                alerts.push({ type: 'danger', title: 'Extreme Temperature: ' + data.temperature + '\u00B0C', desc: ins.temperature.message + '. Irrigate immediately and protect sensitive crops.', badge: 'ALERT' });
+                alerts.push({ type: 'danger', title: t('Extreme Temperature') + ': ' + data.temperature + '\u00B0C', desc: t(ins.temperature.message) + '. ' + t('Irrigate immediately and protect sensitive crops.'), badge: t('ALERT') });
             } else if (ins.temperature.status === 'warning') {
-                alerts.push({ type: 'warn', title: 'Temperature Warning: ' + data.temperature + '\u00B0C', desc: ins.temperature.message + '. Monitor crop stress levels.', badge: 'WATCH' });
+                alerts.push({ type: 'warn', title: t('Temperature Warning') + ': ' + data.temperature + '\u00B0C', desc: t(ins.temperature.message) + '. ' + t('Monitor crop stress levels.'), badge: t('WATCH') });
             }
             if (ins.humidity.status === 'danger') {
-                alerts.push({ type: 'danger', title: 'Critical Humidity: ' + data.humidity + '%', desc: ins.humidity.message + '. Apply fungicide to vulnerable crops.', badge: 'ALERT' });
+                alerts.push({ type: 'danger', title: t('Critical Humidity') + ': ' + data.humidity + '%', desc: t(ins.humidity.message) + '. ' + t('Apply fungicide to vulnerable crops.'), badge: t('ALERT') });
             } else if (ins.humidity.status === 'warning') {
-                alerts.push({ type: 'warn', title: 'High Humidity Watch: ' + data.humidity + '%', desc: ins.humidity.message + '. Check rice plots for root and stem rot.', badge: 'WATCH' });
+                alerts.push({ type: 'warn', title: t('High Humidity Watch') + ': ' + data.humidity + '%', desc: t(ins.humidity.message) + '. ' + t('Check rice plots for root and stem rot.'), badge: t('WATCH') });
             }
             if (ins.wind.status === 'danger') {
-                alerts.push({ type: 'danger', title: 'High Wind Alert: ' + data.wind_speed + ' km/h', desc: ins.wind.message, badge: 'ALERT' });
+                alerts.push({ type: 'danger', title: t('High Wind Alert') + ': ' + data.wind_speed + ' km/h', desc: t(ins.wind.message), badge: t('ALERT') });
             } else if (ins.wind.status === 'warning') {
-                alerts.push({ type: 'warn', title: 'Wind Advisory: ' + data.wind_speed + ' km/h', desc: ins.wind.message, badge: 'WATCH' });
+                alerts.push({ type: 'warn', title: t('Wind Advisory') + ': ' + data.wind_speed + ' km/h', desc: t(ins.wind.message), badge: t('WATCH') });
             }
             if (ins.rainfall.status === 'danger') {
-                alerts.push({ type: 'danger', title: 'Heavy Rainfall: ' + data.rainfall + 'mm', desc: ins.rainfall.message + '. Drainage check required.', badge: 'ALERT' });
+                alerts.push({ type: 'danger', title: t('Heavy Rainfall') + ': ' + data.rainfall + 'mm', desc: t(ins.rainfall.message) + '. ' + t('Drainage check required.'), badge: t('ALERT') });
             } else if (ins.rainfall.status === 'warning') {
-                alerts.push({ type: 'warn', title: 'Rain Advisory: ' + data.rainfall + 'mm', desc: ins.rainfall.message, badge: 'WATCH' });
+                alerts.push({ type: 'warn', title: t('Rain Advisory') + ': ' + data.rainfall + 'mm', desc: t(ins.rainfall.message), badge: t('WATCH') });
             }
 
             if (alerts.length === 0) {
-                container.innerHTML = '<div style="padding:16px; background:#F2F7ED; border-radius:10px; text-align:center;">' +
-                    '<div style="font-size:13px; font-weight:600; color:#3A6824;"> All Clear</div>' +
-                    '<div style="font-size:12px; color:#5A7A40; margin-top:4px;">No weather alerts at this time. Conditions are favorable for farming.</div>' +
+                container.innerHTML = '<div style="padding:16px; background:#F0FDF4; border-radius:8px; border:1px solid #DCFCE7; text-align:center;">' +
+                    '<div style="font-size:14px; font-weight:600; color:#166534;">' + t('All Clear') + '</div>' +
+                    '<div style="font-size:13px; color:#475569; margin-top:4px;">' + t('No weather alerts at this time. Conditions are favorable for farming.') + '</div>' +
                 '</div>';
                 return;
             }
@@ -697,12 +769,12 @@ var activeCrops = [];
             var html = '';
             alerts.forEach(function(a) {
                 var iconSvg = a.type === 'danger'
-                    ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C0531A" stroke-width="2"><path d="M20 17.58A5 5 0 0018 8h-1.26A8 8 0 104 16.25"/></svg>'
-                    : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4870A" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>';
-                html += '<div class="alert-item alert-' + a.type + '">' +
-                    '<div class="alert-icon-wrap aw-' + a.type + '">' + iconSvg + '</div>' +
+                    ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>'
+                    : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>';
+                html += '<div class="alert-item alert-' + (a.type === 'danger' ? 'danger' : 'warn') + '">' +
+                    '<div class="alert-icon-wrap aw-' + (a.type === 'danger' ? 'danger' : 'warn') + '">' + iconSvg + '</div>' +
                     '<div class="alert-body"><div class="alert-title">' + a.title + '</div><div class="alert-desc">' + a.desc + '</div></div>' +
-                    '<div class="alert-badge ab-' + a.type + '">' + a.badge + '</div></div>';
+                    '<div class="alert-badge ab-' + (a.type === 'danger' ? 'danger' : 'warn') + '">' + a.badge + '</div></div>';
             });
             container.innerHTML = html;
         }
@@ -715,30 +787,26 @@ var activeCrops = [];
             var html = '';
 
             // Temperature insight
-            var tempBg = ins.temperature.status === 'good' ? '#F2F7ED' : (ins.temperature.status === 'warning' ? '#FEF8EC' : '#FEF0EC');
-            var tempColor = ins.temperature.status === 'good' ? '#3A6824' : (ins.temperature.status === 'warning' ? '#7A4D00' : '#8A2A00');
-            var tempTextColor = ins.temperature.status === 'good' ? '#5A7A40' : (ins.temperature.status === 'warning' ? '#9A6020' : '#9A3A20');
+            var tempBg = ins.temperature.status === 'good' ? '#F0FDF4' : (ins.temperature.status === 'warning' ? '#FFFBEB' : '#FEF2F2');
+            var tempColor = ins.temperature.status === 'good' ? '#166534' : (ins.temperature.status === 'warning' ? '#D97706' : '#991B1B');
+            var tempBorder = ins.temperature.status === 'good' ? '#DCFCE7' : (ins.temperature.status === 'warning' ? '#FDE68A' : '#FEE2E2');
             var tempIcon = ins.temperature.status === 'good'
-                ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3A6824" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>'
-                : (ins.temperature.status === 'warning'
-                    ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A4D00" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
-                    : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A2A00" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>');
-            html += '<div style="padding:12px;background:' + tempBg + ';border-radius:10px;">' +
-                '<div style="font-size:12px;font-weight:600;color:' + tempColor + ';margin-bottom:4px;display:flex;align-items:center;gap:6px;">' + tempIcon + ' Temperature: ' + data.temperature + '\u00B0C (Feels like ' + data.feels_like + '\u00B0C)</div>' +
-                '<div style="font-size:12px;color:' + tempTextColor + ';line-height:1.5;">' + ins.temperature.message + '. Current conditions: ' + data.weather_description + '.</div></div>';
+                ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>'
+                : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+            html += '<div style="padding:12px;background:' + tempBg + ';border:1px solid ' + tempBorder + ';border-radius:8px;">' +
+                '<div style="font-size:13px;font-weight:600;color:' + tempColor + ';margin-bottom:4px;display:flex;align-items:center;gap:6px;">' + tempIcon + ' ' + t('Temperature') + ': ' + data.temperature + '\u00B0C (' + t('Feels like') + ' ' + data.feels_like + '\u00B0C)</div>' +
+                '<div style="font-size:13px;color:' + tempColor + ';line-height:1.5;">' + t(ins.temperature.message) + '. ' + t('Current conditions') + ': ' + t(data.weather_description) + '.</div></div>';
 
             // Humidity insight
-            var humBg = ins.humidity.status === 'good' ? '#F2F7ED' : (ins.humidity.status === 'warning' ? '#FEF8EC' : '#FEF0EC');
-            var humColor = ins.humidity.status === 'good' ? '#3A6824' : (ins.humidity.status === 'warning' ? '#7A4D00' : '#8A2A00');
-            var humTextColor = ins.humidity.status === 'good' ? '#5A7A40' : (ins.humidity.status === 'warning' ? '#9A6020' : '#9A3A20');
+            var humBg = ins.humidity.status === 'good' ? '#F0FDF4' : (ins.humidity.status === 'warning' ? '#FFFBEB' : '#FEF2F2');
+            var humColor = ins.humidity.status === 'good' ? '#166534' : (ins.humidity.status === 'warning' ? '#D97706' : '#991B1B');
+            var humBorder = ins.humidity.status === 'good' ? '#DCFCE7' : (ins.humidity.status === 'warning' ? '#FDE68A' : '#FEE2E2');
             var humIcon = ins.humidity.status === 'good'
-                ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3A6824" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>'
-                : (ins.humidity.status === 'warning'
-                    ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A4D00" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
-                    : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A2A00" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>');
-            html += '<div style="padding:12px;background:' + humBg + ';border-radius:10px;">' +
-                '<div style="font-size:12px;font-weight:600;color:' + humColor + ';margin-bottom:4px;display:flex;align-items:center;gap:6px;">' + humIcon + ' Humidity: ' + data.humidity + '%</div>' +
-                '<div style="font-size:12px;color:' + humTextColor + ';line-height:1.5;">' + ins.humidity.message + '. Visibility: ' + data.visibility + ' km.</div></div>';
+                ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>'
+                : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+            html += '<div style="padding:12px;background:' + humBg + ';border:1px solid ' + humBorder + ';border-radius:8px;">' +
+                '<div style="font-size:13px;font-weight:600;color:' + humColor + ';margin-bottom:4px;display:flex;align-items:center;gap:6px;">' + humIcon + ' ' + t('Humidity') + ': ' + data.humidity + '%</div>' +
+                '<div style="font-size:13px;color:' + humColor + ';line-height:1.5;">' + t(ins.humidity.message) + '. ' + t('Visibility') + ': ' + data.visibility + ' km.</div></div>';
 
             container.innerHTML = html;
         }
@@ -748,20 +816,20 @@ var activeCrops = [];
             if (!container) return;
 
             var items = [
-                { label: 'Temperature', value: data.temperature + '\u00B0C', sub: 'Feels like ' + data.feels_like + '\u00B0C' },
-                { label: 'Humidity', value: data.humidity + '%', sub: data.insights.humidity.message },
-                { label: 'Wind', value: data.wind_speed + ' km/h', sub: data.insights.wind.message },
-                { label: 'Rainfall', value: data.rainfall + ' mm', sub: data.insights.rainfall.message },
-                { label: 'Pressure', value: data.pressure + ' hPa', sub: 'Atmospheric pressure' },
-                { label: 'Clouds', value: data.clouds + '%', sub: data.weather_description }
+                { label: t('Temperature'), value: data.temperature + '\u00B0C', sub: t('Feels like') + ' ' + data.feels_like + '\u00B0C' },
+                { label: t('Humidity'), value: data.humidity + '%', sub: t(data.insights.humidity.message) },
+                { label: t('Wind'), value: data.wind_speed + ' km/h', sub: t(data.insights.wind.message) },
+                { label: t('Rainfall'), value: data.rainfall + ' mm', sub: t(data.insights.rainfall.message) },
+                { label: t('Pressure'), value: data.pressure + ' hPa', sub: t('Atmospheric pressure') },
+                { label: t('Clouds'), value: data.clouds + '%', sub: t(data.weather_description) }
             ];
 
             var html = '';
             items.forEach(function(item) {
-                html += '<div style="padding:10px 12px; background:#F7F5F0; border-radius:8px;">' +
-                    '<div style="font-size:10px; text-transform:uppercase; color:#9A9790; font-weight:600; letter-spacing:0.5px;">' + item.label + '</div>' +
-                    '<div style="font-size:18px; font-weight:700; color:#1C1C1A; margin:2px 0;">' + item.value + '</div>' +
-                    '<div style="font-size:11px; color:#7A7773;">' + item.sub + '</div></div>';
+                html += '<div style="padding:12px; background:#F8FAFC; border: 1px solid #E2E8F0; border-radius:8px;">' +
+                    '<div style="font-size:11px; text-transform:uppercase; color:#64748B; font-weight:600; letter-spacing:0.5px;">' + item.label + '</div>' +
+                    '<div style="font-size:18px; font-weight:700; color:#0F172A; margin:2px 0;">' + item.value + '</div>' +
+                    '<div style="font-size:12px; color:#475569;">' + item.sub + '</div></div>';
             });
             container.innerHTML = html;
         }
@@ -1087,6 +1155,10 @@ var activeCrops = [];
                     var selectLang = document.getElementById('language-select');
                     if (selectLang) {
                         selectLang.value = currentLanguage;
+                    }
+                    var selectLangTopbar = document.getElementById('topbar-language-select');
+                    if (selectLangTopbar) {
+                        selectLangTopbar.value = currentLanguage;
                     }
                 }
                 
@@ -2434,31 +2506,53 @@ if (toggleCloud) {
     });
 }
 
+async function changeLanguage(selectedLang) {
+    try {
+        const response = await fetch('/api/farmer/profile', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                language_pref: selectedLang
+            })
+        });
+        
+        if (!response.ok) throw new Error('Failed to update language preference');
+        
+        showToast(selectedLang === 'filipino' ? 'Wika ay na-update!' : (selectedLang === 'minasbate' ? 'Wika na-update!' : 'Language preference updated!'), 'success');
+        currentLanguage = selectedLang;
+        
+        var selectLang = document.getElementById('language-select');
+        if (selectLang) selectLang.value = selectedLang;
+        
+        var selectLangTopbar = document.getElementById('topbar-language-select');
+        if (selectLangTopbar) selectLangTopbar.value = selectedLang;
+        
+        applyTranslations(selectedLang);
+    } catch (err) {
+        console.error(err);
+        showToast('Failed to update language settings.', 'error');
+        
+        var selectLang = document.getElementById('language-select');
+        if (selectLang) selectLang.value = currentLanguage;
+        
+        var selectLangTopbar = document.getElementById('topbar-language-select');
+        if (selectLangTopbar) selectLangTopbar.value = currentLanguage;
+    }
+}
+
 // Language Preference change listener
 var langSelect = document.getElementById('language-select');
 if (langSelect) {
-    langSelect.addEventListener('change', async function() {
-        var selectedLang = langSelect.value;
-        try {
-            const response = await fetch('/api/farmer/profile', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    language_pref: selectedLang
-                })
-            });
-            
-            if (!response.ok) throw new Error('Failed to update language preference');
-            
-            showToast('Language preference updated!', 'success');
-            currentLanguage = selectedLang;
-            applyTranslations(selectedLang);
-        } catch (err) {
-            console.error(err);
-            showToast('Failed to update language settings.', 'error');
-            langSelect.value = currentLanguage;
-        }
+    langSelect.addEventListener('change', function() {
+        changeLanguage(langSelect.value);
+    });
+}
+
+var langSelectTopbar = document.getElementById('topbar-language-select');
+if (langSelectTopbar) {
+    langSelectTopbar.addEventListener('change', function() {
+        changeLanguage(langSelectTopbar.value);
     });
 }

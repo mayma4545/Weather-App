@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const { sequelize, User, CropRepository, FarmPlot, PlantingRecord, WeatherLog, Trivia } = require('../models');
 
 async function seed() {
@@ -8,6 +9,18 @@ async function seed() {
     // Sync database (recreate if needed, but safe to just sync)
     await sequelize.sync();
 
+    // Migrate: add new columns if they don't exist (safe, wrapped in try/catch)
+    try {
+      await sequelize.query(`ALTER TABLE crop_repository ADD COLUMN growth_stages TEXT`);
+      console.log('📦 Added growth_stages column to crop_repository');
+    } catch (e) { /* column already exists */ }
+    try {
+      await sequelize.query(`ALTER TABLE crop_repository ADD COLUMN vulnerabilities TEXT`);
+      console.log('📦 Added vulnerabilities column to crop_repository');
+    } catch (e) { /* column already exists */ }
+
+    const defaultHash = await bcrypt.hash('password123', 10);
+
     // 1. Create or find default Farmer User
     let user = await User.findOne({ where: { email: 'juan.ramos@masbatefarming.ph' } });
     if (!user) {
@@ -16,7 +29,7 @@ async function seed() {
         role: 'Agriculturist',
         contact_number: '09123456789',
         email: 'juan.ramos@masbatefarming.ph',
-        password_hash: 'mock_password_hash'
+        password_hash: defaultHash
       });
       console.log('👤 Seeded farmer user: Juan Ramos');
     } else {
@@ -37,7 +50,7 @@ async function seed() {
         role: 'Admin',
         contact_number: '09001234567',
         email: 'admin@debesmscat.edu.ph',
-        password_hash: 'admin_password_hash'
+        password_hash: defaultHash
       });
       console.log('🛡️  Seeded admin user: Admin User');
     } else {
@@ -52,12 +65,12 @@ async function seed() {
         role: 'Agriculturist',
         contact_number: '09198765432',
         email: 'maria.santos@masbatefarming.ph',
-        password_hash: 'mock_password_hash'
+        password_hash: defaultHash
       });
       console.log('👤 Seeded farmer user: Maria Santos');
     }
 
-    // 2. Seed Crop Repository
+    // 2. Seed Crop Repository (trusted data from DEBESMSCAT agricultural research)
     const cropDefinitions = [
       {
         crop_name: 'Palay (IR64)',
@@ -65,7 +78,9 @@ async function seed() {
         ideal_temp_max: 32.0,
         rain_tolerance: 80.0,
         days_to_harvest: 120,
-        best_practices: 'Tillering phase. Keep water shallow. High humidity blast watch is active.'
+        best_practices: 'Tillering phase. Keep water shallow. High humidity blast watch is active.',
+        growth_stages: 'Seedling 25d||Tillering 35d||Flowering 30d||Mature 30d',
+        vulnerabilities: 'Leaf folders, Stem blast disease, water flooding > 15cm'
       },
       {
         crop_name: 'Corn (OPV)',
@@ -73,7 +88,9 @@ async function seed() {
         ideal_temp_max: 30.0,
         rain_tolerance: 50.0,
         days_to_harvest: 120,
-        best_practices: 'V6 stage. High nitrogen need. Prepare soil hydration block ahead of Sun.'
+        best_practices: 'V6 stage. High nitrogen need. Prepare soil hydration block ahead of Sun.',
+        growth_stages: 'Seedling 20d||Vegetative 35d||Tasseling 25d||Harvest 40d',
+        vulnerabilities: 'Saturated soil (drowning), cob worms, wind gust > 30km/h'
       },
       {
         crop_name: 'Kangkong',
@@ -81,7 +98,9 @@ async function seed() {
         ideal_temp_max: 35.0,
         rain_tolerance: 120.0,
         days_to_harvest: 30,
-        best_practices: 'Fast vegetative leaf growth. Harvest cycle begins in 7 days.'
+        best_practices: 'Fast vegetative leaf growth. Harvest cycle begins in 7 days.',
+        growth_stages: 'Seedling 7d||Vegetative 15d||Harvest 8d',
+        vulnerabilities: 'Leaf rust, extreme freezing conditions'
       },
       {
         crop_name: 'Eggplant',
@@ -89,7 +108,9 @@ async function seed() {
         ideal_temp_max: 32.0,
         rain_tolerance: 40.0,
         days_to_harvest: 110,
-        best_practices: 'Healthy growth. Check plant spacing for fungal disease.'
+        best_practices: 'Healthy growth. Check plant spacing for fungal disease.',
+        growth_stages: 'Seedling 20d||Vegetative 30d||Flowering 25d||Harvest 35d',
+        vulnerabilities: 'Thrips pest, root dehydration'
       },
       {
         crop_name: 'Tomato',
@@ -97,7 +118,9 @@ async function seed() {
         ideal_temp_max: 28.0,
         rain_tolerance: 20.0,
         days_to_harvest: 100,
-        best_practices: 'Tomato seedlings need elevated cover to shield from upcoming Thu rainfall.'
+        best_practices: 'Tomato seedlings need elevated cover to shield from upcoming Thu rainfall.',
+        growth_stages: 'Seedling 15d||Vegetative 30d||Fruiting 35d||Harvest 20d',
+        vulnerabilities: 'Excessive water logging (root rot), early blight fungus'
       },
       {
         crop_name: 'Ampalaya',
@@ -105,7 +128,9 @@ async function seed() {
         ideal_temp_max: 35.0,
         rain_tolerance: 70.0,
         days_to_harvest: 85,
-        best_practices: 'Vine spreading stage. Ensure trellises are sturdy.'
+        best_practices: 'Vine spreading stage. Ensure trellises are sturdy.',
+        growth_stages: 'Seedling 15d||Trellising 25d||Flowering 20d||Harvest 25d',
+        vulnerabilities: 'Downy mildew, fruit flies'
       }
     ];
 
@@ -116,6 +141,11 @@ async function seed() {
       });
       if (created) {
         console.log(`🌱 Seeded crop: ${c.crop_name}`);
+      } else if (c.growth_stages || c.vulnerabilities) {
+        await cropRecord.update({
+          growth_stages: c.growth_stages,
+          vulnerabilities: c.vulnerabilities
+        });
       }
     }
 

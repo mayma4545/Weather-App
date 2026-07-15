@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App - Sign Up</title>
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card register-card">
+            <div class="weather-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5" fill="#facc15" stroke="#facc15"></circle>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+                    <path d="M17.5 19H9a5 5 0 1 1 4.5-7.58A5 5 0 0 1 17.5 19z" fill="#0EA5E9" stroke="#0EA5E9"></path>
+                </svg>
+            </div>
+            <h2>Create Account</h2>
+            <p class="subtitle">Register as a farmer to start monitoring your crops.</p>
+
+            <form action="/register" method="POST" class="login-form" id="registerForm">
+                <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="contact_number">Contact Number</label>
+                    <input type="tel" id="contact_number" name="contact_number" placeholder="e.g. 09123456789">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a password" required>
+                    <div class="password-requirements" id="passwordRequirements">
+                        <p class="req-title">Password must contain:</p>
+                        <ul>
+                            <li id="reqLength" class="req-item">At least 8 characters</li>
+                            <li id="reqUpper" class="req-item">At least 1 uppercase letter</li>
+                            <li id="reqLower" class="req-item">At least 1 lowercase letter</li>
+                            <li id="reqNumber" class="req-item">At least 1 number</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter your password" required>
+                    <span class="password-match-msg" id="passwordMatchMsg"></span>
+                </div>
+
+                <div class="form-error" id="formError"></div>
+
+                <button type="submit" class="login-btn">Sign Up</button>
+            </form>
+
+            <p class="register-prompt">Already have an account? <a href="/login">Sign in</a></p>
+        </div>
+    </div>
+
+    <script>
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirm_password');
+        const confirmMsg = document.getElementById('passwordMatchMsg');
+        const form = document.getElementById('registerForm');
+        const formError = document.getElementById('formError');
+        const pwRequirements = document.getElementById('passwordRequirements');
+
+        const reqLength = document.getElementById('reqLength');
+        const reqUpper = document.getElementById('reqUpper');
+        const reqLower = document.getElementById('reqLower');
+        const reqNumber = document.getElementById('reqNumber');
+
+        function showRequirements() {
+            pwRequirements.classList.add('show');
+        }
+
+        function hideRequirements() {
+            if (!password.value) {
+                pwRequirements.classList.remove('show');
+            }
+        }
+
+        function validatePassword() {
+            const val = password.value;
+            const lenOk = val.length >= 8;
+            const upperOk = /[A-Z]/.test(val);
+            const lowerOk = /[a-z]/.test(val);
+            const numOk = /\d/.test(val);
+
+            reqLength.classList.toggle('req-met', lenOk);
+            reqUpper.classList.toggle('req-met', upperOk);
+            reqLower.classList.toggle('req-met', lowerOk);
+            reqNumber.classList.toggle('req-met', numOk);
+        }
+
+        function checkPasswordMatch() {
+            if (!confirmPassword.value) {
+                confirmMsg.textContent = '';
+                return;
+            }
+            if (password.value === confirmPassword.value) {
+                confirmMsg.textContent = 'Passwords match';
+                confirmMsg.className = 'password-match-msg match-ok';
+            } else {
+                confirmMsg.textContent = 'Passwords do not match';
+                confirmMsg.className = 'password-match-msg match-error';
+            }
+        }
+
+        password.addEventListener('focus', showRequirements);
+        password.addEventListener('blur', hideRequirements);
+        password.addEventListener('input', function() {
+            validatePassword();
+            checkPasswordMatch();
+        });
+
+        confirmPassword.addEventListener('input', checkPasswordMatch);
+
+        form.addEventListener('submit', function(e) {
+            if (password.value !== confirmPassword.value) {
+                e.preventDefault();
+                formError.textContent = 'Passwords do not match.';
+                return;
+            }
+            const val = password.value;
+            if (val.length < 8 || !/[A-Z]/.test(val) || !/[a-z]/.test(val) || !/\d/.test(val)) {
+                e.preventDefault();
+                formError.textContent = 'Password does not meet all requirements.';
+                return;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,20 +1,78 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const bcrypt = require('bcrypt');
 const { Op } = require('sequelize');
 const weatherService = require('../utils/weatherService');
 const authPresenter = require('../presenters/authPresenter');
-const { User, FarmPlot, PlantingRecord, CropRepository, WeatherLog, Alert, Trivia } = require('../models');
+const { requireAuth, requireAdmin } = require('../middlewares/auth');
+const { User, FarmPlot, PlantingRecord, CropRepository, WeatherLog, Alert, Trivia, SoilProfile, StationDevice } = require('../models');
 
-// Auth routes
+// Lazy-load agricultural services (created after routes file)
+let irrigationService, diseaseRiskService, fertilizerService, gddService, typhoonAlertService, todoService;
+try { irrigationService = require('../services/irrigationService'); } catch(e) { console.warn('irrigationService not loaded:', e.message); }
+try { diseaseRiskService = require('../services/diseaseRiskService'); } catch(e) { console.warn('diseaseRiskService not loaded:', e.message); }
+try { fertilizerService = require('../services/fertilizerService'); } catch(e) { console.warn('fertilizerService not loaded:', e.message); }
+try { gddService = require('../services/gddService'); } catch(e) { console.warn('gddService not loaded:', e.message); }
+try { typhoonAlertService = require('../services/typhoonAlertService'); } catch(e) { console.warn('typhoonAlertService not loaded:', e.message); }
+try { todoService = require('../services/todoService'); } catch(e) { console.warn('todoService not loaded:', e.message); }
+const { sendEmail } = require('../services/emailService');
+
+// ==========================================
+// 🔑 AUTH ROUTES (public)
+// ==========================================
 router.get('/', authPresenter.redirectLogin);
 router.get('/login', authPresenter.getLogin);
+router.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'views', 'register.html'));
+});
+
+router.post('/register', async (req, res) => {
+  try {
+    const { full_name, contact_number, email, password } = req.body;
+
+    if (!full_name || !email || !password) {
+      return res.status(400).send('Missing required fields.');
+    }
+
+    const existing = await User.findOne({ where: { email } });
+    if (existing) {
+      return res.status(409).send('An account with this email already exists.');
+    }
+
+    const password_hash = await bcrypt.hash(password, 10);
+
+    await User.create({
+      full_name,
+      role: 'Agriculturist',
+      contact_number: contact_number || null,
+      email,
+      password_hash
+    });
+
+    res.redirect('/login');
+  } catch (err) {
+    console.error('Registration error:', err);
+    res.status(500).send('Registration failed. Please try again.');
+  }
+});
+
 router.post('/login', async (req, res) => {
   try {
-    const { email } = req.body;
-    if (email) {
+    const { email, password } = req.body;
+    if (email && password) {
       const user = await User.findOne({ where: { email } });
       if (user) {
+        const valid = await bcrypt.compare(password, user.password_hash);
+        if (!valid) {
+          return res.redirect('/login?error=Invalid email or password.');
+        }
+        // Store session data
+        req.session.userId = user.user_id;
+        req.session.userRole = user.role;
+        req.session.userFullName = user.full_name;
+        req.session.userEmail = user.email;
+
         if (user.role === 'Admin') {
           return res.redirect('/admin/dashboard');
         } else {
@@ -22,21 +80,22 @@ router.post('/login', async (req, res) => {
         }
       }
     }
-    // Default fallback
-    res.redirect('/farmer/dashboard');
+    res.redirect('/login?error=Invalid email or password.');
   } catch (err) {
     console.error('Login error:', err);
-    res.redirect('/farmer/dashboard');
+    res.status(500).send('Login failed. Please try again.');
   }
 });
 
-// Logout route
+// Logout route — destroy session
 router.get('/logout', (req, res) => {
-  res.redirect('/login');
+  req.session.destroy(() => {
+    res.redirect('/login');
+  });
 });
 
 // ==========================================
-// 🌾 FARMER PAGE ROUTES
+// 🌾 FARMER PAGE ROUTES (auth required)
 // ==========================================
 const getFarmerDashboard = (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'views', 'farmer-dashboard.html'));
@@ -46,44 +105,56 @@ const getPage = (pageName) => (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'views', pageName + '.html'));
 };
 
-router.get('/farmer', (req, res) => res.redirect('/farmer/dashboard'));
-router.get('/farmer/dashboard', getFarmerDashboard);
-router.get('/farmer/crop-management', getPage('crop-management'));
-router.get('/farmer/weather-analytics', getPage('weather-analytics'));
-router.get('/farmer/digital-repository', getPage('digital-repository'));
-router.get('/farmer/profile', getPage('profile'));
+router.get('/farmer', requireAuth, (req, res) => res.redirect('/farmer/dashboard'));
+router.get('/farmer/dashboard', requireAuth, getFarmerDashboard);
+router.get('/farmer/crop-management', requireAuth, getPage('crop-management'));
+router.get('/farmer/weather-analytics', requireAuth, getPage('weather-analytics'));
+router.get('/farmer/digital-repository', requireAuth, getPage('digital-repository'));
+router.get('/farmer/profile', requireAuth, getPage('profile'));
 
 // Legacy redirect
 router.get('/dashboard', (req, res) => res.redirect('/farmer/dashboard'));
 
 // ==========================================
-// 🛡️ ADMIN PAGE ROUTES
+// 🛡️ ADMIN PAGE ROUTES (admin required)
 // ==========================================
 const getAdminDashboard = (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'views', 'admin-dashboard.html'));
 };
 
-router.get('/admin', (req, res) => res.redirect('/admin/dashboard'));
-router.get('/admin/dashboard', getAdminDashboard);
-router.get('/admin/crop-repository', getAdminDashboard);
-router.get('/admin/digital-repository', getAdminDashboard);
-router.get('/admin/weather-monitor', getAdminDashboard);
-router.get('/admin/global-alerts', getAdminDashboard);
+router.get('/admin', requireAuth, requireAdmin, (req, res) => res.redirect('/admin/dashboard'));
+router.get('/admin/dashboard', requireAuth, requireAdmin, getAdminDashboard);
+router.get('/admin/crop-repository', requireAuth, requireAdmin, getAdminDashboard);
+router.get('/admin/digital-repository', requireAuth, requireAdmin, getAdminDashboard);
+router.get('/admin/weather-monitor', requireAuth, requireAdmin, getAdminDashboard);
+router.get('/admin/global-alerts', requireAuth, requireAdmin, getAdminDashboard);
 
 // ==========================================
 // 🌾 AGRICULTURIST & FARMER REST API ROUTES
 // ==========================================
 
-// Get all initial dashboard/farmer data (scoping to default user "Juan Ramos")
-router.get('/api/farmer/data', async (req, res) => {
+// Get session info (so frontend knows who is logged in)
+router.get('/api/session', requireAuth, (req, res) => {
+  res.json({
+    userId: req.session.userId,
+    userRole: req.session.userRole,
+    fullName: req.session.userFullName,
+    email: req.session.userEmail
+  });
+});
+
+// Get all initial dashboard/farmer data (scoped to logged-in user via session)
+router.get('/api/farmer/data', requireAuth, async (req, res) => {
   try {
-    const user = await User.findOne({ where: { email: 'juan.ramos@masbatefarming.ph' } });
+    const userId = req.session.userId;
+    const user = await User.findByPk(userId);
     if (!user) {
       return res.status(404).json({ error: 'Farmer user not found' });
     }
 
     const plots = await FarmPlot.findAll({
-      where: { user_id: user.user_id }
+      where: { user_id: userId },
+      attributes: ['plot_id', 'user_id', 'plot_name', 'area_size']
     });
 
     const crops = await CropRepository.findAll();
@@ -93,18 +164,27 @@ router.get('/api/farmer/data', async (req, res) => {
         { 
           model: FarmPlot, 
           as: 'plot',
-          where: { user_id: user.user_id }
+          where: { user_id: userId },
+          attributes: ['plot_id', 'user_id', 'plot_name', 'area_size']
         },
         { 
           model: CropRepository, 
           as: 'crop' 
         }
       ],
-      order: [['created_at', 'DESC']]
+      order: [['planting_date', 'DESC'], ['record_id', 'DESC']]
     });
 
     res.json({
-      user,
+      user: {
+        user_id: user.user_id,
+        full_name: user.full_name,
+        role: user.role,
+        contact_number: user.contact_number,
+        email: user.email,
+        language_pref: user.language_pref,
+        sms_opt_in: user.sms_opt_in
+      },
       plots,
       crops,
       plantingRecords
@@ -116,7 +196,7 @@ router.get('/api/farmer/data', async (req, res) => {
 });
 
 // 1. Create a new planting record (Register planting batch)
-router.post('/api/planting-records', async (req, res) => {
+router.post('/api/planting-records', requireAuth, async (req, res) => {
   try {
     const { plot_id, crop_id, planting_date } = req.body;
 
@@ -146,7 +226,7 @@ router.post('/api/planting-records', async (req, res) => {
     // Fetch full detailed record to return
     const detailedRecord = await PlantingRecord.findByPk(newRecord.record_id, {
       include: [
-        { model: FarmPlot, as: 'plot' },
+        { model: FarmPlot, as: 'plot', attributes: ['plot_id', 'user_id', 'plot_name', 'area_size'] },
         { model: CropRepository, as: 'crop' }
       ]
     });
@@ -159,7 +239,7 @@ router.post('/api/planting-records', async (req, res) => {
 });
 
 // 2. Update an existing planting record (Edit details)
-router.put('/api/planting-records/:id', async (req, res) => {
+router.put('/api/planting-records/:id', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const { crop_id, planting_date, plot_id, status } = req.body;
@@ -178,7 +258,7 @@ router.put('/api/planting-records/:id', async (req, res) => {
 
     const detailedRecord = await PlantingRecord.findByPk(record.record_id, {
       include: [
-        { model: FarmPlot, as: 'plot' },
+        { model: FarmPlot, as: 'plot', attributes: ['plot_id', 'user_id', 'plot_name', 'area_size'] },
         { model: CropRepository, as: 'crop' }
       ]
     });
@@ -191,7 +271,7 @@ router.put('/api/planting-records/:id', async (req, res) => {
 });
 
 // 3. Delete a planting record entirely
-router.delete('/api/planting-records/:id', async (req, res) => {
+router.delete('/api/planting-records/:id', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const record = await PlantingRecord.findByPk(id);
@@ -208,7 +288,7 @@ router.delete('/api/planting-records/:id', async (req, res) => {
 });
 
 // 4. Mark a planting record as harvested (Archive crop)
-router.post('/api/planting-records/:id/harvest', async (req, res) => {
+router.post('/api/planting-records/:id/harvest', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const record = await PlantingRecord.findByPk(id);
@@ -221,7 +301,7 @@ router.post('/api/planting-records/:id/harvest', async (req, res) => {
 
     const detailedRecord = await PlantingRecord.findByPk(record.record_id, {
       include: [
-        { model: FarmPlot, as: 'plot' },
+        { model: FarmPlot, as: 'plot', attributes: ['plot_id', 'user_id', 'plot_name', 'area_size'] },
         { model: CropRepository, as: 'crop' }
       ]
     });
@@ -233,21 +313,21 @@ router.post('/api/planting-records/:id/harvest', async (req, res) => {
   }
 });
 
-// 5. Create a new FarmPlot
-router.post('/api/plots', async (req, res) => {
+// 5. Create a new FarmPlot (scoped to logged-in user)
+router.post('/api/plots', requireAuth, async (req, res) => {
   try {
-    const { plot_name, area_size } = req.body;
+    const { plot_name, area_size, soil_type, latitude, longitude } = req.body;
     if (!plot_name || !area_size) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
-    const user = await User.findOne({ where: { email: 'juan.ramos@masbatefarming.ph' } });
-    if (!user) {
-      return res.status(404).json({ error: 'Farmer user not found' });
-    }
+    const userId = req.session.userId;
     const newPlot = await FarmPlot.create({
-      user_id: user.user_id,
+      user_id: userId,
       plot_name,
-      area_size: parseFloat(area_size)
+      area_size: parseFloat(area_size),
+      soil_type: soil_type || null,
+      latitude: latitude ? parseFloat(latitude) : null,
+      longitude: longitude ? parseFloat(longitude) : null
     });
     res.status(201).json(newPlot);
   } catch (err) {
@@ -268,7 +348,7 @@ router.get('/api/crops', async (req, res) => {
 });
 
 // 7. Create a new CropRepository variety (legacy farmer route)
-router.post('/api/crops', async (req, res) => {
+router.post('/api/crops', requireAuth, async (req, res) => {
   try {
     const { crop_name, ideal_temp_min, ideal_temp_max, rain_tolerance, days_to_harvest, best_practices } = req.body;
     if (!crop_name || !ideal_temp_min || !ideal_temp_max || !rain_tolerance || !days_to_harvest) {
@@ -285,6 +365,57 @@ router.post('/api/crops', async (req, res) => {
     res.status(201).json(newCrop);
   } catch (err) {
     console.error('API Error POST /api/crops:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// ==========================================
+// 🧪 SOIL PROFILE MANAGEMENT
+// ==========================================
+
+// Get soil profile(s) for a plot
+router.get('/api/plots/:id/soil', requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const profiles = await SoilProfile.findAll({
+      where: { plot_id: id },
+      order: [['tested_date', 'DESC']]
+    });
+    res.json(profiles);
+  } catch (err) {
+    console.error('API Error GET /api/plots/:id/soil:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Create or update soil profile for a plot
+router.post('/api/plots/:id/soil', requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { soil_type, ph, nitrogen_level, phosphorus_level, potassium_level, organic_matter, tested_date } = req.body;
+
+    // Also update the plot's soil_type shorthand
+    const plot = await FarmPlot.findByPk(id);
+    if (!plot) return res.status(404).json({ error: 'Plot not found' });
+    if (soil_type) {
+      plot.soil_type = soil_type;
+      await plot.save();
+    }
+
+    const profile = await SoilProfile.create({
+      plot_id: parseInt(id),
+      soil_type: soil_type || null,
+      ph: ph ? parseFloat(ph) : null,
+      nitrogen_level: nitrogen_level || null,
+      phosphorus_level: phosphorus_level || null,
+      potassium_level: potassium_level || null,
+      organic_matter: organic_matter ? parseFloat(organic_matter) : null,
+      tested_date: tested_date || new Date().toISOString().split('T')[0]
+    });
+
+    res.status(201).json(profile);
+  } catch (err) {
+    console.error('API Error POST /api/plots/:id/soil:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
@@ -377,13 +508,477 @@ router.get('/api/weather/history', async (req, res) => {
   }
 });
 
+// ==========================================
+// 📡 IOT WEATHER STATION ROUTES
+// ==========================================
+
+// Register a new weather station
+router.post('/api/weather/stations', requireAuth, async (req, res) => {
+  try {
+    const { device_id, location_name, latitude, longitude } = req.body;
+    if (!device_id) return res.status(400).json({ error: 'device_id is required' });
+
+    const station = await StationDevice.create({
+      device_id,
+      owner_id: req.session.userId,
+      location_name: location_name || null,
+      latitude: latitude ? parseFloat(latitude) : null,
+      longitude: longitude ? parseFloat(longitude) : null,
+      last_seen: new Date()
+    });
+    res.status(201).json(station);
+  } catch (err) {
+    console.error('API Error POST /api/weather/stations:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// List stations for current user
+router.get('/api/weather/stations', requireAuth, async (req, res) => {
+  try {
+    const stations = await StationDevice.findAll({
+      where: { owner_id: req.session.userId },
+      order: [['last_seen', 'DESC']]
+    });
+    res.json(stations);
+  } catch (err) {
+    console.error('API Error GET /api/weather/stations:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Accept a sensor reading from an IoT station
+router.post('/api/weather/station/reading', async (req, res) => {
+  try {
+    const { device_id, temperature, humidity, wind_speed, rainfall } = req.body;
+    if (!device_id || temperature == null || humidity == null) {
+      return res.status(400).json({ error: 'Missing required fields: device_id, temperature, humidity' });
+    }
+
+    // Validate device exists
+    const station = await StationDevice.findByPk(device_id);
+    if (!station) return res.status(404).json({ error: 'Unknown station device' });
+
+    // Update last_seen
+    station.last_seen = new Date();
+    await station.save();
+
+    // Log the reading
+    const log = await WeatherLog.create({
+      timestamp: new Date(),
+      temperature: parseFloat(temperature),
+      humidity: parseFloat(humidity),
+      wind_speed: wind_speed ? parseFloat(wind_speed) : 0,
+      rainfall: rainfall ? parseFloat(rainfall) : 0,
+      data_source: 'Station',
+      station_id: device_id
+    });
+
+    res.status(201).json(log);
+  } catch (err) {
+    console.error('Station Reading Error:', err);
+    res.status(500).json({ error: 'Failed to log station reading' });
+  }
+});
+
+// ==========================================
+// 🧠 AGRICULTURAL ADVISOR API ROUTES
+// ==========================================
+
+// Helper: fetch plot with active crop and weather data
+async function getPlotContext(plotId) {
+  const plot = await FarmPlot.findByPk(plotId);
+  if (!plot) return null;
+
+  const activeRecord = await PlantingRecord.findOne({
+    where: { plot_id: plotId, status: 'Growing' },
+    include: [{ model: CropRepository, as: 'crop' }]
+  });
+
+  // Get latest soil profile
+  const soilProfile = await SoilProfile.findOne({
+    where: { plot_id: plotId },
+    order: [['tested_date', 'DESC']]
+  });
+
+  // Get current weather and forecast
+  const lat = plot.latitude || process.env.WEATHER_LAT || '12.3703';
+  const lon = plot.longitude || process.env.WEATHER_LON || '123.6217';
+
+  let currentWeather = null;
+  let forecast = null;
+  try {
+    currentWeather = await weatherService.fetchCurrentWeather(lat, lon);
+    forecast = await weatherService.fetchForecast(lat, lon);
+  } catch (e) {
+    console.warn('Weather fetch failed for advisor:', e.message);
+  }
+
+  return { plot, activeRecord, soilProfile, currentWeather, forecast };
+}
+
+// Irrigation Advisor
+router.get('/api/advisor/irrigation', requireAuth, async (req, res) => {
+  try {
+    const { plot_id } = req.query;
+    if (!plot_id) return res.status(400).json({ error: 'plot_id required' });
+    if (!irrigationService) return res.status(503).json({ error: 'Irrigation service not available' });
+
+    const ctx = await getPlotContext(plot_id);
+    if (!ctx) return res.status(404).json({ error: 'Plot not found' });
+    if (!ctx.currentWeather || !ctx.forecast) return res.status(503).json({ error: 'Weather data unavailable' });
+
+    const cropName = ctx.activeRecord ? ctx.activeRecord.crop.crop_name : 'Unknown';
+    const daysGrown = ctx.activeRecord ? Math.ceil((Date.now() - new Date(ctx.activeRecord.planting_date).getTime()) / (1000*60*60*24)) : 0;
+    const growthStage = gddService ? gddService.estimateGrowthStage(cropName, daysGrown) : 'mid';
+    const soilType = ctx.plot.soil_type || (ctx.soilProfile ? ctx.soilProfile.soil_type : null);
+
+    const result = irrigationService.getIrrigationRecommendation(
+      ctx.currentWeather,
+      ctx.forecast.days,
+      cropName,
+      growthStage,
+      soilType
+    );
+
+    res.json(result);
+  } catch (err) {
+    console.error('Irrigation Advisor Error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Disease Risk Advisor
+router.get('/api/advisor/disease-risk', requireAuth, async (req, res) => {
+  try {
+    const { plot_id } = req.query;
+    if (!plot_id) return res.status(400).json({ error: 'plot_id required' });
+    if (!diseaseRiskService) return res.status(503).json({ error: 'Disease risk service not available' });
+
+    const ctx = await getPlotContext(plot_id);
+    if (!ctx) return res.status(404).json({ error: 'Plot not found' });
+    if (!ctx.currentWeather || !ctx.forecast) return res.status(503).json({ error: 'Weather data unavailable' });
+
+    const cropName = ctx.activeRecord ? ctx.activeRecord.crop.crop_name : 'General';
+    const daysGrown = ctx.activeRecord ? Math.ceil((Date.now() - new Date(ctx.activeRecord.planting_date).getTime()) / (1000*60*60*24)) : 0;
+    const growthStage = gddService ? gddService.estimateGrowthStage(cropName, daysGrown) : 'vegetative';
+
+    const result = diseaseRiskService.assessDiseaseRisks(
+      ctx.currentWeather,
+      ctx.forecast.days,
+      cropName,
+      growthStage
+    );
+
+    res.json({ diseases: result, cropName, growthStage });
+  } catch (err) {
+    console.error('Disease Risk Advisor Error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Fertilizer Timing Advisor
+router.get('/api/advisor/fertilizer', requireAuth, async (req, res) => {
+  try {
+    const { plot_id } = req.query;
+    if (!plot_id) return res.status(400).json({ error: 'plot_id required' });
+    if (!fertilizerService) return res.status(503).json({ error: 'Fertilizer service not available' });
+
+    const ctx = await getPlotContext(plot_id);
+    if (!ctx) return res.status(404).json({ error: 'Plot not found' });
+
+    const cropName = ctx.activeRecord ? ctx.activeRecord.crop.crop_name : 'Unknown';
+    const daysGrown = ctx.activeRecord ? Math.ceil((Date.now() - new Date(ctx.activeRecord.planting_date).getTime()) / (1000*60*60*24)) : 0;
+    const growthStage = gddService ? gddService.estimateGrowthStage(cropName, daysGrown) : 'vegetative';
+    const forecastDays = ctx.forecast ? ctx.forecast.days : [];
+    const soilNutrients = ctx.soilProfile ? {
+      nitrogen_level: ctx.soilProfile.nitrogen_level,
+      phosphorus_level: ctx.soilProfile.phosphorus_level,
+      potassium_level: ctx.soilProfile.potassium_level
+    } : null;
+
+    const result = fertilizerService.getFertilizerRecommendation(
+      cropName, growthStage, daysGrown, forecastDays, soilNutrients
+    );
+
+    res.json(result);
+  } catch (err) {
+    console.error('Fertilizer Advisor Error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// GDD Growth Stage Advisor
+router.get('/api/advisor/gdd', requireAuth, async (req, res) => {
+  try {
+    const { plot_id } = req.query;
+    if (!plot_id) return res.status(400).json({ error: 'plot_id required' });
+    if (!gddService) return res.status(503).json({ error: 'GDD service not available' });
+
+    const ctx = await getPlotContext(plot_id);
+    if (!ctx) return res.status(404).json({ error: 'Plot not found' });
+    if (!ctx.activeRecord) return res.json({ error: 'No active crop on this plot', hasActiveCrop: false });
+
+    const cropName = ctx.activeRecord.crop.crop_name;
+    const plantingDate = ctx.activeRecord.planting_date;
+
+    const result = gddService.getGDDAdvisorData(
+      cropName,
+      plantingDate,
+      ctx.currentWeather,
+      ctx.forecast ? ctx.forecast.days : []
+    );
+
+    res.json({ ...result, cropName, plantingDate });
+  } catch (err) {
+    console.error('GDD Advisor Error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Typhoon / Extreme Weather Advisor
+router.get('/api/advisor/typhoon', requireAuth, async (req, res) => {
+  try {
+    if (!typhoonAlertService) return res.status(503).json({ error: 'Typhoon alert service not available' });
+
+    const { lat, lon } = req.query;
+    const forecast = await weatherService.fetchForecast(
+      lat || process.env.WEATHER_LAT || '12.3703',
+      lon || process.env.WEATHER_LON || '123.6217'
+    );
+
+    const result = typhoonAlertService.assessTyphoonRisk(forecast.days);
+    res.json(result);
+  } catch (err) {
+    console.error('Typhoon Advisor Error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Aggregated Dashboard Advisor — returns ALL advisor data for a plot in one call
+router.get('/api/advisor/dashboard', requireAuth, async (req, res) => {
+  try {
+    const { plot_id } = req.query;
+    if (!plot_id) return res.status(400).json({ error: 'plot_id required' });
+
+    const ctx = await getPlotContext(plot_id);
+    if (!ctx) return res.status(404).json({ error: 'Plot not found' });
+
+    const cropName = ctx.activeRecord ? ctx.activeRecord.crop.crop_name : null;
+    const plantingDate = ctx.activeRecord ? ctx.activeRecord.planting_date : null;
+    const daysGrown = plantingDate ? Math.ceil((Date.now() - new Date(plantingDate).getTime()) / (1000*60*60*24)) : 0;
+    const growthStage = (gddService && cropName) ? gddService.estimateGrowthStage(cropName, daysGrown) : 'vegetative';
+    const soilType = ctx.plot.soil_type || (ctx.soilProfile ? ctx.soilProfile.soil_type : null);
+
+    const result = {
+      plot: { plot_id: ctx.plot.plot_id, plot_name: ctx.plot.plot_name, soil_type: soilType },
+      crop: cropName,
+      plantingDate,
+      daysGrown,
+      irrigation: null,
+      diseaseRisk: null,
+      fertilizer: null,
+      gdd: null,
+      typhoon: null
+    };
+
+    // Run all advisors in parallel
+    const promises = [];
+
+    if (irrigationService && ctx.currentWeather && ctx.forecast) {
+      promises.push(
+        Promise.resolve().then(() => {
+          result.irrigation = irrigationService.getIrrigationRecommendation(
+            ctx.currentWeather, ctx.forecast.days, cropName || 'Unknown', growthStage, soilType
+          );
+        }).catch(e => { result.irrigation = { error: e.message }; })
+      );
+    }
+
+    if (diseaseRiskService && ctx.currentWeather && ctx.forecast) {
+      promises.push(
+        Promise.resolve().then(() => {
+          result.diseaseRisk = diseaseRiskService.assessDiseaseRisks(
+            ctx.currentWeather, ctx.forecast.days, cropName || 'General', growthStage
+          );
+        }).catch(e => { result.diseaseRisk = { error: e.message }; })
+      );
+    }
+
+    if (fertilizerService && cropName) {
+      promises.push(
+        Promise.resolve().then(() => {
+          const soilNutrients = ctx.soilProfile ? {
+            nitrogen_level: ctx.soilProfile.nitrogen_level,
+            phosphorus_level: ctx.soilProfile.phosphorus_level,
+            potassium_level: ctx.soilProfile.potassium_level
+          } : null;
+          result.fertilizer = fertilizerService.getFertilizerRecommendation(
+            cropName, growthStage, daysGrown, ctx.forecast ? ctx.forecast.days : [], soilNutrients
+          );
+        }).catch(e => { result.fertilizer = { error: e.message }; })
+      );
+    }
+
+    if (gddService && cropName && plantingDate) {
+      promises.push(
+        Promise.resolve().then(() => {
+          result.gdd = gddService.getGDDAdvisorData(
+            cropName, plantingDate, ctx.currentWeather, ctx.forecast ? ctx.forecast.days : []
+          );
+        }).catch(e => { result.gdd = { error: e.message }; })
+      );
+    }
+
+    if (typhoonAlertService && ctx.forecast) {
+      promises.push(
+        Promise.resolve().then(() => {
+          result.typhoon = typhoonAlertService.assessTyphoonRisk(ctx.forecast.days);
+        }).catch(e => { result.typhoon = { error: e.message }; })
+      );
+    }
+
+    await Promise.all(promises);
+    res.json(result);
+  } catch (err) {
+    console.error('Dashboard Advisor Error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Smart To-Do List — generates prioritized tasks for the farmer's active plots
+router.get('/api/todo', requireAuth, async (req, res) => {
+  try {
+    if (!todoService) return res.status(503).json({ error: 'Todo service not available' });
+
+    const userId = req.session.userId;
+    const { plot_id } = req.query;
+
+    let targetPlots = [];
+    if (plot_id) {
+      const plot = await FarmPlot.findByPk(plot_id);
+      if (!plot || plot.user_id !== userId) return res.status(404).json({ error: 'Plot not found' });
+      targetPlots = [plot];
+    } else {
+      targetPlots = await FarmPlot.findAll({ where: { user_id: userId } });
+    }
+
+    if (targetPlots.length === 0) {
+      return res.json({ generatedAt: new Date().toISOString(), totalTasks: 0, today: [], upcoming: [], all: [], message: 'No plots found. Add a plot and start planting to receive smart task suggestions.' });
+    }
+
+    const allResults = [];
+    for (const plot of targetPlots) {
+      const ctx = await getPlotContext(plot.plot_id);
+      if (!ctx) continue;
+
+      const cropName = ctx.activeRecord && ctx.activeRecord.crop ? ctx.activeRecord.crop.crop_name : null;
+      const plantingDate = ctx.activeRecord ? ctx.activeRecord.planting_date : null;
+      const daysGrown = plantingDate ? Math.ceil((Date.now() - new Date(plantingDate).getTime()) / (1000*60*60*24)) : 0;
+      const growthStage = (gddService && cropName) ? gddService.estimateGrowthStage(cropName, daysGrown) : 'vegetative';
+      const soilType = ctx.plot.soil_type || (ctx.soilProfile ? ctx.soilProfile.soil_type : null);
+
+      let irrigation = null;
+      let diseaseRisk = null;
+      let fertilizer = null;
+      let gdd = null;
+
+      if (irrigationService && ctx.currentWeather && ctx.forecast && cropName) {
+        try { irrigation = irrigationService.getIrrigationRecommendation(ctx.currentWeather, ctx.forecast.days, cropName, growthStage, soilType); } catch (e) {}
+      }
+      if (diseaseRiskService && ctx.currentWeather && ctx.forecast && cropName) {
+        try { diseaseRisk = diseaseRiskService.assessDiseaseRisks(ctx.currentWeather, ctx.forecast.days, cropName, growthStage); } catch (e) {}
+      }
+      if (fertilizerService && cropName) {
+        try {
+          const soilNutrients = ctx.soilProfile ? {
+            nitrogen_level: ctx.soilProfile.nitrogen_level,
+            phosphorus_level: ctx.soilProfile.phosphorus_level,
+            potassium_level: ctx.soilProfile.potassium_level
+          } : null;
+          fertilizer = fertilizerService.getFertilizerRecommendation(cropName, growthStage, daysGrown, ctx.forecast ? ctx.forecast.days : [], soilNutrients);
+        } catch (e) {}
+      }
+      if (gddService && cropName && plantingDate) {
+        try { gdd = gddService.getGDDAdvisorData(cropName, plantingDate, ctx.currentWeather, ctx.forecast ? ctx.forecast.days : []); } catch (e) {}
+      }
+
+      const plotData = {
+        plot: ctx.plot,
+        activeRecord: ctx.activeRecord,
+        currentWeather: ctx.currentWeather,
+        forecast: ctx.forecast,
+        soilProfile: ctx.soilProfile,
+        irrigation,
+        diseaseRisk,
+        fertilizer,
+        gdd
+      };
+
+      const result = todoService.generateTodoList(plotData);
+      allResults.push(result);
+    }
+
+    const merged = {
+      generatedAt: new Date().toISOString(),
+      totalTasks: allResults.reduce((s, r) => s + r.totalTasks, 0),
+      todayTasks: allResults.reduce((s, r) => s + r.todayTasks, 0),
+      plots: allResults.map(r => ({ plotName: r.plotName, cropName: r.cropName, growthStage: r.growthStage, daysGrown: r.daysGrown, taskCount: r.totalTasks })),
+      today: allResults.flatMap(r => r.today).sort((a, b) => a.date.localeCompare(b.date)),
+      upcoming: allResults.flatMap(r => r.upcoming).sort((a, b) => a.date.localeCompare(b.date)),
+      all: allResults.flatMap(r => r.all).sort((a, b) => {
+        const p = { high: 0, medium: 1, low: 2 };
+        const dc = a.date.localeCompare(b.date);
+        return dc !== 0 ? dc : (p[a.priority] || 2) - (p[b.priority] || 2);
+      })
+    };
+
+    res.json(merged);
+  } catch (err) {
+    console.error('Todo API Error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// ==========================================
+// 👤 PROFILE UPDATE ROUTES
+// ==========================================
+
+router.put('/api/farmer/profile', requireAuth, async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const user = await User.findByPk(userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const { full_name, contact_number, language_pref, sms_opt_in } = req.body;
+    if (full_name) user.full_name = full_name;
+    if (contact_number !== undefined) user.contact_number = contact_number;
+    if (language_pref) user.language_pref = language_pref;
+    if (sms_opt_in !== undefined) user.sms_opt_in = sms_opt_in;
+
+    await user.save();
+
+    // Update session
+    if (full_name) req.session.userFullName = full_name;
+
+    res.json({ success: true, user: {
+      full_name: user.full_name,
+      contact_number: user.contact_number,
+      language_pref: user.language_pref,
+      sms_opt_in: user.sms_opt_in
+    }});
+  } catch (err) {
+    console.error('Profile Update Error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 // ==========================================
 // 🛡️ ADMIN REST API ROUTES
 // ==========================================
 
 // Admin Dashboard Stats
-router.get('/api/admin/stats', async (req, res) => {
+router.get('/api/admin/stats', requireAuth, requireAdmin, async (req, res) => {
   try {
     // Count registered farmers (Agriculturist role)
     const totalFarmers = await User.count({ where: { role: 'Agriculturist' } });
@@ -435,7 +1030,7 @@ router.get('/api/admin/stats', async (req, res) => {
 });
 
 // Admin Crop CRUD
-router.post('/api/admin/crops', async (req, res) => {
+router.post('/api/admin/crops', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { crop_name, ideal_temp_min, ideal_temp_max, rain_tolerance, days_to_harvest, best_practices } = req.body;
     if (!crop_name || ideal_temp_min == null || ideal_temp_max == null || rain_tolerance == null || days_to_harvest == null) {
@@ -469,7 +1064,7 @@ router.post('/api/admin/crops', async (req, res) => {
   }
 });
 
-router.put('/api/admin/crops/:id', async (req, res) => {
+router.put('/api/admin/crops/:id', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const { crop_name, ideal_temp_min, ideal_temp_max, rain_tolerance, days_to_harvest, best_practices } = req.body;
@@ -494,7 +1089,7 @@ router.put('/api/admin/crops/:id', async (req, res) => {
   }
 });
 
-router.delete('/api/admin/crops/:id', async (req, res) => {
+router.delete('/api/admin/crops/:id', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const crop = await CropRepository.findByPk(id);
@@ -510,7 +1105,7 @@ router.delete('/api/admin/crops/:id', async (req, res) => {
 });
 
 // Admin Trivia CRUD
-router.get('/api/admin/trivia', async (req, res) => {
+router.get('/api/admin/trivia', requireAuth, requireAdmin, async (req, res) => {
   try {
     const trivia = await Trivia.findAll({
       order: [['created_at', 'DESC']],
@@ -523,23 +1118,17 @@ router.get('/api/admin/trivia', async (req, res) => {
   }
 });
 
-router.post('/api/admin/trivia', async (req, res) => {
+router.post('/api/admin/trivia', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { content, crop_tag } = req.body;
     if (!content) {
       return res.status(400).json({ error: 'Content is required' });
     }
 
-    // Get admin user (default to first admin)
-    const admin = await User.findOne({ where: { role: 'Admin' } });
-    if (!admin) {
-      return res.status(404).json({ error: 'No admin user found' });
-    }
-
     const trivia = await Trivia.create({
       content,
       crop_tag: crop_tag || 'General',
-      published_by: admin.user_id
+      published_by: req.session.userId
     });
 
     res.status(201).json(trivia);
@@ -549,7 +1138,7 @@ router.post('/api/admin/trivia', async (req, res) => {
   }
 });
 
-router.delete('/api/admin/trivia/:id', async (req, res) => {
+router.delete('/api/admin/trivia/:id', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const trivia = await Trivia.findByPk(id);
@@ -565,7 +1154,7 @@ router.delete('/api/admin/trivia/:id', async (req, res) => {
 });
 
 // Admin Weather Logs (with date range filter)
-router.get('/api/admin/weather-logs', async (req, res) => {
+router.get('/api/admin/weather-logs', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { from, to } = req.query;
     const where = {};
@@ -594,14 +1183,14 @@ router.get('/api/admin/weather-logs', async (req, res) => {
 });
 
 // Admin Send Campus-Wide Alert
-router.post('/api/admin/alerts', async (req, res) => {
+router.post('/api/admin/alerts', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { message, audience, crop_name } = req.body;
     if (!message) {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    let targetUserIds = [];
+    let targetUsers = [];
 
     if (audience === 'crop' && crop_name) {
       // Find all plots growing that crop
@@ -612,22 +1201,44 @@ router.post('/api/admin/alerts', async (req, res) => {
 
       const records = await PlantingRecord.findAll({
         where: { crop_id: crop.crop_id, status: 'Growing' },
-        include: [{ model: FarmPlot, as: 'plot', attributes: ['user_id'] }]
+        include: [{
+          model: FarmPlot,
+          as: 'plot',
+          attributes: ['user_id'],
+          include: [{ model: User, as: 'user', attributes: ['user_id', 'email', 'full_name'] }]
+        }]
       });
 
-      const userIdSet = new Set(records.map(r => r.plot.user_id));
-      targetUserIds = [...userIdSet];
+      const userMap = new Map();
+      for (const r of records) {
+        if (r.plot && r.plot.user) {
+          userMap.set(r.plot.user.user_id, r.plot.user);
+        }
+      }
+      targetUsers = [...userMap.values()];
     } else {
       // All farmers
-      const farmers = await User.findAll({ where: { role: 'Agriculturist' }, attributes: ['user_id'] });
-      targetUserIds = farmers.map(f => f.user_id);
+      targetUsers = await User.findAll({
+        where: { role: 'Agriculturist' },
+        attributes: ['user_id', 'email', 'full_name']
+      });
     }
+
+    // Set headers for streaming response
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Transfer-Encoding', 'chunked');
+
+    const sendUpdate = (data) => {
+      res.write(JSON.stringify(data) + '\n');
+    };
+
+    sendUpdate({ status: 'info', message: 'Saving advisory record to database...' });
 
     // Create alert records for each target user
     const alertRecords = [];
-    for (const userId of targetUserIds) {
+    for (const user of targetUsers) {
       const alert = await Alert.create({
-        user_id: userId,
+        user_id: user.user_id,
         message,
         alert_type: 'Admin Broadcast',
         created_at: new Date()
@@ -635,25 +1246,156 @@ router.post('/api/admin/alerts', async (req, res) => {
       alertRecords.push(alert);
     }
 
-    res.status(201).json({
+    sendUpdate({ status: 'info', message: `Sending emails to ${targetUsers.length} farmer(s)...` });
+
+    let completedCount = 0;
+    let successCount = 0;
+
+    const emailPromises = targetUsers.map(async (user) => {
+      if (!user.email) return;
+
+      const dateStr = new Date().toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+      const currentYear = new Date().getFullYear();
+      const scopeLabel = audience === 'crop' ? `Growers of ${crop_name}` : 'All Registered Agriculturists';
+
+      const emailHtml = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agricultural Advisory</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; color: #2c3e50;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f7f6; padding: 20px 0;">
+    <tr>
+      <td align="center">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #1b5e20, #2e7d32); padding: 40px 30px; text-align: center;">
+              <span style="font-size: 14px; text-transform: uppercase; letter-spacing: 2px; color: #a5d6a7; font-weight: bold; display: block; margin-bottom: 8px;">Project Weather</span>
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">Agricultural Advisory</h1>
+            </td>
+          </tr>
+          <!-- Body Content -->
+          <tr>
+            <td style="padding: 40px 30px;">
+              <p style="margin-top: 0; font-size: 16px; line-height: 1.6; color: #34495e;">
+                Dear <strong>${user.full_name || 'Farmer'}</strong>,
+              </p>
+              <p style="font-size: 16px; line-height: 1.6; color: #34495e;">
+                An administrative advisory update has been published for your area. Please review the details below:
+              </p>
+              
+              <!-- Message Box -->
+              <div style="background-color: #f1f8e9; border-left: 4px solid #4caf50; padding: 20px; border-radius: 0 8px 8px 0; margin: 30px 0;">
+                <p style="margin: 0; font-size: 16px; line-height: 1.6; font-style: italic; color: #1b5e20;">
+                  "${message}"
+                </p>
+              </div>
+
+              <!-- Extra metadata table -->
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse; margin-top: 20px; border-top: 1px solid #eeeeee; padding-top: 20px;">
+                <tr>
+                  <td style="padding: 10px 0; font-size: 14px; color: #7f8c8d; width: 100px;">Scope:</td>
+                  <td style="padding: 10px 0; font-size: 14px; color: #2c3e50; font-weight: bold;">
+                    ${scopeLabel}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; font-size: 14px; color: #7f8c8d;">Date Sent:</td>
+                  <td style="padding: 10px 0; font-size: 14px; color: #2c3e50;">
+                    ${dateStr}
+                  </td>
+                </tr>
+              </table>
+              
+              <div style="text-align: center; margin-top: 40px;">
+                <a href="http://localhost:4000/" style="background-color: #2e7d32; color: #ffffff; text-decoration: none; padding: 14px 30px; font-size: 16px; font-weight: bold; border-radius: 6px; display: inline-block; box-shadow: 0 4px 6px rgba(46,125,50,0.2);">
+                  Open Dashboard
+                </a>
+              </div>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #eeeeee;">
+              <p style="margin: 0; font-size: 12px; color: #95a5a6; line-height: 1.5;">
+                This email was sent by the Project Weather Platform Administrator.<br>
+                You are receiving this because you are registered as an Agriculturist.
+              </p>
+              <p style="margin: 10px 0 0 0; font-size: 12px; color: #bdc3c7;">
+                &copy; ${currentYear} Project Weather. All rights reserved.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+
+      try {
+        await sendEmail({
+          to: user.email,
+          subject: `[Advisory] Project Weather Update: ${scopeLabel}`,
+          text: `Project Weather Agricultural Advisory:\n\n${message}\n\nScope: ${scopeLabel}\nDate: ${dateStr}`,
+          html: emailHtml
+        });
+        successCount++;
+      } catch (err) {
+        console.error(`Failed to send advisory email to ${user.email}:`, err.message);
+      } finally {
+        completedCount++;
+        sendUpdate({
+          status: 'sending',
+          email: user.email,
+          name: user.full_name || 'Farmer',
+          index: completedCount,
+          total: targetUsers.length
+        });
+      }
+    });
+
+    // Run all sending requests concurrently
+    await Promise.all(emailPromises);
+
+    sendUpdate({
+      status: 'complete',
       success: true,
       message: 'Advisory sent successfully',
-      recipientCount: targetUserIds.length
+      recipientCount: targetUsers.length,
+      successCount
     });
+    res.end();
   } catch (err) {
     console.error('API Error POST /api/admin/alerts:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    // If headers already sent, write an error chunk and end, otherwise send 500
+    if (res.headersSent) {
+      res.write(JSON.stringify({ status: 'error', error: 'Internal Server Error' }) + '\n');
+      res.end();
+    } else {
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
 });
 
 // Admin Get Sent Alerts History
-router.get('/api/admin/alerts', async (req, res) => {
+router.get('/api/admin/alerts', requireAuth, requireAdmin, async (req, res) => {
   try {
-    // Get distinct admin broadcast messages with count
+    const { page = 1, limit = 10, search = '', order = 'DESC' } = req.query;
+
+    // Get all admin broadcasts
     const alerts = await Alert.findAll({
       where: { alert_type: 'Admin Broadcast' },
-      order: [['created_at', 'DESC']],
-      limit: 50
+      order: [['created_at', order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC']]
     });
 
     // Group by message + timestamp (within 1 minute = same broadcast)
@@ -661,12 +1403,17 @@ router.get('/api/admin/alerts', async (req, res) => {
     const seen = new Set();
 
     for (const alert of alerts) {
-      const key = alert.message + '|' + new Date(alert.created_at).toISOString().substring(0, 16);
+      const date = new Date(alert.created_at);
+      const roundedDateStr = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()).toISOString();
+      const key = alert.message + '|' + roundedDateStr;
+
       if (!seen.has(key)) {
         seen.add(key);
         // Count how many alerts share this message and approximate timestamp
         const count = alerts.filter(a => {
-          const aKey = a.message + '|' + new Date(a.created_at).toISOString().substring(0, 16);
+          const aDate = new Date(a.created_at);
+          const aRoundedDateStr = new Date(aDate.getFullYear(), aDate.getMonth(), aDate.getDate(), aDate.getHours(), aDate.getMinutes()).toISOString();
+          const aKey = a.message + '|' + aRoundedDateStr;
           return aKey === key;
         }).length;
 
@@ -678,9 +1425,62 @@ router.get('/api/admin/alerts', async (req, res) => {
       }
     }
 
-    res.json(grouped);
+    // Filter by search string
+    let filtered = grouped;
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      filtered = grouped.filter(item => item.message.toLowerCase().includes(q));
+    }
+
+    // Apply pagination
+    const pageNum = parseInt(page, 10) || 1;
+    const limitNum = parseInt(limit, 10) || 10;
+    const totalItems = filtered.length;
+    const totalPages = Math.ceil(totalItems / limitNum);
+    const startIndex = (pageNum - 1) * limitNum;
+    const paginatedItems = filtered.slice(startIndex, startIndex + limitNum);
+
+    res.json({
+      data: paginatedItems,
+      pagination: {
+        page: pageNum,
+        limit: limitNum,
+        totalItems,
+        totalPages
+      }
+    });
   } catch (err) {
     console.error('API Error GET /api/admin/alerts:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Admin Delete Sent Alert (removes all alerts sent in that specific broadcast batch)
+router.delete('/api/admin/alerts', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const { message, created_at } = req.body;
+    if (!message || !created_at) {
+      return res.status(400).json({ error: 'Message and created_at are required' });
+    }
+
+    const date = new Date(created_at);
+    // Find alerts matching description created within 1 minute of the targeted time
+    const minDate = new Date(date.getTime() - 60000);
+    const maxDate = new Date(date.getTime() + 60000);
+
+    const deletedCount = await Alert.destroy({
+      where: {
+        alert_type: 'Admin Broadcast',
+        message: message,
+        created_at: {
+          [Op.between]: [minDate, maxDate]
+        }
+      }
+    });
+
+    res.json({ success: true, deletedCount });
+  } catch (err) {
+    console.error('API Error DELETE /api/admin/alerts:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });

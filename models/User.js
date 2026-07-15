@@ -34,6 +34,16 @@ const User = sequelize.define('User', {
   password_hash: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  language_pref: {
+    type: DataTypes.STRING(20),
+    allowNull: true,
+    defaultValue: 'filipino'
+  },
+  sms_opt_in: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
+    defaultValue: true
   }
 }, {
   tableName: 'users',

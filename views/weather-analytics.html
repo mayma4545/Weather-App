@@ -42,7 +42,7 @@
             </div>
             <div style="display:flex;align-items:center;gap:8px;">
                 <div
-                    style="width:28px;height:28px;border-radius:50%;background:#3B3B38;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#D6D3CB;">
+                    style="width:34px;height:34px;border-radius:50%;background:#1BE035;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#FFFFFF;">
                     JR</div>
             </div>
         </div>
@@ -93,7 +93,7 @@
                     </svg>
                     Profile Page
                 </a>
-                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 1px solid #E2DFD8; padding-top: 15px; color: #C0531A;">
+                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 2px solid #C8F0C8; padding-top: 18px; color: #D44A1A;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                         <polyline points="16 17 21 12 16 7" />
@@ -112,10 +112,10 @@
 
             <div class="sidebar-section">
                 <div class="sidebar-label">Masbate Region</div>
-                <div style="font-size: 11px; color: #7A7773; padding-left: 8px;">
+                <div style="font-size: 12px; color: #4A8A4A; padding-left: 12px;">
                     Station ID: <span
-                        style="font-family:monospace; font-weight:600; color:#5A8A42;">Masbate-04</span><br>
-                    Status: <span style="color:#5A8A42; font-weight:600;">CONNECTED ??</span>
+                        style="font-family:monospace; font-weight:700; color:#1BE035;">Masbate-04</span><br>
+                    Status: <span style="color:#1BE035; font-weight:700;">CONNECTED</span>
                 </div>
             </div>
         </div>
@@ -137,15 +137,15 @@
                     </div>
                 </div>
 
-                <div class="grid-main" style="grid-template-columns: 1fr 340px;">
+                <div class="grid-main">
                     <!-- Left Column -->
                     <div class="main-left-col">
                         <!-- Current Conditions Summary (LIVE) -->
                         <div class="card" id="current-conditions-card">
                             <div class="card-title">Current Conditions</div>
                             <div class="card-sub">OpenWeather Live &mdash; <span class="dynamic-location">Detecting Location...</span></div>
-                            <div id="current-conditions-summary" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
-                                <div style="text-align:center; color:#9A9790; padding:20px; font-size:12px; grid-column: 1/-1;">Loading current conditions...</div>
+                            <div id="current-conditions-summary" class="current-conditions-grid">
+                                <div style="text-align:center; color:#6A9A6A; padding:22px; font-size:13px; font-weight:600; grid-column: 1/-1;">Loading current conditions...</div>
                             </div>
                         </div>
 
@@ -154,11 +154,11 @@
                             <div class="card-title">"Safe to Plant" Predictor</div>
                             <div class="card-sub">Compares live OpenWeather forecast against crop tolerance databases</div>
 
-                            <div style="margin:16px 0 10px;">
-                                <label style="font-size:11px; font-weight:600; text-transform:uppercase; color:#7A7773;"
+                            <div style="margin:18px 0 12px;">
+                                <label style="font-size:13px; font-weight:700; text-transform:uppercase; color:#4A8A4A;"
                                     for="predict-crop-select">Select Crop to Plant:</label>
                                 <select id="predict-crop-select" class="form-control"
-                                    style="max-width:240px; margin-top:6px;">
+                                    style="max-width:260px; margin-top:8px;">
                                     <option value="Rice">Rice (Palay)</option>
                                     <option value="Corn">Corn (OPV)</option>
                                     <option value="Tomato">Tomato</option>
@@ -170,17 +170,16 @@
 
                             <!-- Traffic Light Visual Signal -->
                             <div class="traffic-light-container">
-                                <div
-                                    style="display:flex; flex-direction:column; gap:8px; background:#1C1C1A; padding:10px 8px; border-radius:18px;">
+                                <div class="traffic-light-box">
                                     <div class="light-indicator" id="light-red"></div>
                                     <div class="light-indicator" id="light-yellow"></div>
                                     <div class="light-indicator" id="light-green"></div>
                                 </div>
-                                <div>
+                                <div class="traffic-light-verdict">
                                     <div id="predictor-verdict-title"
-                                        style="font-size:15px; font-weight:600; color:#1C1C1A;">Fetching forecast data...</div>
+                                        style="font-size:17px; font-weight:700; color:#0D5E1A;">Fetching forecast data...</div>
                                     <div id="predictor-verdict-desc"
-                                        style="font-size:12.5px; color:#7A7773; margin-top:4px;">Evaluating live weather data against crop tolerance limits.</div>
+                                        style="font-size:14px; color:#5A8A5A; margin-top:5px; font-weight:500;">Evaluating live weather data against crop tolerance limits.</div>
                                     <div class="comparison-math" id="predictor-formula">Waiting for OpenWeather data...</div>
                                 </div>
                             </div>
@@ -188,15 +187,14 @@
 
                         <!-- Searchable Weather Logs Archive -->
                         <div class="card">
-                            <div
-                                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <div class="card-header-flex">
                                 <div>
                                     <div class="card-title">Historical Weather Logs</div>
                                     <div class="card-sub"><span class="dynamic-location-city">Local</span> Climate Archive</div>
                                 </div>
                                 <input type="text" id="weather-archive-search"
                                     placeholder="Search archive (e.g. May 10)..." class="form-control"
-                                    style="max-width:200px; padding:6px 10px; font-size:12px;">
+                                    style="max-width:220px; padding:10px 14px; font-size:13px;">
                             </div>
                             <div class="table-responsive">
                                 <table class="custom-table" id="weather-archive-table">
@@ -212,7 +210,7 @@
                                     </thead>
                                     <tbody id="weather-archive-tbody">
                                         <!-- Will be populated from forecast data -->
-                                        <tr><td colspan="6" style="text-align:center; color:#9A9790;">Loading weather data...</td></tr>
+                                        <tr><td colspan="6" style="text-align:center; color:#6A9A6A; font-weight:600;">Loading weather data...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -226,7 +224,7 @@
                             <div class="card-title">Forecast Risk Dashboard</div>
                             <div class="card-sub">Environmental stress warnings from live forecast data</div>
                             <div id="risk-forecast-container" style="display:flex; flex-direction:column; gap:12px;">
-                                <div style="text-align:center; color:#9A9790; padding:20px; font-size:12px;">Analyzing forecast risks...</div>
+                                <div style="text-align:center; color:#6A9A6A; padding:22px; font-size:13px; font-weight:600;">Analyzing forecast risks...</div>
                             </div>
                         </div>
 
@@ -235,8 +233,8 @@
                             <div class="card-title">Forecast Summary</div>
                             <div class="card-sub">5-day outlook from OpenWeather</div>
                             <div id="forecast-summary-card"
-                                style="padding:12px 14px; background:#EEF4FD; border-radius:10px; border:1px solid #D0E1F9; font-size:13px; line-height:1.6; color:#2A5A90;">
-                                <div style="text-align:center; color:#9A9790; padding:10px; font-size:12px;">Loading forecast summary...</div>
+                                style="padding:14px 18px; background:#E8FFE8; border-radius:12px; border:2px solid #C8F0C8; font-size:14px; line-height:1.6; color:#2D5A2D; font-weight:500;">
+                                <div style="text-align:center; color:#6A9A6A; padding:12px; font-size:13px; font-weight:600;">Loading forecast summary...</div>
                             </div>
                         </div>
                     </div>

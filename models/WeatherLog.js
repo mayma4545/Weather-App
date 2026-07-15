@@ -35,6 +35,14 @@ const WeatherLog = sequelize.define('WeatherLog', {
     validate: {
       isIn: [['API', 'Station']]
     }
+  },
+  station_id: {
+    type: DataTypes.STRING(50),
+    allowNull: true,
+    references: {
+      model: 'station_devices',
+      key: 'device_id'
+    }
   }
 }, {
   tableName: 'weather_logs',
