@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     --bg-surface: #FAFAFA;
     --bg-card: #FFFFFF;
     --text-primary: #0F172A;
@@ -262,6 +262,249 @@ h2 {
     80% { transform: translateX(4px); }
 }
 
+/* ==========================================
+   IDENTITY / ROLE OPTIONS STYLES
+   ========================================== */
+
+.identity-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.identity-radio {
+    position: relative;
+    cursor: pointer;
+    display: block;
+}
+
+.identity-radio input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.identity-radio span {
+    display: block;
+    text-align: center;
+    padding: 10px 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: #F8FAFC;
+    border: 1.5px solid var(--border-color);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.identity-radio input[type="radio"]:checked + span {
+    background: #F0F9FF;
+    border-color: var(--brand-primary);
+    color: var(--brand-primary);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
+
+.identity-radio:hover span {
+    border-color: #CBD5E1;
+}
+
+.identity-specify-group {
+    animation: fadeIn 0.25s ease;
+}
+
+/* ==========================================
+   OTP VERIFICATION PAGE STYLES
+   ========================================== */
+
+.verify-card {
+    max-width: 460px;
+}
+
+.otp-inputs-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin: 24px 0 28px;
+}
+
+.otp-input {
+    width: 100%;
+    height: 54px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    background: #FFFFFF;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.otp-input:focus {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+    transform: translateY(-1px);
+}
+
+.otp-input.error-pulse {
+    border-color: #EF4444;
+    background: #FEF2F2;
+}
+
+.shake {
+    animation: shakeError 0.4s ease;
+}
+
+/* ==========================================
+   SPINNER & LOADING BUTTONS
+   ========================================== */
+
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #FFFFFF;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================
+   PREMIUM SUCCESS ANIMATION CARD
+   ========================================== */
+
+.success-card {
+    max-width: 480px;
+    text-align: center;
+    padding: 40px 32px;
+}
+
+.success-animation {
+    margin: 0 auto 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.checkmark-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 3;
+    stroke: #22C55E;
+    stroke-miterlimit: 10;
+    box-shadow: inset 0px 0px 0px #22C55E;
+    animation: fillCheckmark 0.4s ease-in-out .4s forwards, scaleCheckmark .3s ease-in-out .9s both;
+    position: relative;
+}
+
+.checkmark-circle-line {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 3;
+    stroke-miterlimit: 10;
+    stroke: #22C55E;
+    fill: none;
+    animation: strokeCheckmark 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    stroke: #FFFFFF;
+    stroke-width: 3.5;
+    animation: strokeCheckmark 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+}
+
+@keyframes strokeCheckmark {
+    100% { stroke-dashoffset: 0; }
+}
+
+@keyframes fillCheckmark {
+    100% { box-shadow: inset 0px 0px 0px 45px #22C55E; }
+}
+
+@keyframes scaleCheckmark {
+    0%, 100% { transform: none; }
+    50% { transform: scale3d(1.15, 1.15, 1); }
+}
+
+.success-title {
+    color: var(--text-primary);
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.success-subtitle {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 28px;
+}
+
+.redirect-box {
+    background: #F8FAFC;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 24px;
+}
+
+.redirect-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: #E2E8F0;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.redirect-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: #22C55E;
+    border-radius: 3px;
+}
+
+.redirect-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.success-btn {
+    background-color: #22C55E;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.success-btn:hover {
+    background-color: #16A34A;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.96); }
+}
+
 @media (max-width: 480px) {
     .login-container {
         padding: 16px;
@@ -273,5 +516,14 @@ h2 {
 
     h2 {
         font-size: 24px;
+    }
+
+    .otp-inputs-container {
+        gap: 6px;
+    }
+
+    .otp-input {
+        height: 48px;
+        font-size: 18px;
     }
 }

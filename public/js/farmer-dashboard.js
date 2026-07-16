@@ -2462,3 +2462,209 @@ if (langSelect) {
         }
     });
 }
+
+// ==========================================
+// SATELLITE VEGETATION MONITORING (Agromonitoring)
+// ==========================================
+
+var satelliteDataCache = null;
+
+async function loadSatelliteImagery() {
+    var loadingEl = document.getElementById('satellite-loading');
+    var errorEl = document.getElementById('satellite-error');
+    var contentEl = document.getElementById('satellite-content');
+    var refreshBtn = document.getElementById('btn-refresh-satellite');
+
+    if (!loadingEl || !contentEl) return;
+
+    loadingEl.style.display = 'flex';
+    errorEl.style.display = 'none';
+    contentEl.style.display = 'none';
+    if (refreshBtn) refreshBtn.disabled = true;
+
+    try {
+        var res = await fetch('/api/satellite/imagery');
+        if (!res.ok) {
+            var errData = await res.json().catch(function() { return {}; });
+            throw new Error(errData.message || errData.error || 'Satellite API error (' + res.status + ')');
+        }
+
+        var data = await res.json();
+        satelliteDataCache = data;
+
+        if (!data.available || !data.images || data.images.length === 0) {
+            loadingEl.style.display = 'none';
+            errorEl.style.display = 'block';
+            errorEl.innerHTML = '<strong>Satellite Data Pending</strong><br>' +
+                (data.message || 'No recent satellite passes over Mandaon, Masbate. Sentinel-2 revisits every 3-5 days. Check back soon.');
+            if (refreshBtn) refreshBtn.disabled = false;
+            return;
+        }
+
+        renderSatelliteContent(data);
+    } catch (err) {
+        console.error('Satellite imagery error:', err);
+        loadingEl.style.display = 'none';
+        errorEl.style.display = 'block';
+        errorEl.innerHTML = '<strong>Unable to Load Satellite Data</strong><br>' + escapeHtml(err.message);
+    } finally {
+        if (refreshBtn) refreshBtn.disabled = false;
+    }
+}
+
+function renderSatelliteContent(data) {
+    var loadingEl = document.getElementById('satellite-loading');
+    var contentEl = document.getElementById('satellite-content');
+    if (!loadingEl || !contentEl) return;
+
+    loadingEl.style.display = 'none';
+    contentEl.style.display = 'block';
+
+    var latest = data.images[0];
+
+    renderSatelliteMeta(latest, data);
+    loadSatelliteImages();
+    renderSatelliteAnalysis(latest);
+    renderSatelliteHistory(data.images);
+}
+
+function renderSatelliteMeta(latest, data) {
+    var metaBar = document.getElementById('satellite-meta-bar');
+    if (!metaBar) return;
+
+    var cloudColor = latest.clouds <= 10 ? '#1BE035' : (latest.clouds <= 30 ? '#F5A623' : '#D44A1A');
+    var covColor = latest.coverage >= 90 ? '#1BE035' : (latest.coverage >= 70 ? '#F5A623' : '#D44A1A');
+
+    metaBar.innerHTML =
+        '<div class="satellite-meta-item">' +
+            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>' +
+            '<span>' + escapeHtml(latest.dateFormatted) + '</span>' +
+        '</div>' +
+        '<div class="satellite-meta-item">' +
+            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/></svg>' +
+            '<span>' + escapeHtml(latest.satellite) + '</span>' +
+        '</div>' +
+        '<div class="satellite-meta-item">' +
+            '<span class="satellite-meta-dot" style="background:' + cloudColor + ';"></span>' +
+            '<span>Clouds: ' + latest.clouds.toFixed(1) + '%</span>' +
+        '</div>' +
+        '<div class="satellite-meta-item">' +
+            '<span class="satellite-meta-dot" style="background:' + covColor + ';"></span>' +
+            '<span>Coverage: ' + latest.coverage + '%</span>' +
+        '</div>' +
+        '<div class="satellite-meta-item">' +
+            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
+            '<span>Mandaon, Masbate</span>' +
+        '</div>';
+}
+
+function loadSatelliteImages() {
+    var types = ['truecolor', 'ndvi', 'falsecolor'];
+    types.forEach(function(type) {
+        var imgEl = document.getElementById('satellite-' + type);
+        var overlayEl = document.getElementById('satellite-' + type + '-overlay');
+        if (!imgEl) return;
+
+        imgEl.onload = function() {
+            if (overlayEl) overlayEl.classList.add('loaded');
+        };
+        imgEl.onerror = function() {
+            if (overlayEl) {
+                overlayEl.innerHTML = '<div style="text-align:center;color:#6a8aaa;font-size:12px;font-weight:600;padding:12px;">Image unavailable</div>';
+            }
+        };
+        imgEl.src = '/api/satellite/image/' + type;
+    });
+}
+
+function renderSatelliteAnalysis(latest) {
+    var container = document.getElementById('satellite-analysis');
+    if (!container) return;
+
+    if (!latest.health || !latest.ndviStats) {
+        container.innerHTML =
+            '<div class="satellite-health-card health-no_data">' +
+                '<div class="health-icon icon-no_data">' +
+                    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+                '</div>' +
+                '<div class="health-body">' +
+                    '<div class="health-label label-no_data">NDVI Analysis Unavailable</div>' +
+                    '<div class="health-desc">Satellite imagery is available but NDVI statistics could not be retrieved. Try refreshing.</div>' +
+                '</div>' +
+            '</div>';
+        return;
+    }
+
+    var stats = latest.ndviStats;
+    var health = latest.health;
+    var statusLower = health.status.toLowerCase();
+
+    var iconSvg = '';
+    if (statusLower === 'healthy') {
+        iconSvg = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+    } else if (statusLower === 'moderate') {
+        iconSvg = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+    } else {
+        iconSvg = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+    }
+
+    container.innerHTML =
+        '<div class="satellite-health-card health-' + statusLower + '">' +
+            '<div class="health-icon icon-' + statusLower + '">' + iconSvg + '</div>' +
+            '<div class="health-body">' +
+                '<div class="health-label label-' + statusLower + '">' + escapeHtml(health.label) + '</div>' +
+                '<div class="health-desc">' + escapeHtml(health.description) + '</div>' +
+                '<div class="health-stats">' +
+                    '<div class="health-stat"><div class="health-stat-value">' + stats.mean.toFixed(3) + '</div><div class="health-stat-label">Mean NDVI</div></div>' +
+                    '<div class="health-stat"><div class="health-stat-value">' + stats.median.toFixed(3) + '</div><div class="health-stat-label">Median NDVI</div></div>' +
+                    '<div class="health-stat"><div class="health-stat-value">' + stats.max.toFixed(3) + '</div><div class="health-stat-label">Max NDVI</div></div>' +
+                    '<div class="health-stat"><div class="health-stat-value">' + stats.min.toFixed(3) + '</div><div class="health-stat-label">Min NDVI</div></div>' +
+                    '<div class="health-stat"><div class="health-stat-value">' + stats.std.toFixed(3) + '</div><div class="health-stat-label">Std Dev</div></div>' +
+                    '<div class="health-stat"><div class="health-stat-value">' + (stats.num || 0).toLocaleString() + '</div><div class="health-stat-label">Pixels</div></div>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+}
+
+function renderSatelliteHistory(images) {
+    var container = document.getElementById('satellite-history');
+    if (!container || images.length <= 1) {
+        if (container) container.style.display = 'none';
+        return;
+    }
+
+    var html = '<div class="satellite-history-title">Recent Satellite Passes</div>';
+    html += '<div class="satellite-history-list">';
+
+    images.forEach(function(img, idx) {
+        var ndviHtml = '';
+        if (img.ndviStats) {
+            var meanVal = img.ndviStats.mean;
+            var ndviColor = meanVal >= 0.6 ? '#0D5E1A' : (meanVal >= 0.4 ? '#7A4D00' : (meanVal >= 0.2 ? '#8A4A00' : '#B91C1C'));
+            ndviHtml = '<div class="satellite-history-ndvi" style="color:' + ndviColor + ';">NDVI: ' + meanVal.toFixed(2) + '</div>';
+        }
+
+        html += '<div class="satellite-history-item' + (idx === 0 ? ' active' : '') + '">' +
+            '<img class="satellite-history-thumb" src="/api/satellite/image/ndvi" alt="NDVI ' + escapeAttr(img.dateFormatted) + '" loading="lazy">' +
+            '<div class="satellite-history-info">' +
+                '<div class="satellite-history-date">' + escapeHtml(img.dateFormatted) + '</div>' +
+                '<div class="satellite-history-sat">' + escapeHtml(img.satellite) + ' \u00B7 ' + img.clouds.toFixed(0) + '% clouds</div>' +
+                ndviHtml +
+            '</div>' +
+        '</div>';
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+var btnRefreshSatellite = document.getElementById('btn-refresh-satellite');
+if (btnRefreshSatellite) {
+    btnRefreshSatellite.addEventListener('click', function() {
+        loadSatelliteImagery();
+    });
+}
+
+if (document.getElementById('satellite-loading')) {
+    loadSatelliteImagery();
+}

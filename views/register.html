@@ -29,6 +29,29 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Identity / Role</label>
+                    <div class="identity-options">
+                        <label class="identity-radio">
+                            <input type="radio" name="identity_type" value="Farmer" checked>
+                            <span>Farmer</span>
+                        </label>
+                        <label class="identity-radio">
+                            <input type="radio" name="identity_type" value="Student">
+                            <span>Student</span>
+                        </label>
+                        <label class="identity-radio">
+                            <input type="radio" name="identity_type" value="Other">
+                            <span>Other</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group identity-specify-group" id="identitySpecifyGroup" style="display: none;">
+                    <label for="identity_specification">Please Specify</label>
+                    <input type="text" id="identity_specification" name="identity_specification" placeholder="e.g., Agricultural Researcher, Agronomist">
+                </div>
+
+                <div class="form-group">
                     <label for="contact_number">Contact Number</label>
                     <input type="tel" id="contact_number" name="contact_number" placeholder="e.g. 09123456789">
                 </div>
@@ -117,6 +140,27 @@
             }
         }
 
+        const identityRadios = document.querySelectorAll('input[name="identity_type"]');
+        const identitySpecifyGroup = document.getElementById('identitySpecifyGroup');
+        const identitySpecification = document.getElementById('identity_specification');
+        const submitBtn = form.querySelector('button[type="submit"]');
+
+        identityRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'Other') {
+                    identitySpecifyGroup.style.display = 'block';
+                    identitySpecifyGroup.classList.add('show');
+                    identitySpecification.required = true;
+                    identitySpecification.focus();
+                } else {
+                    identitySpecifyGroup.style.display = 'none';
+                    identitySpecifyGroup.classList.remove('show');
+                    identitySpecification.required = false;
+                    identitySpecification.value = '';
+                }
+            });
+        });
+
         password.addEventListener('focus', showRequirements);
         password.addEventListener('blur', hideRequirements);
         password.addEventListener('input', function() {
@@ -126,17 +170,48 @@
 
         confirmPassword.addEventListener('input', checkPasswordMatch);
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            formError.textContent = '';
+
             if (password.value !== confirmPassword.value) {
-                e.preventDefault();
                 formError.textContent = 'Passwords do not match.';
                 return;
             }
             const val = password.value;
             if (val.length < 8 || !/[A-Z]/.test(val) || !/[a-z]/.test(val) || !/\d/.test(val)) {
-                e.preventDefault();
                 formError.textContent = 'Password does not meet all requirements.';
                 return;
+            }
+
+            // Submit via async fetch so we handle duplicate email and show OTP loading state cleanly
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span> Sending verification code...';
+
+            try {
+                const formData = new FormData(form);
+                const dataObj = Object.fromEntries(formData.entries());
+
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dataObj)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    window.location.href = result.redirectUrl;
+                } else {
+                    formError.textContent = result.error || 'An error occurred during registration.';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Sign Up';
+                }
+            } catch (err) {
+                console.error('Submit error:', err);
+                formError.textContent = 'Network error. Please try again.';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Sign Up';
             }
         });
     </script>

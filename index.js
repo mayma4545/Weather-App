@@ -16,8 +16,8 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      imgSrc: ["'self'", "data:", "https://*", "https://openweathermap.org"],
-      connectSrc: ["'self'", "https://api.openweathermap.org"]
+      imgSrc: ["'self'", "data:", "blob:", "https://*", "https://openweathermap.org", "https://api.agromonitoring.com"],
+      connectSrc: ["'self'", "https://api.openweathermap.org", "https://api.agromonitoring.com"]
     }
   }
 }));

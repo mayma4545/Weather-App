@@ -132,6 +132,109 @@
                     </div>
                 </div>
 
+                <div class="card satellite-monitoring-card">
+                    <div class="satellite-header">
+                        <div>
+                            <div class="card-title">
+                                <svg class="satellite-title-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                                </svg>
+                                Satellite Vegetation Monitoring
+                            </div>
+                            <div class="card-sub">Agromonitoring NDVI imagery &mdash; Mandaon, Masbate City &mdash; Detect crop canopy damage without field visits</div>
+                        </div>
+                        <button type="button" class="satellite-refresh-btn" id="btn-refresh-satellite" title="Refresh satellite data">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <polyline points="23 4 23 10 17 10"></polyline>
+                                <polyline points="1 20 1 14 7 14"></polyline>
+                                <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path>
+                            </svg>
+                            Refresh
+                        </button>
+                    </div>
+
+                    <div id="satellite-loading" class="satellite-loading">
+                        <div class="satellite-spinner"></div>
+                        <span>Fetching latest satellite imagery for Mandaon...</span>
+                    </div>
+
+                    <div id="satellite-error" class="satellite-error" style="display:none;"></div>
+
+                    <div id="satellite-content" class="satellite-content" style="display:none;">
+                        <div class="satellite-meta-bar" id="satellite-meta-bar"></div>
+
+                        <div class="satellite-images-grid">
+                            <div class="satellite-image-panel">
+                                <div class="satellite-image-label">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                                        <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"></path>
+                                    </svg>
+                                    True Color (Visible Light)
+                                </div>
+                                <div class="satellite-image-wrap">
+                                    <img id="satellite-truecolor" class="satellite-img" alt="True color satellite view of Mandaon" loading="lazy">
+                                    <div class="satellite-img-overlay" id="satellite-truecolor-overlay">
+                                        <div class="satellite-spinner-sm"></div>
+                                    </div>
+                                </div>
+                                <div class="satellite-image-desc">Natural color view showing actual ground conditions and crop coverage</div>
+                            </div>
+
+                            <div class="satellite-image-panel">
+                                <div class="satellite-image-label">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/>
+                                        <path d="M12 6v8M8 10h8"/>
+                                    </svg>
+                                    NDVI (Vegetation Health Index)
+                                </div>
+                                <div class="satellite-image-wrap">
+                                    <img id="satellite-ndvi" class="satellite-img" alt="NDVI vegetation index of Mandaon" loading="lazy">
+                                    <div class="satellite-img-overlay" id="satellite-ndvi-overlay">
+                                        <div class="satellite-spinner-sm"></div>
+                                    </div>
+                                </div>
+                                <div class="satellite-image-desc">Color-coded vegetation health &mdash; green = healthy, yellow/red = stressed or damaged</div>
+                            </div>
+
+                            <div class="satellite-image-panel">
+                                <div class="satellite-image-label">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+                                    </svg>
+                                    False Color (Infrared Composite)
+                                </div>
+                                <div class="satellite-image-wrap">
+                                    <img id="satellite-falsecolor" class="satellite-img" alt="False color infrared view of Mandaon" loading="lazy">
+                                    <div class="satellite-img-overlay" id="satellite-falsecolor-overlay">
+                                        <div class="satellite-spinner-sm"></div>
+                                    </div>
+                                </div>
+                                <div class="satellite-image-desc">Near-infrared view highlights active vegetation in bright red tones</div>
+                            </div>
+                        </div>
+
+                        <div class="satellite-analysis" id="satellite-analysis"></div>
+
+                        <div class="satellite-ndvi-legend">
+                            <div class="ndvi-legend-title">NDVI Color Scale Reference</div>
+                            <div class="ndvi-legend-bar">
+                                <div class="ndvi-legend-gradient"></div>
+                                <div class="ndvi-legend-labels">
+                                    <span>Bare Soil / Water</span>
+                                    <span>Stressed</span>
+                                    <span>Moderate</span>
+                                    <span>Dense Vegetation</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="satellite-history" id="satellite-history"></div>
+                    </div>
+                </div>
+
                 <div class="grid-main">
                     <!-- Left: Interactive Planting Batch & Plot Status Table -->
                     <div class="main-left-col">

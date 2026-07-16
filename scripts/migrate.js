@@ -28,7 +28,7 @@ console.log(`🚀 \x1b[1mWEATHER APP DATABASE MIGRATION SCRIPT\x1b[0m`);
 console.log(`🌎 Target Environment: \x1b[33m\x1b[1m${env.toUpperCase()}\x1b[0m`);
 console.log(`\x1b[36m========================================================\x1b[0m\n`);
 
-const { sequelize, User, CropRepository, FarmPlot, PlantingRecord, WeatherLog, Alert, Trivia } = require('../models');
+const { sequelize, User, CropRepository, FarmPlot, PlantingRecord, WeatherLog, Alert, Trivia, Otp } = require('../models');
 
 async function runMigration() {
   try {
@@ -54,6 +54,7 @@ async function runMigration() {
     console.log('   🔹 \x1b[1mweather_logs\x1b[0m (Weather metrics: temp, humidity, wind, rain)');
     console.log('   🔹 \x1b[1malerts\x1b[0m (Extreme weather notifications, recommendations)');
     console.log('   🔹 \x1b[1mtrivia\x1b[0m (Agricultural tips, trivia, best practices)');
+    console.log('   🔹 \x1b[1motps\x1b[0m (Temporary verification OTP codes and pending user data)');
 
     // Seed initial crop repository data if empty
     const cropCount = await CropRepository.count();

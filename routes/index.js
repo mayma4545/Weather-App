@@ -1,21 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const { Op } = require('sequelize');
 const weatherService = require('../utils/weatherService');
 const authPresenter = require('../presenters/authPresenter');
 const { requireAuth, requireAdmin } = require('../middlewares/auth');
-const { User, FarmPlot, PlantingRecord, CropRepository, WeatherLog, Alert, Trivia, SoilProfile, StationDevice } = require('../models');
+const { User, FarmPlot, PlantingRecord, CropRepository, WeatherLog, Alert, Trivia, SoilProfile, StationDevice, Otp } = require('../models');
 
 // Lazy-load agricultural services (created after routes file)
-let irrigationService, diseaseRiskService, fertilizerService, gddService, typhoonAlertService, todoService;
+let irrigationService, diseaseRiskService, fertilizerService, gddService, typhoonAlertService, todoService, satelliteService;
 try { irrigationService = require('../services/irrigationService'); } catch(e) { console.warn('irrigationService not loaded:', e.message); }
 try { diseaseRiskService = require('../services/diseaseRiskService'); } catch(e) { console.warn('diseaseRiskService not loaded:', e.message); }
 try { fertilizerService = require('../services/fertilizerService'); } catch(e) { console.warn('fertilizerService not loaded:', e.message); }
 try { gddService = require('../services/gddService'); } catch(e) { console.warn('gddService not loaded:', e.message); }
 try { typhoonAlertService = require('../services/typhoonAlertService'); } catch(e) { console.warn('typhoonAlertService not loaded:', e.message); }
 try { todoService = require('../services/todoService'); } catch(e) { console.warn('todoService not loaded:', e.message); }
+try { satelliteService = require('../services/satelliteService'); } catch(e) { console.warn('satelliteService not loaded:', e.message); }
 const { sendEmail } = require('../services/emailService');
 
 // ==========================================
@@ -23,37 +25,197 @@ const { sendEmail } = require('../services/emailService');
 // ==========================================
 router.get('/', authPresenter.redirectLogin);
 router.get('/login', authPresenter.getLogin);
+// Helper to sanitize inputs and strip HTML tags
+function sanitizeInput(str) {
+  if (typeof str !== 'string') return str;
+  return str.trim().replace(/<[^>]*>?/gm, '');
+}
+
 router.get('/register', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'views', 'register.html'));
 });
 
 router.post('/register', async (req, res) => {
   try {
-    const { full_name, contact_number, email, password } = req.body;
+    const full_name = sanitizeInput(req.body.full_name);
+    const contact_number = sanitizeInput(req.body.contact_number);
+    const email = sanitizeInput(req.body.email)?.toLowerCase();
+    const password = req.body.password;
+    const identity_type = sanitizeInput(req.body.identity_type) || 'Farmer';
+    const identity_specification = sanitizeInput(req.body.identity_specification) || null;
 
     if (!full_name || !email || !password) {
-      return res.status(400).send('Missing required fields.');
+      return res.status(400).json({ error: 'Missing required fields.' });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Please provide a valid email address.' });
+    }
+
+    if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/\d/.test(password)) {
+      return res.status(400).json({ error: 'Password does not meet security requirements.' });
     }
 
     const existing = await User.findOne({ where: { email } });
     if (existing) {
-      return res.status(409).send('An account with this email already exists.');
+      return res.status(409).json({ error: 'An account with this email already exists.' });
     }
 
     const password_hash = await bcrypt.hash(password, 10);
+    const otp_code = crypto.randomInt(100000, 999999).toString();
 
-    await User.create({
-      full_name,
-      role: 'Agriculturist',
-      contact_number: contact_number || null,
+    await Otp.destroy({ where: { email } });
+
+    await Otp.create({
       email,
-      password_hash
+      otp_code,
+      attempts: 0,
+      user_data: JSON.stringify({
+        full_name,
+        contact_number: contact_number || null,
+        email,
+        password_hash,
+        identity_type,
+        identity_specification
+      }),
+      expires_at: new Date(Date.now() + 10 * 60 * 1000)
     });
 
-    res.redirect('/login');
+    const htmlEmail = `
+      <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; padding: 32px; border: 1px solid #e2e8f0;">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <h2 style="color: #0f172a; margin: 0;">Project Weather</h2>
+          <p style="color: #64748b; font-size: 14px;">Agricultural Weather & Crop Management System</p>
+        </div>
+        <div style="background: #f8fafc; border-radius: 8px; padding: 24px; text-align: center; margin-bottom: 24px;">
+          <h3 style="color: #0f172a; margin-top: 0; font-size: 18px;">Your Verification Code</h3>
+          <p style="color: #64748b; font-size: 14px; margin-bottom: 16px;">Enter the 6-digit code below to complete your registration:</p>
+          <div style="font-size: 32px; font-weight: 700; letter-spacing: 6px; color: #0ea5e9; background: #ffffff; padding: 16px; border-radius: 8px; border: 1px dashed #0ea5e9; display: inline-block;">
+            ${otp_code}
+          </div>
+          <p style="color: #94a3b8; font-size: 12px; margin-top: 16px; margin-bottom: 0;">This code expires in 10 minutes.</p>
+        </div>
+        <p style="color: #64748b; font-size: 14px;">If you did not request to create an account on Project Weather, please ignore this email.</p>
+      </div>
+    `;
+
+    try {
+      await sendEmail({
+        to: email,
+        subject: 'Project Weather - Your Verification Code (OTP)',
+        text: `Your Project Weather verification code is ${otp_code}. It expires in 10 minutes.`,
+        html: htmlEmail
+      });
+    } catch (emailErr) {
+      console.warn('⚠️ Could not send OTP email via SMTP. If testing locally without credentials, check console logs.');
+      console.log(`🔑 LOCAL/DEBUG OTP CODE FOR ${email}: ${otp_code}`);
+    }
+
+    req.session.pendingVerifyEmail = email;
+    res.json({ success: true, redirectUrl: `/verify-otp?email=${encodeURIComponent(email)}` });
   } catch (err) {
     console.error('Registration error:', err);
-    res.status(500).send('Registration failed. Please try again.');
+    res.status(500).json({ error: 'Registration failed. Please try again.' });
+  }
+});
+
+router.get('/verify-otp', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'views', 'verify-otp.html'));
+});
+
+router.post('/verify-otp', async (req, res) => {
+  try {
+    const { email, otp_code } = req.body;
+    if (!email || !otp_code) {
+      return res.status(400).json({ success: false, message: 'Email and 6-digit OTP code are required.' });
+    }
+
+    const record = await Otp.findOne({ where: { email } });
+    if (!record) {
+      return res.status(404).json({ success: false, message: 'No pending registration found or code has expired. Please register again.', restarted: true });
+    }
+
+    if (new Date() > new Date(record.expires_at)) {
+      await record.destroy();
+      return res.status(400).json({ success: false, message: 'Your verification code has expired. Please register again.', restarted: true });
+    }
+
+    if (record.otp_code !== otp_code.trim()) {
+      record.attempts += 1;
+      if (record.attempts >= 3) {
+        await record.destroy();
+        return res.status(400).json({
+          success: false,
+          restarted: true,
+          message: 'You have entered an incorrect code 3 times. Your registration has been restarted for security reasons.'
+        });
+      } else {
+        await record.save();
+        const attemptsLeft = 3 - record.attempts;
+        return res.status(400).json({
+          success: false,
+          message: `Incorrect verification code. Please try again. (${attemptsLeft} attempt${attemptsLeft > 1 ? 's' : ''} left)`,
+          attemptsLeft
+        });
+      }
+    }
+
+    const userData = JSON.parse(record.user_data);
+
+    const newUser = await User.create({
+      full_name: userData.full_name,
+      role: 'Agriculturist',
+      contact_number: userData.contact_number || null,
+      email: userData.email,
+      password_hash: userData.password_hash,
+      identity_type: userData.identity_type || 'Farmer',
+      identity_specification: userData.identity_specification || null
+    });
+
+    await record.destroy();
+
+    const loginLink = 'https://weather-app-rr5y.onrender.com/login';
+    const welcomeHtml = `
+      <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; padding: 32px; border: 1px solid #e2e8f0;">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <h2 style="color: #0ea5e9; margin: 0;">Welcome to Project Weather! 🌱</h2>
+          <p style="color: #64748b; font-size: 14px;">Agricultural Weather & Crop Management System</p>
+        </div>
+        <div style="color: #0f172a; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
+          <p>Hi <strong>${newUser.full_name}</strong>,</p>
+          <p>Congratulations! Your registration as a <strong>${newUser.identity_type}${newUser.identity_specification ? ` (${newUser.identity_specification})` : ''}</strong> is complete and your account has been verified.</p>
+          <p>You now have full access to real-time weather tracking, predictive agricultural modeling, and crop risk advisories tailored to your plots.</p>
+        </div>
+        <div style="text-align: center; margin: 32px 0;">
+          <a href="${loginLink}" style="background-color: #0ea5e9; color: #ffffff; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block; box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.3);">
+            Access System Dashboard
+          </a>
+        </div>
+        <p style="color: #64748b; font-size: 14px; text-align: center;">
+          Or login directly at:<br>
+          <a href="${loginLink}" style="color: #0ea5e9;">${loginLink}</a>
+        </p>
+        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0;">
+        <p style="color: #94a3b8; font-size: 12px; text-align: center; margin: 0;">Project Weather Team</p>
+      </div>
+    `;
+
+    try {
+      await sendEmail({
+        to: newUser.email,
+        subject: 'Welcome to Project Weather! Registration Successful 🌱',
+        text: `Welcome ${newUser.full_name}! Your registration is complete. Login here: ${loginLink}`,
+        html: welcomeHtml
+      });
+    } catch (emailErr) {
+      console.warn('⚠️ Could not send Welcome email via SMTP:', emailErr.message);
+    }
+
+    res.json({ success: true, message: 'Registration successfully verified!' });
+  } catch (err) {
+    console.error('OTP Verification error:', err);
+    res.status(500).json({ success: false, message: 'Verification failed due to a server error. Please try again.' });
   }
 });
 
@@ -1503,6 +1665,144 @@ router.get('/api/trivia', async (req, res) => {
   } catch (err) {
     console.error('API Error GET /api/trivia:', err);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// ==========================================
+// 🛰️ SATELLITE VEGETATION MONITORING (Agromonitoring API)
+// ==========================================
+
+router.get('/api/satellite/imagery', requireAuth, async (req, res) => {
+  try {
+    if (!satelliteService) {
+      return res.status(503).json({ error: 'Satellite service not available' });
+    }
+
+    const end = new Date();
+    const start = new Date();
+    start.setDate(start.getDate() - 90);
+
+    const images = await satelliteService.searchImages(start, end);
+
+    if (!images || images.length === 0) {
+      return res.json({
+        available: false,
+        message: 'No recent satellite imagery available for Mandaon area yet. Sentinel-2 revisits every 3-5 days. If this polygon was recently created, please allow a few days for Agromonitoring to download satellite data for this region.',
+        images: []
+      });
+    }
+
+    const results = [];
+    const maxImages = Math.min(images.length, 5);
+
+    for (let i = 0; i < maxImages; i++) {
+      const img = images[i];
+      const entry = {
+        date: new Date(img.dt * 1000).toISOString(),
+        dateFormatted: new Date(img.dt * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        satellite: img.type,
+        coverage: img.dc,
+        clouds: img.cl,
+        hasTrueColor: !!img.image?.truecolor,
+        hasFalseColor: !!img.image?.falsecolor,
+        hasNdvi: !!img.image?.ndvi
+      };
+
+      if (img.stats?.ndvi) {
+        try {
+          const stats = await satelliteService.fetchStats(img.stats.ndvi);
+          entry.ndviStats = stats;
+          entry.health = satelliteService.assessVegetationHealth(stats);
+        } catch (e) {
+          entry.ndviStats = null;
+          entry.health = satelliteService.assessVegetationHealth(null);
+        }
+      }
+
+      results.push(entry);
+    }
+
+    res.json({
+      available: true,
+      polygon: 'Mandaon Agricultural Zone - Masbate',
+      images: results
+    });
+  } catch (err) {
+    console.error('Satellite Imagery Error:', err);
+    res.status(500).json({ error: 'Failed to fetch satellite imagery', message: err.message });
+  }
+});
+
+router.get('/api/satellite/image/:type', requireAuth, async (req, res) => {
+  try {
+    if (!satelliteService) {
+      return res.status(503).json({ error: 'Satellite service not available' });
+    }
+
+    const { type } = req.params;
+    if (!['truecolor', 'falsecolor', 'ndvi'].includes(type)) {
+      return res.status(400).json({ error: 'Invalid image type. Use: truecolor, falsecolor, ndvi' });
+    }
+
+    const end = new Date();
+    const start = new Date();
+    start.setDate(start.getDate() - 90);
+
+    const images = await satelliteService.searchImages(start, end);
+    if (!images || images.length === 0) {
+      return res.status(404).json({ error: 'No satellite images available' });
+    }
+
+    const latest = images[0];
+    const imageUrl = latest.image?.[type];
+    if (!imageUrl) {
+      return res.status(404).json({ error: `${type} image not available for latest capture` });
+    }
+
+    const imageBuffer = await satelliteService.fetchImageBuffer(imageUrl);
+    res.set('Content-Type', 'image/png');
+    res.set('Cache-Control', 'public, max-age=3600');
+    res.send(imageBuffer);
+  } catch (err) {
+    console.error('Satellite Image Fetch Error:', err);
+    res.status(500).json({ error: 'Failed to fetch satellite image' });
+  }
+});
+
+router.get('/api/satellite/ndvi-stats', requireAuth, async (req, res) => {
+  try {
+    if (!satelliteService) {
+      return res.status(503).json({ error: 'Satellite service not available' });
+    }
+
+    const end = new Date();
+    const start = new Date();
+    start.setDate(start.getDate() - 90);
+
+    const images = await satelliteService.searchImages(start, end);
+    if (!images || images.length === 0) {
+      return res.status(404).json({ error: 'No satellite data available' });
+    }
+
+    const latest = images[0];
+    if (!latest.stats?.ndvi) {
+      return res.status(404).json({ error: 'NDVI stats not available' });
+    }
+
+    const stats = await satelliteService.fetchStats(latest.stats.ndvi);
+    const health = satelliteService.assessVegetationHealth(stats);
+
+    res.json({
+      date: new Date(latest.dt * 1000).toISOString(),
+      satellite: latest.type,
+      coverage: latest.dc,
+      clouds: latest.cl,
+      stats,
+      health
+    });
+  } catch (err) {
+    console.error('NDVI Stats Error:', err);
+    res.status(500).json({ error: 'Failed to fetch NDVI statistics' });
   }
 });
 

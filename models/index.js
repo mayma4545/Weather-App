@@ -11,6 +11,7 @@ const Alert = require('./Alert');
 const Trivia = require('./Trivia');
 const SoilProfile = require('./SoilProfile');
 const StationDevice = require('./StationDevice');
+const Otp = require('./Otp');
 
 // Define Associations
 
@@ -57,5 +58,6 @@ module.exports = {
   Alert,
   Trivia,
   SoilProfile,
-  StationDevice
+  StationDevice,
+  Otp
 };

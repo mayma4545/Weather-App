@@ -768,3 +768,451 @@ textarea.form-control {
   border-color: #1BE035;
   color: #0D5E1A;
 }
+
+.satellite-monitoring-card {
+  margin-bottom: 20px;
+  border: 2px solid #1a4a8a;
+  background: linear-gradient(135deg, #f8faff 0%, #f0f6ff 100%);
+}
+
+.satellite-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.satellite-title-icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+  color: #1a4a8a;
+}
+
+.satellite-monitoring-card .card-title {
+  color: #1a4a8a;
+  font-size: 16px;
+}
+
+.satellite-monitoring-card .card-sub {
+  color: #4a6a9a;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.satellite-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 2px solid #b8d0f0;
+  border-radius: 10px;
+  background: #fff;
+  color: #1a4a8a;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.satellite-refresh-btn:hover {
+  background: #e8f0ff;
+  border-color: #1a4a8a;
+}
+.satellite-refresh-btn:active {
+  transform: scale(0.96);
+}
+.satellite-refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.satellite-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 20px;
+  color: #4a6a9a;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.satellite-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #b8d0f0;
+  border-top-color: #1a4a8a;
+  border-radius: 50%;
+  animation: satSpin 0.8s linear infinite;
+}
+
+@keyframes satSpin {
+  to { transform: rotate(360deg); }
+}
+
+.satellite-error {
+  padding: 16px 20px;
+  background: #fef0ec;
+  border: 1px solid #fad9d0;
+  border-radius: 12px;
+  color: #9a3a20;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.satellite-meta-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  background: #e8f0ff;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2a4a7a;
+}
+
+.satellite-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.satellite-meta-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.satellite-images-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.satellite-image-panel {
+  background: #fff;
+  border: 2px solid #d0dff0;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.satellite-image-panel:hover {
+  border-color: #1a4a8a;
+  box-shadow: 0 4px 16px rgba(26, 74, 138, 0.1);
+}
+
+.satellite-image-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #1a4a8a;
+  background: #f0f6ff;
+  border-bottom: 1px solid #d0dff0;
+}
+
+.satellite-image-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #e8eef6;
+  overflow: hidden;
+}
+
+.satellite-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.satellite-img-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(232, 238, 246, 0.85);
+  transition: opacity 0.3s;
+}
+
+.satellite-img-overlay.loaded {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.satellite-spinner-sm {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #b8d0f0;
+  border-top-color: #1a4a8a;
+  border-radius: 50%;
+  animation: satSpin 0.8s linear infinite;
+}
+
+.satellite-image-desc {
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #5a7a9a;
+  line-height: 1.5;
+  font-weight: 500;
+  background: #fafcff;
+}
+
+.satellite-analysis {
+  margin-bottom: 18px;
+}
+
+.satellite-health-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  border: 2px solid;
+}
+
+.satellite-health-card.health-healthy {
+  background: #f0fff0;
+  border-color: #b8f0b8;
+}
+.satellite-health-card.health-moderate {
+  background: #fffdf0;
+  border-color: #f0e8b8;
+}
+.satellite-health-card.health-stressed {
+  background: #fff5ec;
+  border-color: #f0d0a8;
+}
+.satellite-health-card.health-damaged {
+  background: #fef0ec;
+  border-color: #f0c0b0;
+}
+.satellite-health-card.health-no_vegetation {
+  background: #fef0ec;
+  border-color: #f0a0a0;
+}
+.satellite-health-card.health-no_data {
+  background: #f5f5f5;
+  border-color: #ddd;
+}
+
+.health-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.health-icon.icon-healthy { background: #d4f8d4; color: #0d5e1a; }
+.health-icon.icon-moderate { background: #fef4e2; color: #7a4d00; }
+.health-icon.icon-stressed { background: #fde8d0; color: #8a4a00; }
+.health-icon.icon-damaged { background: #fde0d8; color: #b91c1c; }
+.health-icon.icon-no_vegetation { background: #fdd8d8; color: #b91c1c; }
+.health-icon.icon-no_data { background: #e8e8e8; color: #666; }
+
+.health-body {
+  flex: 1;
+}
+
+.health-label {
+  font-size: 15px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.health-label.label-healthy { color: #0d5e1a; }
+.health-label.label-moderate { color: #7a4d00; }
+.health-label.label-stressed { color: #8a4a00; }
+.health-label.label-damaged { color: #b91c1c; }
+.health-label.label-no_vegetation { color: #b91c1c; }
+.health-label.label-no_data { color: #666; }
+
+.health-desc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #3a5a3a;
+  font-weight: 500;
+}
+
+.health-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.health-stat {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 14px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.health-stat-value {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1a3d1a;
+  font-family: monospace;
+}
+
+.health-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6a8a6a;
+  margin-top: 2px;
+}
+
+.satellite-ndvi-legend {
+  padding: 14px 18px;
+  background: #fff;
+  border: 2px solid #d0dff0;
+  border-radius: 12px;
+  margin-bottom: 18px;
+}
+
+.ndvi-legend-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #4a6a9a;
+  margin-bottom: 10px;
+}
+
+.ndvi-legend-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ndvi-legend-gradient {
+  height: 18px;
+  border-radius: 6px;
+  background: linear-gradient(to right, #8B4513 0%, #D2691E 10%, #DAA520 25%, #9ACD32 40%, #32CD32 55%, #228B22 70%, #006400 85%, #003200 100%);
+}
+
+.ndvi-legend-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  font-weight: 600;
+  color: #6a8a6a;
+}
+
+.satellite-history {
+  margin-top: 4px;
+}
+
+.satellite-history-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a4a8a;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.satellite-history-list {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.satellite-history-item {
+  flex-shrink: 0;
+  width: 160px;
+  background: #fff;
+  border: 2px solid #d0dff0;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.satellite-history-item:hover {
+  border-color: #1a4a8a;
+  box-shadow: 0 2px 8px rgba(26, 74, 138, 0.12);
+}
+.satellite-history-item.active {
+  border-color: #1a4a8a;
+  box-shadow: 0 0 0 2px rgba(26, 74, 138, 0.2);
+}
+
+.satellite-history-thumb {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  display: block;
+  background: #e8eef6;
+}
+
+.satellite-history-info {
+  padding: 8px 10px;
+}
+
+.satellite-history-date {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1a4a8a;
+}
+
+.satellite-history-sat {
+  font-size: 10px;
+  color: #6a8aaa;
+  font-weight: 600;
+}
+
+.satellite-history-ndvi {
+  font-size: 10px;
+  font-weight: 700;
+  margin-top: 3px;
+}
+
+@media (max-width: 900px) {
+  .satellite-images-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .satellite-header {
+    flex-direction: column;
+  }
+  .satellite-meta-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .satellite-health-card {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .health-stats {
+    flex-direction: column;
+  }
+  .ndvi-legend-labels {
+    font-size: 9px;
+  }
+}

@@ -44,6 +44,15 @@ const User = sequelize.define('User', {
     type: DataTypes.BOOLEAN,
     allowNull: true,
     defaultValue: true
+  },
+  identity_type: {
+    type: DataTypes.STRING(50),
+    allowNull: true,
+    defaultValue: 'Farmer'
+  },
+  identity_specification: {
+    type: DataTypes.STRING(255),
+    allowNull: true
   }
 }, {
   tableName: 'users',

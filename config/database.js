@@ -8,35 +8,43 @@ const isProduction = process.env.NODE_ENV === 'production' || process.env.DB_ENV
 
 if (isProduction) {
   console.log('Connecting to Production Database (MySQL from Aiven.io)...');
+  console.log(`Database Host: ${process.env.PROD_DB_HOST || 'NOT SET'}`);
+  console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
   
   if (process.env.PROD_DATABASE_URL) {
-    // Connect using connection string/URI
+    // Connect using connection string/URI (RECOMMENDED for Render)
+    console.log('Using PROD_DATABASE_URL connection string');
     sequelize = new Sequelize(process.env.PROD_DATABASE_URL, {
       dialect: 'mysql',
-      logging: console.log,
+      logging: false, // Set to console.log for debugging
       dialectOptions: {
-        ssl: {
-          rejectUnauthorized: true, // Required for SSL connections to Aiven
-          ca: process.env.PROD_DB_SSL_CA
-        }
+          ssl: {
+            require: true,
+            rejectUnauthorized: false
+          },
+        supportBigNumbers: true,
+        bigNumberStrings: true
       }
     });
   } else {
-    // Connect using individual parameters
+    // Fallback: Connect using individual parameters
+    console.log('Using individual database parameters');
     sequelize = new Sequelize(
       process.env.PROD_DB_NAME || 'weather_app_prod',
       process.env.PROD_DB_USER || 'admin',
       process.env.PROD_DB_PASSWORD,
       {
         host: process.env.PROD_DB_HOST || 'localhost',
-        port: process.env.PROD_DB_PORT || 3306,
+        port: parseInt(process.env.PROD_DB_PORT) || 3306,
         dialect: 'mysql',
-        logging: console.log,
+        logging: false, // Set to console.log for debugging
         dialectOptions: {
           ssl: {
-            rejectUnauthorized: true,
-            ca: process.env.PROD_DB_SSL_CA
-          }
+            require: true,
+            rejectUnauthorized: false
+          },
+          supportBigNumbers: true,
+          bigNumberStrings: true
         }
       }
     );

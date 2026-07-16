@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+require('dotenv').config();
 const { sequelize, User, CropRepository, FarmPlot, PlantingRecord, WeatherLog, Trivia } = require('../models');
 
 async function seed() {
