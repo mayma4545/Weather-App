@@ -17,7 +17,7 @@ To empower farmers and agricultural professionals with precision weather intelli
 2. **Crop & Field Plot Tracking:**
    - Manage multi-plot farm layouts, soil profiles, planting records, and growing degree day (GDD) calculations.
 3. **Automated Agricultural Decision Support:**
-   - Rule-based decision models for disease risk estimation, fertilizer timing, smart irrigation schedules, and multi-factor Safe-to-Plant prediction engine.
+   - Rule-based decision models for disease risk estimation, fertilizer timing, smart irrigation schedules, multi-factor Safe-to-Plant prediction engine, and context-enriched AI field recommendations with quantifiable numerical targets.
 4. **Early Warning & Alert System:**
    - Automated notifications for unseasonal heat, extreme rainfall, drought risks, and typhoon alerts via dashboard and OTP/email notifications.
 5. **Digital Knowledge Repository & Trivia:**

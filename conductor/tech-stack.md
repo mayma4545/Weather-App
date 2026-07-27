@@ -23,7 +23,7 @@
 
 ## Services & Integrations
 - **Cloud Storage:** Cloudinary (`^2.10.0`) & Multer (`^2.2.0`) for media/file uploads
-- **Weather Services:** Google Weather API, multi-crop Planting Safety Index prediction engine (`plantingPredictorService.js`), & local station log ingestion
+- **Weather & AI Services:** Google Weather API, multi-crop Planting Safety Index prediction engine (`plantingPredictorService.js`), Google AI / Gemini service (`geminiService.js`) for context-enriched field recommendations, & local station log ingestion
 - **Middlewares & Logging:** `morgan` (`^1.10.1`), `cors` (`^2.8.6`), `dotenv` (`^17.4.2`)
 
 ## Development & Operations
