@@ -39,8 +39,8 @@ Requirements for the campus pilot. Each maps to roadmap phases.
 - [ ] **CROP-05**: User can view fertilizer recommendation for a selected plot
 - [ ] **CROP-06**: User can view growth-stage estimate (GDD-based) for active planting
 - [ ] **CROP-07**: User can view typhoon/storm risk assessment relevant to campus conditions
-- [ ] **CROP-08**: User can view weather-trend based planting schedule guidance (when-to-plant / avoid windows)
-- [ ] **CROP-09**: Advisor outputs are actionable (clear recommendation + short rationale), not raw metrics only
+- [x] **CROP-08**: User can view weather-trend based planting schedule guidance (when-to-plant / avoid windows)
+- [x] **CROP-09**: Advisor outputs are actionable (clear recommendation + short rationale), not raw metrics only
 
 ### Knowledge Hub
 
@@ -117,8 +117,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CROP-05 | Phase 4 | Pending |
 | CROP-06 | Phase 4 | Pending |
 | CROP-07 | Phase 4 | Pending |
-| CROP-08 | Phase 4 | Pending |
-| CROP-09 | Phase 4 | Pending |
+| CROP-08 | Phase 4 | Complete |
+| CROP-09 | Phase 4 | Complete |
 | KNOW-01 | Phase 5 | Pending |
 | KNOW-02 | Phase 5 | Pending |
 | KNOW-03 | Phase 5 | Pending |
