@@ -54,7 +54,7 @@ Requirements for the campus pilot. Each maps to roadmap phases.
 - [ ] **PLAT-01**: Agriculturist has a farmer dashboard as daily workspace (weather, plots, advisories, alerts)
 - [ ] **PLAT-02**: Admin has an admin dashboard for users, content, and alert operations
 - [ ] **PLAT-03**: Farmer and admin primary flows work on mobile web browsers (usable campus pilot layout)
-- [ ] **PLAT-04**: Empty, loading, and error states are clear on main dashboards (no silent failures)
+- [x] **PLAT-04**: Empty, loading, and error states are clear on main dashboards (no silent failures)
 
 ## v2 Requirements
 
@@ -126,7 +126,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PLAT-01 | Phase 6 | Pending |
 | PLAT-02 | Phase 6 | Pending |
 | PLAT-03 | Phase 6 | Pending |
-| PLAT-04 | Phase 6 | Pending |
+| PLAT-04 | Phase 6 | Complete |
 
 **Coverage:**
 - v1 requirements: 31 total
