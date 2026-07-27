@@ -716,6 +716,56 @@ router.post('/api/weather/predict-planting', requireAuth, async (req, res) => {
     if (language === 'minasbate') language = 'filipino';
     if (language !== 'filipino' && language !== 'english') language = 'english';
 
+    // Aggregate user active crop profiles, farm plots, and soil context
+    const userId = req.session && req.session.userId;
+    let userCropContext = '';
+    if (userId) {
+      try {
+        const userPlots = await FarmPlot.findAll({
+          where: { user_id: userId },
+          include: [
+            {
+              model: PlantingRecord,
+              as: 'plantingRecords',
+              where: { status: 'Growing' },
+              required: false,
+              include: [{ model: CropRepository, as: 'crop', required: false }]
+            },
+            {
+              model: SoilProfile,
+              as: 'soilProfiles',
+              required: false,
+              order: [['createdAt', 'DESC']],
+              limit: 1
+            }
+          ]
+        });
+        if (userPlots && userPlots.length > 0) {
+          const plotSummaries = userPlots.map(plot => {
+            const activeRecord = plot.plantingRecords && plot.plantingRecords[0];
+            const latestSoil = plot.soilProfiles && plot.soilProfiles[0];
+            let info = `Plot "${plot.plot_name}" (${plot.area_size} ha, soil: ${plot.soil_type || (latestSoil ? latestSoil.soil_type : 'N/A')})`;
+            if (latestSoil) {
+              info += ` [pH: ${latestSoil.ph || 'N/A'}, N:${latestSoil.nitrogen_level || 'N/A'} P:${latestSoil.phosphorus_level || 'N/A'} K:${latestSoil.potassium_level || 'N/A'}]`;
+            }
+            if (activeRecord) {
+              const cropName = activeRecord.crop ? (activeRecord.crop.crop_name || activeRecord.crop.name || 'Active Crop') : 'Active Crop';
+              info += `; Active Crop: ${cropName} (Planted: ${activeRecord.planting_date}, Status: ${activeRecord.status})`;
+            } else {
+              info += `; No active crop planted.`;
+            }
+            return info;
+          });
+          userCropContext = plotSummaries.join(' | ');
+        }
+      } catch (plotErr) {
+        console.warn('Could not fetch user crop/plot context:', plotErr.message);
+      }
+    }
+    if (userCropContext) {
+      evaluation.userCropContext = userCropContext;
+    }
+
     // D-03: rule-based scores stay authoritative; only recommendations may be overridden
     evaluation.recommendations_source = 'static';
 
