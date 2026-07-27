@@ -12,7 +12,7 @@ Welcome to the Conductor documentation index for **Project Weather**, an Agricul
 ## Tracks
 *Tracks represent distinct features, enhancements, or bug fixes.*
 
-- [ ] **Track: Modern Weather Analytics UI Redesign**
+- [x] **Track: Modern Weather Analytics UI Redesign**
 *Link: [./tracks/weather_analytics_ui_redesign_20260727/](./tracks/weather_analytics_ui_redesign_20260727/)*
 
 ## Archived Tracks
