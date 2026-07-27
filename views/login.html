@@ -3,65 +3,393 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App - Login</title>
+    <title>Project Weather — Sign In</title>
     <link rel="stylesheet" href="/css/login.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script>
+        /* Apply theme before paint to avoid flash */
+        (function() {
+            try {
+                var t = localStorage.getItem('pw-theme');
+                if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <div class="weather-icon">
-                <!-- Simple sun and cloud SVG -->
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="5" fill="#facc15" stroke="#facc15"></circle>
-                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
-                    <path d="M17.5 19H9a5 5 0 1 1 4.5-7.58A5 5 0 0 1 17.5 19z" fill="#0EA5E9" stroke="#0EA5E9"></path>
+    <!-- Theme toggle -->
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
+        <svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+        <svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+
+    <div class="auth-shell">
+
+        <!-- ====================================================
+             LEFT — Biophilic agriculture illustration
+             ==================================================== -->
+        <aside class="auth-visual">
+            <div class="auth-visual__art" aria-hidden="true">
+                <svg viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Sun -->
+                    <circle cx="450" cy="170" r="64" fill="#FDE68A"/>
+                    <circle cx="450" cy="170" r="88" fill="#FEF3C7" opacity="0.55"/>
+                    <!-- Soft clouds -->
+                    <g fill="#FFFFFF" opacity="0.85">
+                        <ellipse cx="100" cy="130" rx="62" ry="22"/>
+                        <ellipse cx="140" cy="116" rx="44" ry="20"/>
+                        <ellipse cx="240" cy="260" rx="80" ry="22"/>
+                        <ellipse cx="200" cy="244" rx="42" ry="18"/>
+                    </g>
+                    <!-- Rolling hills (organic curves) -->
+                    <path d="M0 540 Q 150 460 320 510 T 600 500 V800 H0 Z" fill="#BBF7D0" opacity="0.75"/>
+                    <path d="M0 600 Q 170 560 360 590 T 600 580 V800 H0 Z" fill="#86EFAC"/>
+                    <path d="M0 660 Q 160 620 320 650 T 600 640 V800 H0 Z" fill="#4ADE80"/>
+                    <!-- Soil curves -->
+                    <g stroke="#16A34A" stroke-width="2" opacity="0.18" fill="none">
+                        <path d="M0 690 Q 150 660 300 685 T 600 680"/>
+                        <path d="M0 720 Q 150 695 300 715 T 600 712"/>
+                        <path d="M0 750 Q 150 728 300 745 T 600 745"/>
+                    </g>
+                    <!-- Hand-drawn sprouts -->
+                    <g fill="#14532D">
+                        <g transform="translate(80 700)">
+                            <rect x="-1.8" y="-22" width="3.6" height="26" rx="2"/>
+                            <path d="M0 -22 C -13 -26 -17 -17 -14 -11 C -7 -14 -2 -18 0 -22 Z"/>
+                            <path d="M0 -22 C 13 -26 17 -17 14 -11 C 7 -14 2 -18 0 -22 Z"/>
+                        </g>
+                        <g transform="translate(180 728)">
+                            <rect x="-1.8" y="-28" width="3.6" height="32" rx="2"/>
+                            <path d="M0 -28 C -15 -32 -20 -22 -17 -14 C -9 -17 -2 -22 0 -28 Z"/>
+                            <path d="M0 -28 C 15 -32 20 -22 17 -14 C 9 -17 2 -22 0 -28 Z"/>
+                        </g>
+                        <g transform="translate(280 712)">
+                            <rect x="-1.8" y="-19" width="3.6" height="23" rx="2"/>
+                            <path d="M0 -19 C -11 -23 -15 -16 -13 -10 C -6 -12 -2 -16 0 -19 Z"/>
+                            <path d="M0 -19 C 11 -23 15 -16 13 -10 C 6 -12 2 -16 0 -19 Z"/>
+                        </g>
+                        <g transform="translate(380 732)">
+                            <rect x="-1.8" y="-30" width="3.6" height="34" rx="2"/>
+                            <path d="M0 -30 C -16 -34 -21 -24 -18 -16 C -10 -19 -2 -24 0 -30 Z"/>
+                            <path d="M0 -30 C 16 -34 21 -24 18 -16 C 10 -19 2 -24 0 -30 Z"/>
+                        </g>
+                        <g transform="translate(500 706)">
+                            <rect x="-1.8" y="-22" width="3.6" height="26" rx="2"/>
+                            <path d="M0 -22 C -13 -26 -17 -17 -14 -11 C -7 -14 -2 -18 0 -22 Z"/>
+                            <path d="M0 -22 C 13 -26 17 -17 14 -11 C 7 -14 2 -18 0 -22 Z"/>
+                        </g>
+                    </g>
+                    <!-- Birds -->
+                    <g stroke="#1E40AF" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.55">
+                        <path d="M250 180 q 9 -9 18 0 q 9 -9 18 0"/>
+                        <path d="M320 220 q 7 -7 14 0 q 7 -7 14 0"/>
+                    </g>
                 </svg>
             </div>
-            <h2>Log in to Weather App</h2>
-            <p class="subtitle">Enter your details to view your daily forecast.</p>
-            
-            <div id="error-message" class="form-error" style="display: none;"></div>
 
-            <form action="/login" method="POST" class="login-form">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <div class="brand-mark">
+                <div class="brand-mark__logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 21V11"/>
+                        <path d="M12 11C 12 7 8 5 4 5C 4 9 8 11 12 11Z"/>
+                        <path d="M12 9C 12 6 15 4 20 4C 20 7 17 9 12 9Z"/>
+                    </svg>
                 </div>
-                
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <div class="brand-mark__name">Project <span>Weather</span></div>
+            </div>
+
+            <div class="auth-visual__content">
+                <span class="auth-visual__eyebrow">
+                    <span class="dot"></span> Live weather for your fields
+                </span>
+                <h1 class="auth-visual__headline">Grow smarter, every season.</h1>
+                <p class="auth-visual__sub">Accurate forecasts, crop guidance, and irrigation planning — built for farmers and agricultural students.</p>
+
+                <ul class="auth-visual__features">
+                    <li>
+                        <span class="feature-dot">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.5 19H9a5 5 0 1 1 4.5-7.58A5 5 0 0 1 17.5 19z"/>
+                            </svg>
+                        </span>
+                        Hyper-local 7-day weather &amp; storm alerts
+                    </li>
+                    <li>
+                        <span class="feature-dot">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2v6"/><path d="M12 22V10"/><path d="M5 8h14l-2 12H7L5 8z"/>
+                            </svg>
+                        </span>
+                        Crop stage tracking &amp; harvest timing
+                    </li>
+                    <li>
+                        <span class="feature-dot">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 12h18"/><path d="M7 8v8"/><path d="M17 8v8"/>
+                            </svg>
+                        </span>
+                        Irrigation planner tied to rainfall
+                    </li>
+                </ul>
+            </div>
+
+            <div class="auth-visual__footer">
+                Trusted by <strong>2,400+ farms</strong> across the region.
+            </div>
+        </aside>
+
+        <!-- ====================================================
+             RIGHT — Sign in form
+             ==================================================== -->
+        <main class="auth-panel">
+            <div class="auth-card">
+                <div class="brand-mobile brand-mark">
+                    <div class="brand-mark__logo">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 21V11"/>
+                            <path d="M12 11C 12 7 8 5 4 5C 4 9 8 11 12 11Z"/>
+                            <path d="M12 9C 12 6 15 4 20 4C 20 7 17 9 12 9Z"/>
+                        </svg>
+                    </div>
+                    <div class="brand-mark__name">Project <span>Weather</span></div>
                 </div>
 
-                <div class="form-actions">
-                    <label class="remember-me">
-                        <input type="checkbox" name="remember">
-                        <span>Remember me</span>
-                    </label>
-                    <a href="#" class="forgot-password">Forgot Password?</a>
-                </div>
-                
-                <button type="submit" class="login-btn">Log In</button>
-            </form>
+                <h2 class="auth-title">Welcome back</h2>
+                <p class="auth-subtitle">Sign in to check today's forecast and your fields.</p>
 
-            <script>
-                (function() {
-                    var params = new URLSearchParams(window.location.search);
-                    var errorMsg = params.get('error');
-                    if (errorMsg) {
-                        var el = document.getElementById('error-message');
-                        el.textContent = decodeURIComponent(errorMsg);
-                        el.style.display = 'block';
-                    }
-                })();
-            </script>
-            
-            <p class="register-prompt">Don't have an account? <a href="/register">Sign up</a></p>
-        </div>
+                <div id="error-message" class="auth-alert auth-alert--error" role="alert" aria-live="assertive">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <span id="error-text"></span>
+                </div>
+
+                <form action="/login" method="POST" class="auth-form" id="loginForm" novalidate>
+                    <div class="field" id="field-email">
+                        <label class="field__label" for="email">Email</label>
+                        <div class="field__control">
+                            <svg class="field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="5" width="18" height="14" rx="2"/>
+                                <polyline points="3 7 12 13 21 7"/>
+                            </svg>
+                            <input type="email" id="email" name="email" class="field__input" placeholder="farmer@field.com" autocomplete="email" required>
+                            <svg class="field__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="field__message" id="msg-email">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <div class="field field--toggle" id="field-password">
+                        <label class="field__label" for="password">Password</label>
+                        <div class="field__control">
+                            <svg class="field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="4" y="11" width="16" height="9" rx="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                            <input type="password" id="password" name="password" class="field__input" placeholder="Enter your password" autocomplete="current-password" required>
+                            <button type="button" class="field__toggle" id="pwToggle" aria-label="Show password">
+                                <svg class="icon-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                <svg class="icon-hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                                    <path d="M1 1l22 22"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="field__message" id="msg-password">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <div class="form-meta">
+                        <label class="checkbox-pair">
+                            <input type="checkbox" name="remember">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="#" class="text-link">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="loginBtn">
+                        <svg class="btn-sprout" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 21V11"/>
+                            <path d="M12 11C 12 7 8 5 4 5C 4 9 8 11 12 11Z"/>
+                            <path d="M12 9C 12 6 15 4 20 4C 20 7 17 9 12 9Z"/>
+                        </svg>
+                        <span class="btn-primary__label">Sign in</span>
+                        <span class="btn-primary__spinner spinner" aria-hidden="true"></span>
+                        <span class="btn-primary__loading-text">Signing in…</span>
+                    </button>
+                </form>
+
+                <p class="auth-footer">New to Project Weather? <a href="/register">Create an account</a></p>
+            </div>
+        </main>
     </div>
+
+    <script>
+        /* =====================================================
+           Theme toggle (with persistence)
+           ===================================================== */
+        (function() {
+            var toggle = document.getElementById('themeToggle');
+            toggle.addEventListener('click', function() {
+                var cur = document.documentElement.getAttribute('data-theme') === 'dark';
+                if (cur) {
+                    document.documentElement.removeAttribute('data-theme');
+                    try { localStorage.setItem('pw-theme', 'light'); } catch (e) {}
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    try { localStorage.setItem('pw-theme', 'dark'); } catch (e) {}
+                }
+            });
+        })();
+
+        /* =====================================================
+           Show server-side error banner (?error=...)
+           ===================================================== */
+        (function() {
+            var params = new URLSearchParams(window.location.search);
+            var errorMsg = params.get('error');
+            if (errorMsg) {
+                var banner = document.getElementById('error-message');
+                document.getElementById('error-text').textContent = decodeURIComponent(errorMsg);
+                banner.classList.add('is-visible');
+            }
+        })();
+
+        /* =====================================================
+           Password visibility toggle
+           ===================================================== */
+        (function() {
+            var toggle = document.getElementById('pwToggle');
+            var input = document.getElementById('password');
+            toggle.addEventListener('click', function() {
+                var isPw = input.getAttribute('type') === 'password';
+                input.setAttribute('type', isPw ? 'text' : 'password');
+                toggle.classList.toggle('is-visible', isPw);
+                toggle.setAttribute('aria-label', isPw ? 'Hide password' : 'Show password');
+            });
+        })();
+
+        /* =====================================================
+           Inline validation — blur + corrective input per UX rule
+           ===================================================== */
+        (function() {
+            var email = document.getElementById('email');
+            var password = document.getElementById('password');
+            var fieldEmail = document.getElementById('field-email');
+            var fieldPw = document.getElementById('field-password');
+            var msgEmail = document.getElementById('msg-email').querySelector('span');
+            var msgPw = document.getElementById('msg-password').querySelector('span');
+            var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            function clearState(field) {
+                field.classList.remove('is-valid', 'is-invalid', 'shake');
+            }
+
+            function validateEmail() {
+                if (!email.value) {
+                    clearState(fieldEmail);
+                    msgEmail.textContent = '';
+                    return false;
+                }
+                if (emailRe.test(email.value.trim())) {
+                    fieldEmail.classList.remove('is-invalid');
+                    fieldEmail.classList.add('is-valid');
+                    msgEmail.textContent = 'Looks good.';
+                    return true;
+                }
+                fieldEmail.classList.remove('is-valid');
+                fieldEmail.classList.add('is-invalid');
+                msgEmail.textContent = 'Please enter a valid email address.';
+                return false;
+            }
+
+            function validatePassword() {
+                if (!password.value) {
+                    clearState(fieldPw);
+                    msgPw.textContent = '';
+                    return false;
+                }
+                if (password.value.length >= 8) {
+                    fieldPw.classList.remove('is-invalid');
+                    fieldPw.classList.add('is-valid');
+                    msgPw.textContent = '';
+                    return true;
+                }
+                fieldPw.classList.remove('is-valid');
+                fieldPw.classList.add('is-invalid');
+                msgPw.textContent = 'Password must be at least 8 characters.';
+                return false;
+            }
+
+            email.addEventListener('blur', validateEmail);
+            email.addEventListener('input', function() {
+                if (fieldEmail.classList.contains('is-invalid')) validateEmail();
+            });
+            password.addEventListener('blur', validatePassword);
+            password.addEventListener('input', function() {
+                if (fieldPw.classList.contains('is-invalid')) validatePassword();
+            });
+
+            /* =====================================================
+             Submit — block on invalid, loading on valid
+             ===================================================== */
+            var form = document.getElementById('loginForm');
+            var btn = document.getElementById('loginBtn');
+
+            form.addEventListener('submit', function(e) {
+                if (!email.value) {
+                    fieldEmail.classList.add('is-invalid', 'shake');
+                    msgEmail.textContent = 'Email is required.';
+                    setTimeout(function(){ fieldEmail.classList.remove('shake'); }, 450);
+                    email.focus();
+                    e.preventDefault();
+                    return;
+                }
+                if (!emailRe.test(email.value.trim())) {
+                    fieldEmail.classList.add('is-invalid', 'shake');
+                    msgEmail.textContent = 'Please enter a valid email address.';
+                    setTimeout(function(){ fieldEmail.classList.remove('shake'); }, 450);
+                    email.focus();
+                    e.preventDefault();
+                    return;
+                }
+                if (!password.value) {
+                    fieldPw.classList.add('is-invalid', 'shake');
+                    msgPw.textContent = 'Password is required.';
+                    setTimeout(function(){ fieldPw.classList.remove('shake'); }, 450);
+                    password.focus();
+                    e.preventDefault();
+                    return;
+                }
+
+                /* Validation passed — show loading, native POST continues */
+                btn.classList.add('is-loading');
+                btn.disabled = true;
+            });
+        })();
+    </script>
 </body>
 </html>
-

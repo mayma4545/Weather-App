@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farmer Dashboard - digital repository</title>
+    <title>Farmer Dashboard - Digital Repository</title>
     <link rel="stylesheet" href="/css/farmer-dashboard.css">
+    <link rel="stylesheet" href="/css/digital-repository.css">
 </head>
 <body>
 <div class="dash">
@@ -18,13 +19,6 @@
             Project Weather
         </div>
         <div class="topbar-right">
-            <!-- <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open navigation">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D6D3CB" stroke-width="2.2">
-                    <line x1="3" y1="6" x2="21" y2="6" />
-                    <line x1="3" y1="12" x2="21" y2="12" />
-                    <line x1="3" y1="18" x2="21" y2="18" />
-                </svg>
-            </button> -->
             <div class="loc">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
@@ -41,15 +35,11 @@
                 2 Active Alerts
             </div>
             <div style="display:flex;align-items:center;gap:8px;">
-                <div
-                    style="width:34px;height:34px;border-radius:50%;background:#1BE035;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#FFFFFF;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#FF5E36;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#FFFFFF;">
                     JR</div>
             </div>
         </div>
     </div>
-
-    <!-- Sidebar overlay (mobile) -->
-    <!-- <div class="sidebar-overlay" id="sidebarOverlay"></div> -->
 
     <div class="layout">
         <!-- Desktop Sidebar -->
@@ -67,8 +57,7 @@
                 </a>
                 <a class="nav-item" href="/farmer/crop-management" id="nav-crop-management">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path
-                            d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z" />
+                        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z" />
                         <path d="M12 6v8M8 10h8" />
                     </svg>
                     Crop Management
@@ -79,7 +68,7 @@
                     </svg>
                     Weather Analytics
                 </a>
-                <a class="nav-item" href="/farmer/digital-repository" id="nav-digital-repository">
+                <a class="nav-item active" href="/farmer/digital-repository" id="nav-digital-repository">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
@@ -93,7 +82,7 @@
                     </svg>
                     Profile Page
                 </a>
-                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 2px solid #C8F0C8; padding-top: 18px; color: #D44A1A;">
+                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 2px solid #E9ECEF; padding-top: 18px; color: #D44A1A;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                         <polyline points="16 17 21 12 16 7" />
@@ -106,63 +95,136 @@
             <div class="sidebar-section">
                 <div class="sidebar-label">Active Fields</div>
                 <div id="sidebar-fields-container">
-                    <!-- Dynamic fields mini status will be rendered here -->
+                    <!-- Dynamic fields mini status rendered here -->
                 </div>
             </div>
 
             <div class="sidebar-section">
                 <div class="sidebar-label">Masbate Region</div>
                 <div style="font-size: 12px; color: #4A8A4A; padding-left: 12px;">
-                    Station ID: <span
-                        style="font-family:monospace; font-weight:700; color:#1BE035;">Masbate-04</span><br>
-                    Status: <span style="color:#1BE035; font-weight:700;">CONNECTED</span>
+                    Station ID: <span style="font-family:monospace; font-weight:700; color:#FF5E36;">Masbate-04</span><br>
+                    Status: <span style="color:#10B981; font-weight:700;">CONNECTED</span>
                 </div>
             </div>
         </div>
 
         <!-- Main Content Area -->
         <div class="main">
-<div id="page-digital-repository" class="page-content active">
-                <div class="page-header">
-                    <div>
-                        <div class="page-title">Digital Repository</div>
-                        <div class="page-subtitle">Smart Crop Encyclopedia, agricultural best practices, and trivia
-                            feeds.</div>
-                    </div>
-                </div>
-
-                <!-- Recommended For You Context-Aware Banners -->
-                <div class="recommendation-banner">
-                    <div class="recommendation-badge">
-                        <svg class="recommendation-badge-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                        Recommended For Your Active Farm
-                    </div>
-                    <div class="recommendation-title">Root rot prevention guide during Masbate's rainy months</div>
-                    <p class="recommendation-desc">Since you are growing <strong>Palay (IR64)</strong>, early seedling humidity checks can protect against bacterial soft rot. Read best drainage practices verified by DEBESMSCAT.</p>
-                </div>
-
-                <!-- Crop Encyclopedia Search and Grid -->
-                <div class="card ency-main-card">
-                    <div class="ency-section-header-row">
-                        <div>
-                            <div class="card-title ency-title">Crop Encyclopedia</div>
-                            <div class="card-sub ency-subtitle">Comprehensive crop profiles with climate constraints, growth timelines, and vulnerability data.</div>
+            <div id="page-digital-repository" class="page-content active">
+                <div class="digital-repo-container">
+                    
+                    <!-- Top Mobile/Page Header -->
+                    <!-- <div class="repo-header">
+                        <div class="repo-header-title-group">
+                            <h1>Digital Repository</h1>
+                            <p>From Field to Digital Library & Crop Wisdom</p>
                         </div>
-                        <div class="ency-search-wrapper">
-                            <input type="text" id="encyclopedia-search" placeholder="Search Crop Encyclopedia..." class="form-control ency-search-input">
+                        <div class="repo-header-actions">
+                            <button class="repo-icon-btn" id="btn-repo-share" aria-label="Share">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="22" y1="2" x2="11" y2="13"/>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                                </svg>
+                            </button>
+                            <button class="repo-icon-btn" id="btn-repo-search-toggle" aria-label="Search">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"/>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div> -->
+
+                    <!-- Category Pills Scroll Bar -->
+                    <!-- <div class="repo-category-bar">
+                        <span style="font-size:12px; font-weight:700; color:var(--repo-text-muted); white-space:nowrap; margin-right:4px;">Explore Categories &raquo;</span>
+                        <button class="repo-cat-pill active" data-category="all">
+                            All Crops <span class="repo-cat-badge">3 New</span>
+                        </button>
+                        <button class="repo-cat-pill" data-category="rice">🌾 Rice & Grains</button>
+                        <button class="repo-cat-pill" data-category="corn">🌽 Corn & Field</button>
+                        <button class="repo-cat-pill" data-category="veg">🥬 Vegetables</button>
+                        <button class="repo-cat-pill" data-category="pest">🐛 Pest & Disease</button>
+                    </div> -->
+
+                    <!-- Spotlight Featured Banner Card -->
+                    <!-- <div class="repo-spotlight-section">
+                        <div class="repo-section-title-row">
+                            <div class="repo-section-title">
+                                Featured Crop Guide <span class="repo-section-count">Verified</span>
+                            </div>
+                            <a class="repo-see-all" id="btn-spotlight-see-all">See All</a>
+                        </div>
+                        <div class="repo-spotlight-card">
+                            <div class="repo-spotlight-thumb">
+                                🌾
+                            </div>
+                            <div class="repo-spotlight-details">
+                                <div class="repo-spotlight-tag">RECOMMENDED &raquo; <span>PALAY (RICE)</span></div>
+                                <h3 class="repo-spotlight-heading">Root Rot Prevention Guide</h3>
+                                <p class="repo-spotlight-sub">Early seedling humidity checks &amp; optimal drainage practices for Masbate rainy season.</p>
+                                <button class="repo-btn-secondary" id="btn-spotlight-action">Read Best Practices</button>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <!-- 2x2 Ideas to Get Started Visual Grid -->
+                    <div class="repo-grid-section">
+                        <div class="repo-section-title-row">
+                            <div class="repo-section-title">Ideas to Get Started</div>
+                            <span style="color:var(--repo-text-light); font-weight:700; cursor:pointer;">&bull;&bull;&bull;</span>
+                        </div>
+                        <div class="repo-2x2-grid">
+                            <div class="repo-cat-card rice" data-category="rice">
+                                <div class="repo-cat-card-icon">🌾</div>
+                                <h4 class="repo-cat-card-title">Rice &amp; Grains</h4>
+                            </div>
+                            <div class="repo-cat-card corn" data-category="corn">
+                                <div class="repo-cat-card-icon">🌽</div>
+                                <h4 class="repo-cat-card-title">Corn &amp; Field Crops</h4>
+                            </div>
+                            <div class="repo-cat-card veg" data-category="veg">
+                                <div class="repo-cat-card-icon">🥬</div>
+                                <h4 class="repo-cat-card-title">Vegetables &amp; Roots</h4>
+                            </div>
+                            <div class="repo-cat-card pest" data-category="pest">
+                                <div class="repo-cat-card-icon">🐛</div>
+                                <h4 class="repo-cat-card-title">Pest &amp; Disease Control</h4>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="crop-ency-grid" id="encyclopedia-grid"></div>
+                    <!-- Encyclopedia Search and Grid Section -->
+                    <div class="repo-ency-card-container">
+                        <div class="repo-section-title-row" style="margin-bottom:16px;">
+                            <div class="repo-section-title">Crop Encyclopedia</div>
+                        </div>
+                        
+                        <div class="repo-search-row">
+                            <div class="repo-search-input-wrapper">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"/>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                </svg>
+                                <input type="text" id="encyclopedia-search" placeholder="Search crop variety, climate specs, pests..." class="repo-search-input">
+                            </div>
+                        </div>
 
-                    <div class="ency-pagination" id="encyclopedia-pagination">
-                        <button class="ency-pg-btn" id="ency-pg-prev" disabled>Previous</button>
-                        <div class="ency-pg-pages" id="ency-pg-pages"></div>
-                        <button class="ency-pg-btn" id="ency-pg-next">Next</button>
+                        <!-- Dynamic Encyclopedia Grid -->
+                        <div class="crop-ency-grid repo-crop-grid" id="encyclopedia-grid"></div>
+
+                        <!-- Pagination -->
+                        <div class="ency-pagination" id="encyclopedia-pagination" style="margin-top:20px;">
+                            <button class="ency-pg-btn" id="ency-pg-prev" disabled>Previous</button>
+                            <div class="ency-pg-pages" id="ency-pg-pages"></div>
+                            <button class="ency-pg-btn" id="ency-pg-next">Next</button>
+                        </div>
                     </div>
-                </div>
 
+                </div>
             </div>
+        </div>
+    </div>
 </div>
 
 <!-- Tips Modal Overlay -->
@@ -176,65 +238,54 @@
     </div>
 </div>
 
-<!-- Bottom Navigation (Mobile Tabpane View) -->
-<nav class="bottom-nav" id="bottomNav" aria-label="Mobile navigation">
-    <div class="bottom-nav-inner">
-        <a class="bnav-item" href="/farmer/dashboard" id="mob-nav-dashboard">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="7" height="7" />
-                <rect x="14" y="3" width="7" height="7" />
-                <rect x="14" y="14" width="7" height="7" />
-                <rect x="3" y="14" width="7" height="7" />
-            </svg>
-            Dashboard
-        </a>
-        <a class="bnav-item" href="/farmer/crop-management" id="mob-nav-crop-management">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" />
-                <path d="M12 8v8M8 12h8" />
-            </svg>
-            Crops
-        </a>
-        <a class="bnav-item" href="/farmer/weather-analytics" id="mob-nav-weather-analytics">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-            </svg>
-            Weather
-        </a>
-        <a class="bnav-item" href="/farmer/digital-repository" id="mob-nav-digital-repository">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-            </svg>
-            Library
-        </a>
-        <a class="bnav-item" href="/farmer/profile" id="mob-nav-profile">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-            </svg>
-            Profile
-        </a>
+<!-- Floating Mobile Navigation Bar (Screenshot Style) -->
+<div class="repo-mobile-floating-nav">
+    <a href="/farmer/dashboard" class="repo-mnav-link" title="Dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+        </svg>
+    </a>
+    <a href="/farmer/crop-management" class="repo-mnav-link" title="Crops">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+    </a>
+    
+    <!-- Central Floating Accent Button -->
+    <div class="repo-mnav-float-btn" id="repo-mnav-action-btn" title="Add Crop / Search">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
     </div>
-</nav>
 
-<!-- Edit Crop Modal & CSS styling -->
+    <a href="/farmer/digital-repository" class="repo-mnav-link active" title="Digital Repository">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+    </a>
+    <a href="/farmer/profile" class="repo-mnav-link" title="Profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+        </svg>
+    </a>
+</div>
 
-
-
-
-    <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        let path = window.location.pathname.split("/").pop();
-        if(!path || path === "farmer") path = "dashboard";
-        let nav = document.getElementById("nav-" + path);
-        if(nav) nav.classList.add("active");
-        let mobNav = document.getElementById("mob-nav-" + path);
-        if(mobNav) mobNav.classList.add("active");
-    });
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    let path = window.location.pathname.split("/").pop();
+    if(!path || path === "farmer") path = "dashboard";
+    let nav = document.getElementById("nav-" + path);
+    if(nav) nav.classList.add("active");
+});
 </script>
 <script src="/js/farmer-dashboard.js"></script>
-<!-- JavaScript Engine -->
 </body>
 </html>
+
 

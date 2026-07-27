@@ -323,6 +323,13 @@ body {
   margin-bottom: 22px;
 }
 
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
 .stat-card {
   background: var(--admin-surface);
   border-radius: var(--admin-radius);
@@ -1673,9 +1680,9 @@ select.form-control {
     font-size: 14px;
   }
 
-  .grid-3 {
+  .grid-3,
+  .grid-4 {
     grid-template-columns: 1fr;
-    gap: 12px;
   }
 
   .stat-card {
@@ -1794,4 +1801,142 @@ select.form-control {
   0% { opacity: 1; }
   50% { opacity: 0.5; }
   100% { opacity: 1; }
+}
+
+/* ==========================================================
+   25. Crop Repository Cloudinary Image & Upload Styles
+   ========================================================== */
+.crop-card .cc-img-header {
+  width: calc(100% + 40px);
+  margin: -20px -20px 16px -20px;
+  height: 140px;
+  border-radius: var(--admin-radius) var(--admin-radius) 0 0;
+  overflow: hidden;
+  position: relative;
+  background: var(--admin-surface-tint);
+}
+
+.crop-card .cc-img-header img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.crop-card:hover .cc-img-header img {
+  transform: scale(1.05);
+}
+
+.crop-card .cc-img-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+  display: flex;
+  align-items: flex-end;
+  padding: 8px 14px;
+}
+
+.crop-upload-area {
+  grid-column: 1 / -1;
+  border: 2px dashed #D4D2CA;
+  border-radius: 14px;
+  padding: 22px 18px;
+  text-align: center;
+  background: #FAFAF8;
+  transition: all 0.2s ease;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.crop-upload-area:hover, .crop-upload-area.dragover {
+  border-color: var(--admin-primary);
+  background: #F4F7F4;
+}
+
+.crop-upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #5C5B56;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.crop-upload-label svg {
+  color: var(--admin-primary);
+}
+
+.crop-upload-area input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.crop-image-preview-container {
+  grid-column: 1 / -1;
+  display: none;
+  align-items: center;
+  gap: 16px;
+  padding: 14px;
+  background: #F4F7F4;
+  border: 1px solid #C8E3C8;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+
+.crop-image-preview-container.active {
+  display: flex;
+}
+
+.crop-preview-thumb {
+  width: 76px;
+  height: 76px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  background: #EAE8E1;
+}
+
+.crop-preview-info {
+  flex: 1;
+  text-align: left;
+}
+
+.crop-preview-name {
+  font-weight: 700;
+  font-size: 14px;
+  color: #1C1B16;
+  word-break: break-all;
+  margin-bottom: 2px;
+}
+
+.crop-preview-sub {
+  font-size: 12px;
+  color: #5C5B56;
+}
+
+.btn-remove-preview {
+  background: #FEECEB;
+  color: #D32F2F;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.16s ease;
+  flex-shrink: 0;
+}
+
+.btn-remove-preview:hover {
+  background: #FCDAD7;
 }

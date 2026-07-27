@@ -51,7 +51,20 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
+const { sequelize } = require('./models');
+
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+
+sequelize.sync({ alter: true })
+  .then(() => {
+    console.log('✅ Database schema synchronized non-destructively (alter: true)');
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error('❌ Failed to synchronize database schema:', err);
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT} (without DB sync)`);
+    });
+  });

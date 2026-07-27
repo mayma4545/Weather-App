@@ -3,215 +3,703 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App - Sign Up</title>
+    <title>Project Weather — Create Account</title>
     <link rel="stylesheet" href="/css/login.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script>
+        /* Apply theme before paint to avoid flash */
+        (function() {
+            try {
+                var t = localStorage.getItem('pw-theme');
+                if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card register-card">
-            <div class="weather-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="5" fill="#facc15" stroke="#facc15"></circle>
-                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
-                    <path d="M17.5 19H9a5 5 0 1 1 4.5-7.58A5 5 0 0 1 17.5 19z" fill="#0EA5E9" stroke="#0EA5E9"></path>
+    <!-- Theme toggle -->
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
+        <svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+        <svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+
+    <div class="auth-shell">
+
+        <!-- ====================================================
+             LEFT — Biophilic illustration
+             ==================================================== -->
+        <aside class="auth-visual">
+            <div class="auth-visual__art" aria-hidden="true">
+                <svg viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="150" cy="170" r="64" fill="#FDE68A"/>
+                    <circle cx="150" cy="170" r="88" fill="#FEF3C7" opacity="0.55"/>
+                    <g fill="#FFFFFF" opacity="0.85">
+                        <ellipse cx="420" cy="120" rx="62" ry="22"/>
+                        <ellipse cx="460" cy="106" rx="44" ry="20"/>
+                        <ellipse cx="220" cy="260" rx="80" ry="22"/>
+                        <ellipse cx="260" cy="244" rx="42" ry="18"/>
+                    </g>
+                    <path d="M0 540 Q 150 460 320 510 T 600 500 V800 H0 Z" fill="#BBF7D0" opacity="0.75"/>
+                    <path d="M0 600 Q 170 560 360 590 T 600 580 V800 H0 Z" fill="#86EFAC"/>
+                    <path d="M0 660 Q 160 620 320 650 T 600 640 V800 H0 Z" fill="#4ADE80"/>
+                    <g stroke="#16A34A" stroke-width="2" opacity="0.18" fill="none">
+                        <path d="M0 690 Q 150 660 300 685 T 600 680"/>
+                        <path d="M0 720 Q 150 695 300 715 T 600 712"/>
+                        <path d="M0 750 Q 150 728 300 745 T 600 745"/>
+                    </g>
+                    <g fill="#14532D">
+                        <g transform="translate(80 700)">
+                            <rect x="-1.8" y="-22" width="3.6" height="26" rx="2"/>
+                            <path d="M0 -22 C -13 -26 -17 -17 -14 -11 C -7 -14 -2 -18 0 -22 Z"/>
+                            <path d="M0 -22 C 13 -26 17 -17 14 -11 C 7 -14 2 -18 0 -22 Z"/>
+                        </g>
+                        <g transform="translate(180 728)">
+                            <rect x="-1.8" y="-28" width="3.6" height="32" rx="2"/>
+                            <path d="M0 -28 C -15 -32 -20 -22 -17 -14 C -9 -17 -2 -22 0 -28 Z"/>
+                            <path d="M0 -28 C 15 -32 20 -22 17 -14 C 9 -17 2 -22 0 -28 Z"/>
+                        </g>
+                        <g transform="translate(280 712)">
+                            <rect x="-1.8" y="-19" width="3.6" height="23" rx="2"/>
+                            <path d="M0 -19 C -11 -23 -15 -16 -13 -10 C -6 -12 -2 -16 0 -19 Z"/>
+                            <path d="M0 -19 C 11 -23 15 -16 13 -10 C 6 -12 2 -16 0 -19 Z"/>
+                        </g>
+                        <g transform="translate(380 732)">
+                            <rect x="-1.8" y="-30" width="3.6" height="34" rx="2"/>
+                            <path d="M0 -30 C -16 -34 -21 -24 -18 -16 C -10 -19 -2 -24 0 -30 Z"/>
+                            <path d="M0 -30 C 16 -34 21 -24 18 -16 C 10 -19 2 -24 0 -30 Z"/>
+                        </g>
+                        <g transform="translate(500 706)">
+                            <rect x="-1.8" y="-22" width="3.6" height="26" rx="2"/>
+                            <path d="M0 -22 C -13 -26 -17 -17 -14 -11 C -7 -14 -2 -18 0 -22 Z"/>
+                            <path d="M0 -22 C 13 -26 17 -17 14 -11 C 7 -14 2 -18 0 -22 Z"/>
+                        </g>
+                    </g>
+                    <g stroke="#1E40AF" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.55">
+                        <path d="M250 180 q 9 -9 18 0 q 9 -9 18 0"/>
+                        <path d="M320 220 q 7 -7 14 0 q 7 -7 14 0"/>
+                    </g>
                 </svg>
             </div>
-            <h2>Create Account</h2>
-            <p class="subtitle">Register as a farmer to start monitoring your crops.</p>
 
-            <form action="/register" method="POST" class="login-form" id="registerForm">
-                <div class="form-group">
-                    <label for="full_name">Full Name</label>
-                    <input type="text" id="full_name" name="full_name" placeholder="Enter your full name" required>
+            <div class="brand-mark">
+                <div class="brand-mark__logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 21V11"/>
+                        <path d="M12 11C 12 7 8 5 4 5C 4 9 8 11 12 11Z"/>
+                        <path d="M12 9C 12 6 15 4 20 4C 20 7 17 9 12 9Z"/>
+                    </svg>
                 </div>
+                <div class="brand-mark__name">Project <span>Weather</span></div>
+            </div>
 
-                <div class="form-group">
-                    <label>Identity / Role</label>
-                    <div class="identity-options">
-                        <label class="identity-radio">
-                            <input type="radio" name="identity_type" value="Farmer" checked>
-                            <span>Farmer</span>
-                        </label>
-                        <label class="identity-radio">
-                            <input type="radio" name="identity_type" value="Student">
-                            <span>Student</span>
-                        </label>
-                        <label class="identity-radio">
-                            <input type="radio" name="identity_type" value="Other">
-                            <span>Other</span>
-                        </label>
+            <div class="auth-visual__content">
+                <span class="auth-visual__eyebrow">
+                    <span class="dot"></span> Built for farmers &amp; students
+                </span>
+                <h1 class="auth-visual__headline">Join the field, plant for tomorrow.</h1>
+                <p class="auth-visual__sub">Create a free account to track crops, monitor weather risks, and time your harvest with confidence.</p>
+
+                <ul class="auth-visual__features">
+                    <li>
+                        <span class="feature-dot">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2v6"/><path d="M12 22V10"/><path d="M5 8h14l-2 12H7L5 8z"/>
+                            </svg>
+                        </span>
+                        Digital crop repository &amp; growth stages
+                    </li>
+                    <li>
+                        <span class="feature-dot">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 12h18"/><path d="M7 8v8"/><path d="M17 8v8"/>
+                            </svg>
+                        </span>
+                        Irrigation planner tied to rainfall
+                    </li>
+                    <li>
+                        <span class="feature-dot">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v6h-6"/>
+                            </svg>
+                        </span>
+                        Storm &amp; pest alerts in real time
+                    </li>
+                </ul>
+            </div>
+
+            <div class="auth-visual__footer">
+                Free for farmers and agricultural students.
+            </div>
+        </aside>
+
+        <!-- ====================================================
+             RIGHT — Registration form
+             ==================================================== -->
+        <main class="auth-panel">
+            <div class="auth-card register-card">
+                <div class="brand-mobile brand-mark">
+                    <div class="brand-mark__logo">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 21V11"/>
+                            <path d="M12 11C 12 7 8 5 4 5C 4 9 8 11 12 11Z"/>
+                            <path d="M12 9C 12 6 15 4 20 4C 20 7 17 9 12 9Z"/>
+                        </svg>
                     </div>
+                    <div class="brand-mark__name">Project <span>Weather</span></div>
                 </div>
 
-                <div class="form-group identity-specify-group" id="identitySpecifyGroup" style="display: none;">
-                    <label for="identity_specification">Please Specify</label>
-                    <input type="text" id="identity_specification" name="identity_specification" placeholder="e.g., Agricultural Researcher, Agronomist">
+                <h2 class="auth-title">Create your account</h2>
+                <p class="auth-subtitle">Tell us a little about you and your land.</p>
+
+                <div class="auth-alert auth-alert--error" id="formError" role="alert" aria-live="assertive">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <span id="formErrorText"></span>
                 </div>
 
-                <div class="form-group">
-                    <label for="contact_number">Contact Number</label>
-                    <input type="tel" id="contact_number" name="contact_number" placeholder="e.g. 09123456789">
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Create a password" required>
-                    <div class="password-requirements" id="passwordRequirements">
-                        <p class="req-title">Password must contain:</p>
-                        <ul>
-                            <li id="reqLength" class="req-item">At least 8 characters</li>
-                            <li id="reqUpper" class="req-item">At least 1 uppercase letter</li>
-                            <li id="reqLower" class="req-item">At least 1 lowercase letter</li>
-                            <li id="reqNumber" class="req-item">At least 1 number</li>
-                        </ul>
+                <form action="/register" method="POST" class="auth-form" id="registerForm" novalidate>
+                    <!-- Full name -->
+                    <div class="field" id="field-full_name">
+                        <label class="field__label" for="full_name">Full name</label>
+                        <div class="field__control">
+                            <svg class="field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            <input type="text" id="full_name" name="full_name" class="field__input" placeholder="Juan dela Cruz" autocomplete="name" required>
+                            <svg class="field__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="field__message" id="msg-full_name">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            <span></span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="confirm_password">Confirm Password</label>
-                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter your password" required>
-                    <span class="password-match-msg" id="passwordMatchMsg"></span>
-                </div>
+                    <!-- Identity / Role -->
+                    <div class="field">
+                        <label class="field__label" id="identity-label">I am a…</label>
+                        <div class="identity-options" role="radiogroup" aria-labelledby="identity-label">
+                            <label class="identity-radio">
+                                <input type="radio" name="identity_type" value="Farmer" checked>
+                                <span class="identity-radio__box">
+                                    <svg class="identity-radio__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 21V12l9-7 9 7v9"/>
+                                        <path d="M9 21v-6h6v6"/>
+                                    </svg>
+                                    <span class="identity-radio__label">Farmer</span>
+                                </span>
+                            </label>
+                            <label class="identity-radio">
+                                <input type="radio" name="identity_type" value="Student">
+                                <span class="identity-radio__box">
+                                    <svg class="identity-radio__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 10L12 4 2 10l10 6 10-6z"/>
+                                        <path d="M6 12v5c0 1 3 3 6 3s6-2 6-3v-5"/>
+                                    </svg>
+                                    <span class="identity-radio__label">Student</span>
+                                </span>
+                            </label>
+                            <label class="identity-radio">
+                                <input type="radio" name="identity_type" value="Other">
+                                <span class="identity-radio__box">
+                                    <svg class="identity-radio__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="9"/>
+                                        <line x1="8" y1="12" x2="16" y2="12"/>
+                                        <line x1="12" y1="8" x2="12" y2="16"/>
+                                    </svg>
+                                    <span class="identity-radio__label">Other</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
 
-                <div class="form-error" id="formError"></div>
+                    <!-- Conditional identity specification -->
+                    <div class="field identity-specify-group" id="identitySpecifyGroup" style="display:none;">
+                        <label class="field__label" for="identity_specification">Please specify</label>
+                        <div class="field__control">
+                            <svg class="field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            <input type="text" id="identity_specification" name="identity_specification" class="field__input" placeholder="e.g., Agronomist, Researcher">
+                        </div>
+                    </div>
 
-                <button type="submit" class="login-btn">Sign Up</button>
-            </form>
+                    <!-- Contact number -->
+                    <div class="field" id="field-contact">
+                        <label class="field__label" for="contact_number">
+                            Contact number
+                            <span class="field__hint">Optional</span>
+                        </label>
+                        <div class="field__control">
+                            <svg class="field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.81.36 1.6.7 2.34a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.74-1.27a2 2 0 0 1 2.11-.45c.74.34 1.53.57 2.34.7A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                            <input type="tel" id="contact_number" name="contact_number" class="field__input" placeholder="0912 345 6789" autocomplete="tel" maxlength="11">
+                            <svg class="field__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="field__message" id="msg-contact">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            <span></span>
+                        </div>
+                    </div>
 
-            <p class="register-prompt">Already have an account? <a href="/login">Sign in</a></p>
-        </div>
+                    <!-- Email -->
+                    <div class="field" id="field-email">
+                        <label class="field__label" for="email">Email</label>
+                        <div class="field__control">
+                            <svg class="field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="5" width="18" height="14" rx="2"/>
+                                <polyline points="3 7 12 13 21 7"/>
+                            </svg>
+                            <input type="email" id="email" name="email" class="field__input" placeholder="farmer@field.com" autocomplete="email" required>
+                            <svg class="field__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="field__message" id="msg-email">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="field field--toggle" id="field-password">
+                        <label class="field__label" for="password">Password</label>
+                        <div class="field__control">
+                            <svg class="field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="4" y="11" width="16" height="9" rx="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                            <input type="password" id="password" name="password" class="field__input" placeholder="Create a strong password" autocomplete="new-password" required aria-describedby="passwordRequirements">
+                            <button type="button" class="field__toggle" id="pwToggle" aria-label="Show password">
+                                <svg class="icon-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                <svg class="icon-hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                                    <path d="M1 1l22 22"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="password-strength">
+                            <div class="strength-bar" id="strengthBar" data-strength="0">
+                                <div class="strength-bar__seg s1"></div>
+                                <div class="strength-bar__seg s2"></div>
+                                <div class="strength-bar__seg s3"></div>
+                                <div class="strength-bar__seg s4"></div>
+                            </div>
+                            <div class="strength-meta">
+                                <span class="strength-meta__label" id="strengthLabel">Password strength</span>
+                                <span id="strengthHint" class="strength-meta__hint">Min. 8 chars: upper/lower &amp; a number</span>
+                            </div>
+                        </div>
+
+                        <div class="password-requirements" id="passwordRequirements">
+                            <p class="req-title">Password must contain:</p>
+                            <ul>
+                                <li id="reqLength" class="req-item">At least 8 characters</li>
+                                <li id="reqUpper"  class="req-item">1 uppercase letter</li>
+                                <li id="reqLower"  class="req-item">1 lowercase letter</li>
+                                <li id="reqNumber" class="req-item">1 number</li>
+                            </ul>
+                        </div>
+
+                        <div class="field__message" id="msg-password">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <!-- Confirm password -->
+                    <div class="field field--toggle" id="field-confirm_password">
+                        <label class="field__label" for="confirm_password">Confirm password</label>
+                        <div class="field__control">
+                            <svg class="field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="4" y="11" width="16" height="9" rx="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                            <input type="password" id="confirm_password" name="confirm_password" class="field__input" placeholder="Re-enter your password" autocomplete="new-password" required>
+                            <svg class="field__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="field__message" id="msg-confirm_password">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            <span id="passwordMatchMsg"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="submitBtn">
+                        <svg class="btn-sprout" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 21V11"/>
+                            <path d="M12 11C 12 7 8 5 4 5C 4 9 8 11 12 11Z"/>
+                            <path d="M12 9C 12 6 15 4 20 4C 20 7 17 9 12 9Z"/>
+                        </svg>
+                        <span class="btn-primary__label">Create account</span>
+                        <span class="btn-primary__spinner spinner" aria-hidden="true"></span>
+                        <span class="btn-primary__loading-text">Sending verification code…</span>
+                    </button>
+                </form>
+
+                <p class="auth-footer">Already have an account? <a href="/login">Sign in</a></p>
+            </div>
+        </main>
     </div>
 
     <script>
-        const password = document.getElementById('password');
-        const confirmPassword = document.getElementById('confirm_password');
-        const confirmMsg = document.getElementById('passwordMatchMsg');
-        const form = document.getElementById('registerForm');
-        const formError = document.getElementById('formError');
-        const pwRequirements = document.getElementById('passwordRequirements');
+        /* =====================================================
+           Theme toggle (with persistence)
+           ===================================================== */
+        (function() {
+            var toggle = document.getElementById('themeToggle');
+            toggle.addEventListener('click', function() {
+                var cur = document.documentElement.getAttribute('data-theme') === 'dark';
+                if (cur) {
+                    document.documentElement.removeAttribute('data-theme');
+                    try { localStorage.setItem('pw-theme', 'light'); } catch (e) {}
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    try { localStorage.setItem('pw-theme', 'dark'); } catch (e) {}
+                }
+            });
+        })();
 
-        const reqLength = document.getElementById('reqLength');
-        const reqUpper = document.getElementById('reqUpper');
-        const reqLower = document.getElementById('reqLower');
-        const reqNumber = document.getElementById('reqNumber');
+        /* =====================================================
+           Field references
+           ===================================================== */
+        var fullNameEl = document.getElementById('full_name');
+        var contactEl = document.getElementById('contact_number');
+        var emailEl = document.getElementById('email');
+        var passwordEl = document.getElementById('password');
+        var confirmEl = document.getElementById('confirm_password');
+        var form = document.getElementById('registerForm');
+        var formError = document.getElementById('formError');
+        var formErrorText = document.getElementById('formErrorText');
+        var submitBtn = document.getElementById('submitBtn');
+        var pwRequirements = document.getElementById('passwordRequirements');
+        var matchMsg = document.getElementById('passwordMatchMsg');
+        var confirmField = document.getElementById('field-confirm_password');
 
-        function showRequirements() {
-            pwRequirements.classList.add('show');
+        var reqLength = document.getElementById('reqLength');
+        var reqUpper = document.getElementById('reqUpper');
+        var reqLower = document.getElementById('reqLower');
+        var reqNumber = document.getElementById('reqNumber');
+        var strengthBar = document.getElementById('strengthBar');
+        var strengthLabel = document.getElementById('strengthLabel');
+
+        var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var phoneRe = /^[0-9]{10,11}$/;
+
+        /* =====================================================
+           Helpers
+           ===================================================== */
+        function setInvalid(fieldId, msg) {
+            var field = document.getElementById('field-' + fieldId);
+            var msgEl = document.getElementById('msg-' + fieldId).querySelector('span');
+            field.classList.remove('is-valid');
+            field.classList.add('is-invalid');
+            msgEl.textContent = msg;
         }
 
-        function hideRequirements() {
-            if (!password.value) {
-                pwRequirements.classList.remove('show');
-            }
+        function setValid(fieldId, msg) {
+            var field = document.getElementById('field-' + fieldId);
+            var msgEl = document.getElementById('msg-' + fieldId).querySelector('span');
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+            msgEl.textContent = msg || '';
         }
 
-        function validatePassword() {
-            const val = password.value;
-            const lenOk = val.length >= 8;
-            const upperOk = /[A-Z]/.test(val);
-            const lowerOk = /[a-z]/.test(val);
-            const numOk = /\d/.test(val);
-
-            reqLength.classList.toggle('req-met', lenOk);
-            reqUpper.classList.toggle('req-met', upperOk);
-            reqLower.classList.toggle('req-met', lowerOk);
-            reqNumber.classList.toggle('req-met', numOk);
+        function neutral(fieldId) {
+            var field = document.getElementById('field-' + fieldId);
+            var msgEl = document.getElementById('msg-' + fieldId).querySelector('span');
+            field.classList.remove('is-valid', 'is-invalid', 'shake');
+            msgEl.textContent = '';
         }
 
-        function checkPasswordMatch() {
-            if (!confirmPassword.value) {
-                confirmMsg.textContent = '';
-                return;
-            }
-            if (password.value === confirmPassword.value) {
-                confirmMsg.textContent = 'Passwords match';
-                confirmMsg.className = 'password-match-msg match-ok';
-            } else {
-                confirmMsg.textContent = 'Passwords do not match';
-                confirmMsg.className = 'password-match-msg match-error';
-            }
+        function showFormError(message) {
+            formErrorText.textContent = message;
+            formError.classList.add('is-visible');
         }
 
-        const identityRadios = document.querySelectorAll('input[name="identity_type"]');
-        const identitySpecifyGroup = document.getElementById('identitySpecifyGroup');
-        const identitySpecification = document.getElementById('identity_specification');
-        const submitBtn = form.querySelector('button[type="submit"]');
+        function clearFormError() {
+            formError.classList.remove('is-visible');
+            formErrorText.textContent = '';
+        }
 
-        identityRadios.forEach(radio => {
+        function shake(fieldId) {
+            var field = document.getElementById('field-' + fieldId);
+            field.classList.add('shake');
+            setTimeout(function(){ field.classList.remove('shake'); }, 450);
+        }
+
+        /* =====================================================
+           Password visibility toggle
+           ===================================================== */
+        (function() {
+            var toggle = document.getElementById('pwToggle');
+            toggle.addEventListener('click', function() {
+                var isPw = passwordEl.getAttribute('type') === 'password';
+                passwordEl.setAttribute('type', isPw ? 'text' : 'password');
+                toggle.classList.toggle('is-visible', isPw);
+                toggle.setAttribute('aria-label', isPw ? 'Hide password' : 'Show password');
+            });
+        })();
+
+        /* =====================================================
+           Identity conditional specify field
+           ===================================================== */
+        var identityRadios = document.querySelectorAll('input[name="identity_type"]');
+        var identitySpecifyGroup = document.getElementById('identitySpecifyGroup');
+        var identitySpecification = document.getElementById('identity_specification');
+        identityRadios.forEach(function(radio) {
             radio.addEventListener('change', function() {
                 if (this.value === 'Other') {
-                    identitySpecifyGroup.style.display = 'block';
-                    identitySpecifyGroup.classList.add('show');
+                    identitySpecifyGroup.style.display = 'flex';
                     identitySpecification.required = true;
                     identitySpecification.focus();
                 } else {
                     identitySpecifyGroup.style.display = 'none';
-                    identitySpecifyGroup.classList.remove('show');
                     identitySpecification.required = false;
                     identitySpecification.value = '';
                 }
             });
         });
 
-        password.addEventListener('focus', showRequirements);
-        password.addEventListener('blur', hideRequirements);
-        password.addEventListener('input', function() {
-            validatePassword();
-            checkPasswordMatch();
+        /* =====================================================
+           Password strength + requirements
+           ===================================================== */
+        function validatePasswordSilent() {
+            var val = passwordEl.value;
+            var lenOk = val.length >= 8;
+            var upperOk = /[A-Z]/.test(val);
+            var lowerOk = /[a-z]/.test(val);
+            var numOk = /\d/.test(val);
+
+            reqLength.classList.toggle('req-met', lenOk);
+            reqUpper.classList.toggle('req-met', upperOk);
+            reqLower.classList.toggle('req-met', lowerOk);
+            reqNumber.classList.toggle('req-met', numOk);
+
+            var score = 0;
+            if (val.length >= 8) score++;
+            if (val.length >= 12) score++;
+            if (upperOk && lowerOk) score++;
+            if (numOk) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+            if (score > 4) score = 4;
+            if (!val) score = 0;
+
+            strengthBar.setAttribute('data-strength', String(score));
+            var tierLabels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+            strengthLabel.textContent = val ? tierLabels[score] : 'Password strength';
+            strengthLabel.className = 'strength-meta__label ' + (val ? 'tier-' + score : '');
+
+            return { lenOk: lenOk, upperOk: upperOk, lowerOk: lowerOk, numOk: numOk };
+        }
+
+        function isValidPassword() {
+            var r = validatePasswordSilent();
+            return r.lenOk && r.upperOk && r.lowerOk && r.numOk;
+        }
+
+        /* =====================================================
+           Password match
+           ===================================================== */
+        function checkPasswordMatch() {
+            if (!confirmEl.value) {
+                matchMsg.textContent = '';
+                confirmField.classList.remove('is-valid', 'is-invalid');
+                return null;
+            }
+            if (passwordEl.value === confirmEl.value) {
+                confirmField.classList.remove('is-invalid');
+                confirmField.classList.add('is-valid');
+                matchMsg.textContent = 'Passwords match.';
+                return true;
+            }
+            confirmField.classList.remove('is-valid');
+            confirmField.classList.add('is-invalid');
+            matchMsg.textContent = 'Passwords do not match.';
+            return false;
+        }
+
+        /* =====================================================
+           Per-field validators (blur + corrective input)
+           ===================================================== */
+        function validateFullName() {
+            var v = fullNameEl.value.trim();
+            if (!v) { neutral('full_name'); return false; }
+            if (v.length < 2) { setInvalid('full_name', 'Name is too short.'); return false; }
+            setValid('full_name', ''); return true;
+        }
+
+        function validateContact() {
+            var v = contactEl.value.trim();
+            if (!v) { neutral('contact'); return true; }
+            if (!phoneRe.test(v)) { setInvalid('contact', 'Enter a valid mobile number.'); return false; }
+            setValid('contact', ''); return true;
+        }
+
+        function validateEmail() {
+            var v = emailEl.value.trim();
+            if (!v) { neutral('email'); return false; }
+            if (!emailRe.test(v)) { setInvalid('email', 'Please enter a valid email.'); return false; }
+            setValid('email', 'Looks good.'); return true;
+        }
+
+        function validatePassword() {
+            if (!passwordEl.value) { neutral('password'); return false; }
+            if (isValidPassword()) {
+                var field = document.getElementById('field-password');
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+                document.getElementById('msg-password').querySelector('span').textContent = '';
+                return true;
+            }
+            setInvalid('password', 'Password does not meet all requirements.');
+            return false;
+        }
+
+        /* =====================================================
+           Wiring
+           ===================================================== */
+        fullNameEl.addEventListener('blur', validateFullName);
+        fullNameEl.addEventListener('input', function(){
+            if (document.getElementById('field-full_name').classList.contains('is-invalid')) validateFullName();
         });
 
-        confirmPassword.addEventListener('input', checkPasswordMatch);
+        contactEl.addEventListener('blur', validateContact);
+        contactEl.addEventListener('input', function(){
+            contactEl.value = contactEl.value.replace(/[^0-9]/g, '').slice(0, 11);
+            if (document.getElementById('field-contact').classList.contains('is-invalid')) validateContact();
+        });
 
+        emailEl.addEventListener('blur', validateEmail);
+        emailEl.addEventListener('input', function(){
+            if (document.getElementById('field-email').classList.contains('is-invalid')) validateEmail();
+        });
+
+        passwordEl.addEventListener('focus', function(){ pwRequirements.classList.add('show'); });
+        passwordEl.addEventListener('blur', function(){
+            if (!passwordEl.value) pwRequirements.classList.remove('show');
+        });
+        passwordEl.addEventListener('input', function() {
+            validatePasswordSilent();
+            if (document.getElementById('field-password').classList.contains('is-invalid')) validatePassword();
+            if (confirmEl.value) checkPasswordMatch();
+        });
+
+        confirmEl.addEventListener('input', checkPasswordMatch);
+
+        /* =====================================================
+           Submit — block on invalid, loading on valid
+           ===================================================== */
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
-            formError.textContent = '';
+            clearFormError();
 
-            if (password.value !== confirmPassword.value) {
-                formError.textContent = 'Passwords do not match.';
+            var failures = [];
+            if (!fullNameEl.value.trim()) { setInvalid('full_name', 'Name is required.'); shake('full_name'); failures.push('full_name'); }
+            else if (!validateFullName()) { shake('full_name'); failures.push('full_name'); }
+
+            if (!emailEl.value.trim()) { setInvalid('email', 'Email is required.'); shake('email'); failures.push('email'); }
+            else if (!validateEmail()) { shake('email'); failures.push('email'); }
+
+            if (!contactEl.value.trim()) {
+                /* optional — valid when empty */
+            } else if (!validateContact()) { shake('contact'); failures.push('contact'); }
+
+            if (identitySpecification.required && !identitySpecification.value.trim()) {
+                identitySpecifyGroup.classList.add('is-invalid');
+                identitySpecifyGroup.classList.add('shake');
+                setTimeout(function(){ identitySpecifyGroup.classList.remove('shake'); }, 450);
+                failures.push('identity_specification');
+            }
+
+            if (!passwordEl.value) {
+                setInvalid('password', 'Password is required.');
+                shake('password');
+                pwRequirements.classList.add('show');
+                failures.push('password');
+            } else if (!isValidPassword()) {
+                setInvalid('password', 'Password does not meet all requirements.');
+                shake('password');
+                pwRequirements.classList.add('show');
+                failures.push('password');
+            }
+
+            if (!confirmEl.value) {
+                setInvalid('confirm_password', 'Please confirm your password.');
+                shake('confirm_password');
+                failures.push('confirm_password');
+            } else if (passwordEl.value !== confirmEl.value) {
+                setInvalid('confirm_password', 'Passwords do not match.');
+                shake('confirm_password');
+                failures.push('confirm_password');
+            }
+
+            if (failures.length > 0) {
+                showFormError('Please fix the highlighted fields.');
+                document.getElementById(failures[0]).querySelector('input').focus();
                 return;
             }
-            const val = password.value;
-            if (val.length < 8 || !/[A-Z]/.test(val) || !/[a-z]/.test(val) || !/\d/.test(val)) {
-                formError.textContent = 'Password does not meet all requirements.';
-                return;
-            }
 
-            // Submit via async fetch so we handle duplicate email and show OTP loading state cleanly
+            /* Submit via async fetch — show loading */
+            submitBtn.classList.add('is-loading');
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner"></span> Sending verification code...';
 
             try {
-                const formData = new FormData(form);
-                const dataObj = Object.fromEntries(formData.entries());
+                var formData = new FormData(form);
+                var dataObj = Object.fromEntries(formData.entries());
+                if (!dataObj.identity_specification) delete dataObj.identity_specification;
 
-                const response = await fetch('/register', {
+                var response = await fetch('/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dataObj)
                 });
-
-                const result = await response.json();
+                var result = await response.json();
 
                 if (response.ok && result.success) {
                     window.location.href = result.redirectUrl;
                 } else {
-                    formError.textContent = result.error || 'An error occurred during registration.';
+                    showFormError(result.error || 'An error occurred during registration.');
+                    submitBtn.classList.remove('is-loading');
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'Sign Up';
                 }
             } catch (err) {
                 console.error('Submit error:', err);
-                formError.textContent = 'Network error. Please try again.';
+                showFormError('Network error. Please try again.');
+                submitBtn.classList.remove('is-loading');
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Sign Up';
             }
         });
     </script>

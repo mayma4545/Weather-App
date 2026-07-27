@@ -69,7 +69,8 @@ async function runMigration() {
           days_to_harvest: 120,
           best_practices: 'Ensure fields have standing water during early growth. Drain 2 weeks before harvest.',
           growth_stages: 'Seedling 25d||Tillering 35d||Flowering 30d||Mature 30d',
-          vulnerabilities: 'Stem blast disease, water flooding > 15cm'
+          vulnerabilities: 'Stem blast disease, water flooding > 15cm',
+          image_url: null
         },
         {
           crop_name: 'Corn',
@@ -79,7 +80,8 @@ async function runMigration() {
           days_to_harvest: 90,
           best_practices: 'Avoid waterlogging. Plant in well-drained loamy soil. Apply fertilizer in early vegetative stages.',
           growth_stages: 'Seedling 20d||Vegetative 35d||Tasseling 25d||Harvest 40d',
-          vulnerabilities: 'Saturated soil (drowning), cob worms, wind gust > 30km/h'
+          vulnerabilities: 'Saturated soil (drowning), cob worms, wind gust > 30km/h',
+          image_url: null
         },
         {
           crop_name: 'Cabbage',
@@ -89,7 +91,8 @@ async function runMigration() {
           days_to_harvest: 70,
           best_practices: 'Prefers cool weather. Keep soil moist but not wet. Watch out for cabbage worms.',
           growth_stages: 'Seedling 15d||Vegetative 25d||Heading 20d||Harvest 10d',
-          vulnerabilities: 'Cabbage worms, root rot, aphids'
+          vulnerabilities: 'Cabbage worms, root rot, aphids',
+          image_url: null
         }
       ]);
       console.log('✅ \x1b[32mInitial crops successfully seeded!\x1b[0m');

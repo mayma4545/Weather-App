@@ -39,6 +39,10 @@ const CropRepository = sequelize.define('CropRepository', {
   vulnerabilities: {
     type: DataTypes.TEXT,
     allowNull: true
+  },
+  image_url: {
+    type: DataTypes.STRING,
+    allowNull: true
   }
 }, {
   tableName: 'crop_repository',

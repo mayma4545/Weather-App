@@ -139,6 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             document.getElementById('stat-farmers').textContent = data.totalFarmers;
             document.getElementById('stat-plots').textContent = data.activePlots;
+            const cropsEl = document.getElementById('stat-crops');
+            if (cropsEl) cropsEl.textContent = data.totalCrops ?? '--';
 
             const dot = document.getElementById('api-status-dot');
             const text = document.getElementById('api-status-text');
@@ -148,12 +150,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 dot.className = 'status-dot online';
                 text.textContent = 'Online';
                 text.style.color = '#047857';
+                if (data.apiDetail) {
+                    text.title = data.apiDetail;
+                    lastLog.textContent = data.apiDetail;
+                } else {
+                    lastLog.textContent = data.lastLogTime ? 'Last data: ' + new Date(data.lastLogTime).toLocaleString() : 'Connected';
+                }
             } else {
                 dot.className = 'status-dot offline';
                 text.textContent = 'Offline';
                 text.style.color = '#DC2626';
+                lastLog.textContent = data.apiDetail || (data.lastLogTime ? 'Last data: ' + new Date(data.lastLogTime).toLocaleString() : 'No recent data');
             }
-            lastLog.textContent = data.lastLogTime ? 'Last data: ' + new Date(data.lastLogTime).toLocaleString() : 'No recent data';
 
             // Recent logs as activity rows
             const logsEl = document.getElementById('dash-recent-logs');
@@ -266,9 +274,19 @@ document.addEventListener('DOMContentLoaded', () => {
             // Rain bar — scale to 200mm cap
             const rainPct = Math.min(100, (rain / 200) * 100);
 
+            const imgHeader = c.image_url 
+                ? `<div class="cc-img-header">
+                       <img src="${c.image_url}" alt="${esc(c.crop_name)}">
+                       <div class="cc-img-overlay">
+                           <span style="color:#fff;font-weight:700;font-size:15px;text-shadow:0 1px 4px rgba(0,0,0,0.8);">${cropEmoji(c.crop_name)} ${esc(c.crop_name)}</span>
+                       </div>
+                   </div>` 
+                : '';
+
             return `
                 <div class="crop-card">
-                    <div class="cc-head">
+                    ${imgHeader}
+                    <div class="cc-head" style="${c.image_url ? 'margin-top: -6px;' : ''}">
                         <div style="display:flex;gap:12px;align-items:center;">
                             <div class="cc-icon">${cropEmoji(c.crop_name)}</div>
                             <div>
@@ -433,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Crop Modal
+    // Crop Modal & Cloudinary Image Upload Handlers
     const cropModal = document.getElementById('cropModal');
     const cropForm = document.getElementById('cropForm');
     const cropModalTitle = document.getElementById('cropModalTitle');
@@ -441,7 +459,78 @@ document.addEventListener('DOMContentLoaded', () => {
     const cropModalCancel = document.getElementById('cropModalCancel');
     const btnAddCrop = document.getElementById('btn-add-crop');
 
+    const cropImageFile = document.getElementById('crop-image-file');
+    const cropImageUrl = document.getElementById('crop-image-url');
+    const cropImagePreviewContainer = document.getElementById('crop-image-preview-container');
+    const cropPreviewImg = document.getElementById('crop-preview-img');
+    const cropPreviewName = document.getElementById('crop-preview-name');
+    const cropPreviewSub = document.getElementById('crop-preview-sub');
+    const btnRemovePreview = document.getElementById('btn-remove-preview');
+    const cropUploadZone = document.getElementById('crop-upload-zone');
+
+    function showCropPreview(url, name = 'Uploaded Image', sub = 'Saved in Cloudinary') {
+        if (cropPreviewImg) cropPreviewImg.src = url;
+        if (cropPreviewName) cropPreviewName.textContent = name;
+        if (cropPreviewSub) cropPreviewSub.textContent = sub;
+        if (cropImagePreviewContainer) cropImagePreviewContainer.classList.add('active');
+        if (cropUploadZone) cropUploadZone.style.display = 'none';
+    }
+
+    function hideCropPreview() {
+        if (cropPreviewImg) cropPreviewImg.src = '';
+        if (cropImagePreviewContainer) cropImagePreviewContainer.classList.remove('active');
+        if (cropUploadZone) cropUploadZone.style.display = 'block';
+        if (cropImageFile) cropImageFile.value = '';
+        if (cropImageUrl) cropImageUrl.value = '';
+    }
+
+    if (cropImageFile) {
+        cropImageFile.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    showCropPreview(evt.target.result, file.name, `Size: ${(file.size / 1024 / 1024).toFixed(2)} MB • Ready to upload to Cloudinary`);
+                };
+                reader.readAsDataURL(file);
+            } else if (!cropImageUrl.value) {
+                hideCropPreview();
+            }
+        });
+    }
+
+    if (cropUploadZone) {
+        cropUploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            cropUploadZone.classList.add('dragover');
+        });
+        cropUploadZone.addEventListener('dragleave', () => {
+            cropUploadZone.classList.remove('dragover');
+        });
+        cropUploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            cropUploadZone.classList.remove('dragover');
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+                const file = e.dataTransfer.files[0];
+                if (cropImageFile) {
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    cropImageFile.files = dataTransfer.files;
+                    const evt = new Event('change', { bubbles: true });
+                    cropImageFile.dispatchEvent(evt);
+                }
+            }
+        });
+    }
+
+    if (btnRemovePreview) {
+        btnRemovePreview.addEventListener('click', () => {
+            hideCropPreview();
+        });
+    }
+
     function openCropModal(crop = null) {
+        hideCropPreview();
         if (crop) {
             cropModalTitle.textContent = 'Edit Crop';
             document.getElementById('crop-edit-id').value = crop.crop_id;
@@ -451,6 +540,10 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('crop-rain').value = crop.rain_tolerance;
             document.getElementById('crop-days').value = crop.days_to_harvest;
             document.getElementById('crop-practices').value = crop.best_practices || '';
+            if (crop.image_url) {
+                cropImageUrl.value = crop.image_url;
+                showCropPreview(crop.image_url, `${crop.crop_name} Image`, 'Currently saved in Cloudinary');
+            }
         } else {
             cropModalTitle.textContent = 'Add New Crop';
             cropForm.reset();
@@ -463,6 +556,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cropModal.classList.remove('open');
         cropForm.reset();
         document.getElementById('crop-edit-id').value = '';
+        hideCropPreview();
     }
 
     if (btnAddCrop) btnAddCrop.addEventListener('click', () => openCropModal());
@@ -475,33 +569,48 @@ document.addEventListener('DOMContentLoaded', () => {
     cropForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const editId = document.getElementById('crop-edit-id').value;
-        const payload = {
-            crop_name: document.getElementById('crop-name').value,
-            ideal_temp_min: document.getElementById('crop-min-temp').value,
-            ideal_temp_max: document.getElementById('crop-max-temp').value,
-            rain_tolerance: document.getElementById('crop-rain').value,
-            days_to_harvest: document.getElementById('crop-days').value,
-            best_practices: document.getElementById('crop-practices').value
-        };
+        const formData = new FormData();
+        formData.append('crop_name', document.getElementById('crop-name').value);
+        formData.append('ideal_temp_min', document.getElementById('crop-min-temp').value);
+        formData.append('ideal_temp_max', document.getElementById('crop-max-temp').value);
+        formData.append('rain_tolerance', document.getElementById('crop-rain').value);
+        formData.append('days_to_harvest', document.getElementById('crop-days').value);
+        formData.append('best_practices', document.getElementById('crop-practices').value);
+        if (cropImageUrl && cropImageUrl.value) {
+            formData.append('image_url', cropImageUrl.value);
+        }
+        if (cropImageFile && cropImageFile.files && cropImageFile.files[0]) {
+            formData.append('image', cropImageFile.files[0]);
+        }
 
         try {
+            const submitBtn = cropForm.querySelector('button[type="submit"]');
+            const origText = submitBtn ? submitBtn.textContent : 'Save Crop';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Uploading & Saving...';
+            }
+
             let res;
             if (editId) {
                 res = await fetch('/api/admin/crops/' + editId, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: formData
                 });
             } else {
                 res = await fetch('/api/admin/crops', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: formData
                 });
             }
 
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = origText;
+            }
+
             if (res.ok) {
-                showToast(editId ? 'Crop successfully updated!' : 'New crop successfully added!');
+                showToast(editId ? 'Crop successfully updated!' : 'New crop successfully added with image!');
                 closeCropModal();
                 loadCrops();
             } else {

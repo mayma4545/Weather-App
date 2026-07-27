@@ -94,7 +94,7 @@
                 </div>
 
                 <!-- Stat cards -->
-                <div class="grid-3">
+                <div class="grid-4">
                     <div class="stat-card">
                         <div class="stat-icon">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -117,7 +117,15 @@
                         </div>
                         <div class="stat-label">OpenWeather API</div>
                         <div class="stat-value compact"><span class="status-dot" id="api-status-dot"></span> <span id="api-status-text">Checking...</span></div>
-                        <div class="stat-detail" id="api-last-log">Last data: checking...</div>
+                        <div class="stat-detail" id="api-last-log">Checking connectivity...</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+                        </div>
+                        <div class="stat-label">Total Crops</div>
+                        <div class="stat-value" id="stat-crops">--</div>
+                        <div class="stat-detail">In crop repository</div>
                     </div>
                 </div>
 
@@ -333,7 +341,23 @@
         <div class="modal-sub">Define temperature thresholds and growing parameters</div>
         <form id="cropForm">
             <input type="hidden" id="crop-edit-id" value="">
+            <input type="hidden" id="crop-image-url" value="">
             <div class="form-grid">
+                <div class="crop-upload-area" id="crop-upload-zone">
+                    <input type="file" id="crop-image-file" accept="image/jpeg,image/png,image/gif,image/webp">
+                    <div class="crop-upload-label">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <span><strong>Click to upload</strong> or drag &amp; drop crop image (JPEG, PNG, WEBP up to 10MB)</span>
+                    </div>
+                </div>
+                <div class="crop-image-preview-container" id="crop-image-preview-container">
+                    <img src="" class="crop-preview-thumb" id="crop-preview-img" alt="Crop Preview">
+                    <div class="crop-preview-info">
+                        <div class="crop-preview-name" id="crop-preview-name">Selected Image</div>
+                        <div class="crop-preview-sub" id="crop-preview-sub">Ready to save to Cloudinary</div>
+                    </div>
+                    <button type="button" class="btn-remove-preview" id="btn-remove-preview">Remove</button>
+                </div>
                 <div class="form-group">
                     <label for="crop-name">Crop Name</label>
                     <input type="text" class="form-control" id="crop-name" placeholder="e.g., Rice (IR64)" required>
