@@ -684,6 +684,13 @@ const PREDICT_PLANTING_CROP_KEYS = [
 // Light per-user throttle for Gemini (skip AI if same user called within 3s — chip+select double-fire)
 const geminiLastCallByUser = new Map();
 const GEMINI_USER_THROTTLE_MS = 3000;
+// Prune stale entries on each write (keep map bounded — prevent unbounded memory growth)
+function pruneGeminiThrottleMap() {
+  const cutoff = Date.now() - GEMINI_USER_THROTTLE_MS * 2;
+  for (const [uid, ts] of geminiLastCallByUser) {
+    if (ts < cutoff) geminiLastCallByUser.delete(uid);
+  }
+}
 
 // Safe to plant predictor calculation API (auth required — T-07-04)
 router.post('/api/weather/predict-planting', requireAuth, async (req, res) => {
@@ -725,7 +732,10 @@ router.post('/api/weather/predict-planting', requireAuth, async (req, res) => {
       geminiService.isConfigured()
     ) {
       try {
-        if (userId != null) geminiLastCallByUser.set(userId, now);
+        if (userId != null) {
+          pruneGeminiThrottleMap();
+          geminiLastCallByUser.set(userId, now);
+        }
         const aiRecs = await geminiService.generateFieldRecommendations(evaluation, {
           language,
           timeoutMs: 12000
