@@ -770,7 +770,6 @@ router.post('/api/weather/predict-planting', requireAuth, async (req, res) => {
     evaluation.recommendations_source = 'static';
 
     // Optional 3s per-user skip of Gemini to prevent double-fire (still return static)
-    const userId = req.session && req.session.userId;
     const now = Date.now();
     const lastTs = userId != null ? geminiLastCallByUser.get(userId) : null;
     const skipGemini = lastTs != null && (now - lastTs) < GEMINI_USER_THROTTLE_MS;
