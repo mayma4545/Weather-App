@@ -706,7 +706,7 @@ router.post('/api/weather/predict-planting', requireAuth, async (req, res) => {
       weatherData = await weatherService.fetchForecast(lat, lon);
     }
     // Session-authenticated path: load active alerts (requireAuth guarantees session)
-    const alerts = await Alert.findAll({ where: { is_active: true }, limit: 20 });
+    const alerts = await Alert.findAll({ order: [['created_at', 'DESC']], limit: 20 });
     const evaluation = plantingPredictorService
       ? plantingPredictorService.evaluatePlantingSafety(cropKey, weatherData, alerts)
       : {};
