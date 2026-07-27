@@ -1115,9 +1115,303 @@
         #btn-save-profile {
             width: 100% !important;
         }
+
+        /* ============ Digital Repository — Mobile Overrides ============ */
+        /* Context-aware recommendation banner — compact */
+        .recommendation-banner {
+            padding: 14px 16px !important;
+            border-radius: 14px !important;
+        }
+
+        .recommendation-badge {
+            font-size: 10px !important;
+            padding: 4px 10px !important;
+            gap: 5px !important;
+            margin-bottom: 9px !important;
+        }
+
+        .recommendation-badge-icon {
+            width: 10px !important;
+            height: 10px !important;
+        }
+
+        .recommendation-title {
+            font-size: 15px !important;
+            line-height: 1.35 !important;
+            margin-bottom: 6px !important;
+        }
+
+        .recommendation-desc {
+            font-size: 12px !important;
+            line-height: 1.5 !important;
+        }
+
+        /* Encyclopedia container card — tighter mobile padding */
+        .ency-main-card {
+            padding: 16px 12px !important;
+            border-radius: 14px !important;
+        }
+
+        /* Header row: stack title above search bar */
+        .ency-section-header-row {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 12px !important;
+            margin-bottom: 14px !important;
+            padding-bottom: 14px !important;
+        }
+
+        .ency-title {
+            font-size: 17px !important;
+            margin-bottom: 3px !important;
+        }
+
+        .ency-subtitle {
+            font-size: 12px !important;
+            line-height: 1.45 !important;
+        }
+
+        .ency-search-wrapper {
+            max-width: 100% !important;
+        }
+
+        .ency-search-input {
+            font-size: 13px !important;
+            padding: 9px 12px 9px 34px !important;
+            border-radius: 10px !important;
+        }
+
+        /* Crop grid — two compact cards per row on mobile */
+        .crop-ency-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 12px !important;
+            margin-top: 16px !important;
+        }
+
+        /* Crop cards — dense, app-like */
+        .ency-card {
+            border-radius: 12px !important;
+        }
+
+        .ency-card:hover {
+            transform: none !important;
+        }
+
+        .ency-card-banner {
+            height: 70px !important;
+        }
+
+        .ency-card-body {
+            padding: 12px 12px 14px !important;
+        }
+
+        .ency-card-header {
+            margin-bottom: 4px !important;
+        }
+
+        .ency-card-name {
+            font-size: 14px !important;
+            line-height: 1.25 !important;
+            display: -webkit-box !important;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .ency-card-sub {
+            font-size: 11px !important;
+            line-height: 1.4 !important;
+            margin-bottom: 12px !important;
+            display: -webkit-box !important;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Spec cells — single column, label + value inline to save vertical space */
+        .ency-specs {
+            grid-template-columns: 1fr !important;
+            gap: 8px !important;
+            margin-bottom: 12px !important;
+        }
+
+        .ency-spec {
+            padding: 8px 10px !important;
+            border-radius: 10px !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+
+        .ency-spec-label {
+            font-size: 9px !important;
+            margin-bottom: 0 !important;
+            letter-spacing: 0.4px !important;
+        }
+
+        .ency-spec-value {
+            font-size: 11.5px !important;
+            text-align: right !important;
+            line-height: 1.3 !important;
+        }
+
+        /* Growth timeline — horizontal scroller so it never breaks layout */
+        .ency-timeline {
+            margin-bottom: 12px !important;
+        }
+
+        .ency-timeline-label {
+            font-size: 9px !important;
+            margin-bottom: 6px !important;
+        }
+
+        .ency-timeline-steps {
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            gap: 4px !important;
+            padding-bottom: 2px !important;
+            scrollbar-width: none;
+        }
+
+        .ency-timeline-steps::-webkit-scrollbar {
+            display: none;
+        }
+
+        .ency-timeline-step {
+            font-size: 10px !important;
+            padding: 3px 8px !important;
+            white-space: nowrap !important;
+        }
+
+        /* Vulnerability block — compact */
+        .ency-vuln {
+            padding-top: 12px !important;
+            margin-bottom: 6px !important;
+        }
+
+        .ency-vuln-label {
+            font-size: 9px !important;
+            margin-bottom: 5px !important;
+        }
+
+        .ency-vuln-text {
+            font-size: 11px !important;
+            line-height: 1.45 !important;
+            padding: 8px 10px !important;
+            border-radius: 8px !important;
+            display: -webkit-box !important;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Tips button — full-width, thumb-friendly */
+        .ency-tips-section {
+            margin-top: 10px !important;
+        }
+
+        .ency-tips-btn {
+            width: 100% !important;
+            font-size: 12px !important;
+            padding: 9px 12px !important;
+            font-weight: 700 !important;
+        }
+
+        .ency-tips-count {
+            min-width: 18px !important;
+            height: 18px !important;
+            line-height: 18px !important;
+            font-size: 10px !important;
+        }
+
+        /* Pagination — compact, wraps page numbers below prev/next */
+        .ency-pagination {
+            gap: 6px !important;
+            margin-top: 18px !important;
+            padding-top: 14px !important;
+            flex-wrap: wrap !important;
+        }
+
+        .ency-pg-btn {
+            font-size: 12px !important;
+            padding: 6px 12px !important;
+            border-radius: 8px !important;
+        }
+
+        .ency-pg-pages {
+            gap: 4px !important;
+            order: 3 !important;
+            flex-basis: 100% !important;
+            justify-content: center !important;
+            flex-wrap: wrap !important;
+        }
+
+        .ency-pg-page {
+            font-size: 12px !important;
+            padding: 6px 10px !important;
+            min-width: 32px !important;
+        }
+
+        /* No-results placeholder */
+        .ency-no-results {
+            padding: 32px 16px !important;
+            font-size: 13px !important;
+        }
+        /* ============ End Digital Repository Mobile Overrides ============ */
     }
 
     @media (max-width: 400px) {
+        /* On very narrow phones, keep two cards per row but tighten further */
+        .crop-ency-grid {
+            gap: 10px !important;
+        }
+
+        .ency-main-card {
+            padding: 14px 10px !important;
+        }
+
+        .ency-card-banner {
+            height: 60px !important;
+        }
+
+        .ency-card-body {
+            padding: 10px 10px 12px !important;
+        }
+
+        .ency-card-name {
+            font-size: 13px !important;
+        }
+
+        .ency-card-sub {
+            font-size: 10.5px !important;
+            margin-bottom: 10px !important;
+        }
+
+        .ency-spec {
+            padding: 7px 9px !important;
+        }
+
+        .ency-spec-label {
+            font-size: 8.5px !important;
+        }
+
+        .ency-spec-value {
+            font-size: 11px !important;
+        }
+
+        .recommendation-title {
+            font-size: 14px !important;
+        }
+
+        .recommendation-desc {
+            font-size: 11.5px !important;
+        }
+
+        .ency-title {
+            font-size: 16px !important;
+        }
         .metric-value {
             font-size: 24px;
         }
@@ -1389,11 +1683,116 @@
         font-weight: 600;
         color: #4A8A4A;
         background: #E8FFE8;
-        padding: 10px 14px;
+        padding: 8px 12px;
         border-radius: 8px;
         display: inline-block;
-        margin-top: 10px;
+        margin-top: 8px;
+        border: 1px solid #C8F0C8;
+    }
+
+    /* Enhanced Predictor UI Styles */
+    .crop-chips-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .crop-chip {
+        background: #F0FAF0;
+        border: 2px solid #D0ECD0;
+        color: #2D5A2D;
+        border-radius: 20px;
+        padding: 6px 14px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .crop-chip:hover {
+        background: #E0F8E0;
+        border-color: #1BE035;
+    }
+    .crop-chip.active {
+        background: #1BE035;
+        color: #FFFFFF;
+        border-color: #10B025;
+        box-shadow: 0 4px 10px rgba(27, 224, 53, 0.3);
+    }
+    .time-chip {
+        background: #F4F6F4;
+        border: 1.5px solid #D0DDD0;
+        color: #4A6A4A;
+        border-radius: 12px;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .time-chip.active {
+        background: #2D5A2D;
+        color: #FFFFFF;
+        border-color: #2D5A2D;
+    }
+    .predictor-result-panel {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        margin: 18px 0;
+        padding: 20px;
+        border-radius: 14px;
+        background: #F0FFF0;
         border: 2px solid #C8F0C8;
+        flex-wrap: wrap;
+    }
+    .predictor-score-badge-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    .safety-score-circle {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: #FFFFFF;
+        border: 4px solid #1BE035;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+        font-weight: 800;
+        color: #0D5E1A;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+    .factor-card {
+        background: #FFFFFF;
+        border: 2px solid #E0F2E0;
+        border-radius: 12px;
+        padding: 12px 14px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .factor-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        font-weight: 700;
+        color: #2D5A2D;
+        margin-bottom: 6px;
+    }
+    .factor-score-pill {
+        font-size: 11px;
+        font-weight: 800;
+        padding: 2px 8px;
+        border-radius: 10px;
+        background: #E8FFE8;
+        color: #0D5E1A;
+        border: 1px solid #C8F0C8;
+    }
+    .factor-desc {
+        font-size: 12px;
+        color: #5A7A5A;
+        line-height: 1.4;
     }
 
     /* DIGITAL REPOSITORY CROP ENCYCLOPEDIA STYLES */
@@ -1509,22 +1908,14 @@
     .crop-ampalaya { background: linear-gradient(135deg, #10b981, #047857); }
     .crop-kangkong { background: linear-gradient(135deg, #4ade80, #166534); }
 
-    .ency-card-icon-wrap {
-        width: 64px;
-        height: 64px;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 50%;
+    .ency-no-image {
+        position: relative;
+        z-index: 2;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        font-size: 32px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-        z-index: 2;
-        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .ency-card:hover .ency-card-icon-wrap {
-        transform: scale(1.1) rotate(6deg);
+        pointer-events: none;
     }
 
     .ency-card-body {
@@ -1658,10 +2049,10 @@
         color: #475569;
         line-height: 1.5;
         font-weight: 500;
-        background: #fffbeb;
+        background: #f8fafc;
         padding: 8px 12px;
         border-radius: 8px;
-        border-left: 3px solid #f59e0b;
+        border: 1px solid #e2e8f0;
     }
 
     .ency-pagination {

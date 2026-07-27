@@ -1,0 +1,7 @@
+{
+  "id": "safe_to_plant_predictor",
+  "title": "Upgrade Safe to Plant Predictor",
+  "description": "Improve crop input UX and prediction mechanics for farmers on the weather analytics dashboard.",
+  "status": "completed",
+  "created_at": "2026-07-27T16:42:00+08:00"
+}

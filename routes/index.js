@@ -10,7 +10,7 @@ const { requireAuth, requireAdmin } = require('../middlewares/auth');
 const { User, FarmPlot, PlantingRecord, CropRepository, WeatherLog, Alert, Trivia, SoilProfile, StationDevice, Otp } = require('../models');
 
 // Lazy-load agricultural services (created after routes file)
-let irrigationService, diseaseRiskService, fertilizerService, gddService, typhoonAlertService, todoService, satelliteService;
+let irrigationService, diseaseRiskService, fertilizerService, gddService, typhoonAlertService, todoService, satelliteService, plantingPredictorService;
 try { irrigationService = require('../services/irrigationService'); } catch(e) { console.warn('irrigationService not loaded:', e.message); }
 try { diseaseRiskService = require('../services/diseaseRiskService'); } catch(e) { console.warn('diseaseRiskService not loaded:', e.message); }
 try { fertilizerService = require('../services/fertilizerService'); } catch(e) { console.warn('fertilizerService not loaded:', e.message); }
@@ -18,7 +18,44 @@ try { gddService = require('../services/gddService'); } catch(e) { console.warn(
 try { typhoonAlertService = require('../services/typhoonAlertService'); } catch(e) { console.warn('typhoonAlertService not loaded:', e.message); }
 try { todoService = require('../services/todoService'); } catch(e) { console.warn('todoService not loaded:', e.message); }
 try { satelliteService = require('../services/satelliteService'); } catch(e) { console.warn('satelliteService not loaded:', e.message); }
+try { plantingPredictorService = require('../services/plantingPredictorService'); } catch(e) { console.warn('plantingPredictorService not loaded:', e.message); }
 const { sendEmail } = require('../services/emailService');
+const cloudinary = require('cloudinary').v2;
+const multer = require('multer');
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'dir9ljc5q',
+  api_key: process.env.CLOUDINARY_API_KEY || '947544355558482',
+  api_secret: process.env.CLOUDINARY_API_SECRET || 'JmBJHjNTI7MJ597pr79X7xPZ9lE'
+});
+
+// Configure Multer for in-memory storage and upload limits
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: parseInt(process.env.MAX_FILE_SIZE) || 10485760 // 10MB default
+  }
+});
+
+// Helper: validate and upload buffer to Cloudinary
+async function uploadToCloudinary(fileBuffer, mimeType) {
+  return new Promise((resolve, reject) => {
+    const allowedTypes = (process.env.ALLOWED_IMAGE_TYPES || 'jpeg,jpg,png,gif,webp').split(',').map(t => t.trim().toLowerCase());
+    const ext = mimeType ? mimeType.split('/').pop().toLowerCase() : '';
+    if (mimeType && !allowedTypes.includes(ext) && !allowedTypes.some(t => mimeType.toLowerCase().includes(t))) {
+      return reject(new Error(`Invalid file type. Allowed: ${allowedTypes.join(', ')}`));
+    }
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: 'weather_crops', resource_type: 'image' },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+    stream.end(fileBuffer);
+  });
+}
 
 // ==========================================
 // 🔑 AUTH ROUTES (public)
@@ -634,6 +671,32 @@ router.get('/api/weather/risks', async (req, res) => {
   }
 });
 
+// Safe to plant predictor calculation API
+router.post('/api/weather/predict-planting', async (req, res) => {
+  try {
+    const { cropKey, forecastData, lat, lon } = req.body;
+    let weatherData = forecastData;
+    if (!weatherData && weatherService) {
+      weatherData = await weatherService.fetchForecast(lat, lon);
+    }
+    const alerts = (req.user && req.user.id) ? await Alert.findAll({ where: { is_active: true } }) : [];
+    const evaluation = plantingPredictorService ? plantingPredictorService.evaluatePlantingSafety(cropKey, weatherData, alerts) : {};
+    res.json(evaluation);
+  } catch (err) {
+    console.error('Predict Planting API Error:', err.message);
+    res.status(500).json({ error: 'Safe to plant evaluation failed', message: err.message });
+  }
+});
+
+router.get('/api/weather/crop-profiles', (req, res) => {
+  try {
+    const profiles = plantingPredictorService ? plantingPredictorService.getCropProfiles() : [];
+    res.json(profiles);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch crop profiles' });
+  }
+});
+
 // Save current weather to historical log
 router.post('/api/weather/log', async (req, res) => {
   try {
@@ -1145,24 +1208,35 @@ router.get('/api/admin/stats', requireAuth, requireAdmin, async (req, res) => {
     // Count registered farmers (Agriculturist role)
     const totalFarmers = await User.count({ where: { role: 'Agriculturist' } });
 
-    // Count active farm plots (plots that have a "Growing" planting record)
-    const activePlots = await PlantingRecord.count({ where: { status: 'Growing' } });
+    // Count active farm plots (distinct plots that have a "Growing" planting record)
+    const activePlots = await PlantingRecord.count({
+      where: { status: 'Growing' },
+      distinct: true,
+      col: 'plot_id'
+    });
 
-    // Check API status — look at most recent weather log with source "API"
+    // Count total crops in repository
+    const totalCrops = await CropRepository.count();
+
+    // Check API status — actually ping the OpenWeather API to verify connectivity
+    let apiStatus = 'offline';
+    let apiDetail = 'Unable to reach OpenWeather';
+    try {
+      const test = await weatherService.fetchCurrentWeather();
+      if (test && test.temperature !== undefined) {
+        apiStatus = 'online';
+        apiDetail = `Responded — ${test.location || 'N/A'}: ${test.temperature}°C, ${test.weather_main || 'N/A'}`;
+      }
+    } catch (e) {
+      apiStatus = 'offline';
+      apiDetail = `Error: ${e.message}`;
+    }
+
+    // Also check last API-sourced log entry for historical reference
     const lastApiLog = await WeatherLog.findOne({
       where: { data_source: 'API' },
       order: [['timestamp', 'DESC']]
     });
-
-    let apiStatus = 'offline';
-    let lastLogTime = null;
-    if (lastApiLog) {
-      lastLogTime = lastApiLog.timestamp;
-      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-      if (new Date(lastApiLog.timestamp) > oneHourAgo) {
-        apiStatus = 'online';
-      }
-    }
 
     // Recent weather logs (last 5)
     const recentLogs = await WeatherLog.findAll({
@@ -1177,11 +1251,38 @@ router.get('/api/admin/stats', requireAuth, requireAdmin, async (req, res) => {
       limit: 5
     });
 
+    // Store a WeatherLog entry when API is confirmed online
+    if (apiStatus === 'online') {
+      const now = new Date();
+      const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+      const recentApiLog = await WeatherLog.findOne({
+        where: { data_source: 'API', timestamp: { [Op.gte]: oneHourAgo } },
+        order: [['timestamp', 'DESC']]
+      });
+      if (!recentApiLog) {
+        try {
+          const current = await weatherService.fetchCurrentWeather();
+          await WeatherLog.create({
+            timestamp: new Date(current.dt),
+            temperature: current.temperature,
+            humidity: current.humidity,
+            wind_speed: current.wind_speed,
+            rainfall: current.rainfall,
+            data_source: 'API'
+          });
+        } catch (logErr) {
+          console.warn('Could not auto-log weather data:', logErr.message);
+        }
+      }
+    }
+
     res.json({
       totalFarmers,
       activePlots,
+      totalCrops,
       apiStatus,
-      lastLogTime,
+      apiDetail,
+      lastLogTime: lastApiLog ? lastApiLog.timestamp : null,
       recentLogs,
       recentAlerts
     });
@@ -1191,12 +1292,31 @@ router.get('/api/admin/stats', requireAuth, requireAdmin, async (req, res) => {
   }
 });
 
-// Admin Crop CRUD
-router.post('/api/admin/crops', requireAuth, requireAdmin, async (req, res) => {
+// Admin Crop CRUD & Image Upload
+router.post('/api/admin/crops/upload-image', requireAuth, requireAdmin, upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+    const result = await uploadToCloudinary(req.file.buffer, req.file.mimetype);
+    res.json({ success: true, url: result.secure_url });
+  } catch (err) {
+    console.error('API Error POST /api/admin/crops/upload-image:', err);
+    res.status(500).json({ error: err.message || 'Image upload failed' });
+  }
+});
+
+router.post('/api/admin/crops', requireAuth, requireAdmin, upload.single('image'), async (req, res) => {
   try {
     const { crop_name, ideal_temp_min, ideal_temp_max, rain_tolerance, days_to_harvest, best_practices } = req.body;
     if (!crop_name || ideal_temp_min == null || ideal_temp_max == null || rain_tolerance == null || days_to_harvest == null) {
       return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    let imageUrl = req.body.image_url || null;
+    if (req.file) {
+      const uploadRes = await uploadToCloudinary(req.file.buffer, req.file.mimetype);
+      imageUrl = uploadRes.secure_url;
     }
 
     // Upsert: check if crop name already exists
@@ -1207,6 +1327,7 @@ router.post('/api/admin/crops', requireAuth, requireAdmin, async (req, res) => {
       existing.rain_tolerance = parseFloat(rain_tolerance);
       existing.days_to_harvest = parseInt(days_to_harvest);
       existing.best_practices = best_practices || null;
+      if (imageUrl !== undefined && imageUrl !== null && imageUrl !== '') existing.image_url = imageUrl;
       await existing.save();
       return res.json(existing);
     }
@@ -1217,16 +1338,17 @@ router.post('/api/admin/crops', requireAuth, requireAdmin, async (req, res) => {
       ideal_temp_max: parseFloat(ideal_temp_max),
       rain_tolerance: parseFloat(rain_tolerance),
       days_to_harvest: parseInt(days_to_harvest),
-      best_practices: best_practices || null
+      best_practices: best_practices || null,
+      image_url: imageUrl || null
     });
     res.status(201).json(newCrop);
   } catch (err) {
     console.error('API Error POST /api/admin/crops:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: err.message || 'Internal Server Error' });
   }
 });
 
-router.put('/api/admin/crops/:id', requireAuth, requireAdmin, async (req, res) => {
+router.put('/api/admin/crops/:id', requireAuth, requireAdmin, upload.single('image'), async (req, res) => {
   try {
     const { id } = req.params;
     const { crop_name, ideal_temp_min, ideal_temp_max, rain_tolerance, days_to_harvest, best_practices } = req.body;
@@ -1236,18 +1358,25 @@ router.put('/api/admin/crops/:id', requireAuth, requireAdmin, async (req, res) =
       return res.status(404).json({ error: 'Crop not found' });
     }
 
+    let imageUrl = req.body.image_url;
+    if (req.file) {
+      const uploadRes = await uploadToCloudinary(req.file.buffer, req.file.mimetype);
+      imageUrl = uploadRes.secure_url;
+    }
+
     if (crop_name) crop.crop_name = crop_name;
     if (ideal_temp_min != null) crop.ideal_temp_min = parseFloat(ideal_temp_min);
     if (ideal_temp_max != null) crop.ideal_temp_max = parseFloat(ideal_temp_max);
     if (rain_tolerance != null) crop.rain_tolerance = parseFloat(rain_tolerance);
     if (days_to_harvest != null) crop.days_to_harvest = parseInt(days_to_harvest);
     if (best_practices !== undefined) crop.best_practices = best_practices || null;
+    if (imageUrl !== undefined) crop.image_url = imageUrl || null;
 
     await crop.save();
     res.json(crop);
   } catch (err) {
     console.error('API Error PUT /api/admin/crops:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: err.message || 'Internal Server Error' });
   }
 });
 

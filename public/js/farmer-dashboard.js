@@ -1438,75 +1438,182 @@ var cropLimits = {
     'Kangkong': { rainLimit: 120, tempMin: 18, tempMax: 38, name: 'Kangkong' }
 };
 
-var selectPredictor = document.getElementById("predict-crop-select");
-function updatePredictor() {
-    if (!selectPredictor) return;
-    var val = selectPredictor.value;
-    var crop = cropLimits[val];
-    if (!crop) return;
+var selectedPredictorCrop = "Rice";
 
+function setupCropChipListeners() {
+    var chips = document.querySelectorAll(".crop-chip");
+    chips.forEach(function(chip) {
+        chip.addEventListener("click", function() {
+            chips.forEach(function(c) { c.classList.remove("active"); });
+            this.classList.add("active");
+            var cropKey = this.getAttribute("data-crop");
+            selectedPredictorCrop = cropKey;
+            var sel = document.getElementById("predict-crop-select");
+            if (sel) sel.value = cropKey;
+            updatePredictor();
+        });
+    });
+
+    var sel = document.getElementById("predict-crop-select");
+    if (sel) {
+        sel.addEventListener("change", function() {
+            selectedPredictorCrop = this.value;
+            chips.forEach(function(c) {
+                if (c.getAttribute("data-crop") === selectedPredictorCrop) {
+                    c.classList.add("active");
+                } else {
+                    c.classList.remove("active");
+                }
+            });
+            updatePredictor();
+        });
+    }
+}
+
+function updatePredictor() {
     var red = document.getElementById("light-red");
     var yellow = document.getElementById("light-yellow");
     var green = document.getElementById("light-green");
     var vTitle = document.getElementById("predictor-verdict-title");
     var vDesc = document.getElementById("predictor-verdict-desc");
     var vFormula = document.getElementById("predictor-formula");
+    var scoreVal = document.getElementById("safety-score-val");
+    var scoreCircle = document.getElementById("safety-score-circle");
 
-    if (!red || !yellow || !green || !vTitle || !vDesc || !vFormula) return;
+    if (!red || !yellow || !green || !vTitle || !vDesc) return;
 
-    // Clear active lights
+    var cropKey = selectedPredictorCrop || "Rice";
+
+    // Call API for prediction assessment
+    fetch('/api/weather/predict-planting', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cropKey: cropKey, forecastData: liveForecast })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        if (!data || !data.safetyIndex && data.safetyIndex !== 0) return fallbackLocalEvaluation(cropKey);
+        renderPredictorResult(data);
+    })
+    .catch(function(err) {
+        console.warn('API predictor error, falling back:', err);
+        fallbackLocalEvaluation(cropKey);
+    });
+}
+
+function renderPredictorResult(data) {
+    var red = document.getElementById("light-red");
+    var yellow = document.getElementById("light-yellow");
+    var green = document.getElementById("light-green");
+    var vTitle = document.getElementById("predictor-verdict-title");
+    var vDesc = document.getElementById("predictor-verdict-desc");
+    var vFormula = document.getElementById("predictor-formula");
+    var scoreVal = document.getElementById("safety-score-val");
+    var scoreCircle = document.getElementById("safety-score-circle");
+    var recList = document.getElementById("predictor-recommendations-list");
+
+    if (!red || !yellow || !green) return;
+
     red.className = "light-indicator";
     yellow.className = "light-indicator";
     green.className = "light-indicator";
 
-    // Get live forecast data (or use defaults if not loaded yet)
-    var maxForecastRain = forecastedRain;
-    var maxForecastTemp = 31;
-    var totalForecastRain = 0;
+    if (scoreVal) scoreVal.innerText = data.safetyIndex + '%';
 
-    if (liveForecast && liveForecast.days) {
-        maxForecastRain = Math.max(...liveForecast.days.map(function(d) { return d.rainfall; }));
-        maxForecastTemp = Math.max(...liveForecast.days.map(function(d) { return d.temp_max; }));
-        totalForecastRain = liveForecast.total_forecast_rain || 0;
+    if (scoreCircle) {
+        if (data.trafficLight === 'GREEN') {
+            scoreCircle.style.borderColor = '#1BE035';
+            scoreCircle.style.color = '#0D5E1A';
+        } else if (data.trafficLight === 'YELLOW') {
+            scoreCircle.style.borderColor = '#F5A623';
+            scoreCircle.style.color = '#B36B00';
+        } else {
+            scoreCircle.style.borderColor = '#D44A1A';
+            scoreCircle.style.color = '#8A2000';
+        }
     }
 
-    // Decision logic using LIVE data
-    var rainDanger = maxForecastRain > crop.rainLimit;
-    var rainCaution = totalForecastRain > crop.rainLimit * 0.7;
-    var tempDanger = maxForecastTemp > crop.tempMax + 3;
-    var tempCaution = maxForecastTemp > crop.tempMax;
-
-    if (rainDanger || tempDanger) {
-        // RED: Delay planting
+    if (data.trafficLight === 'RED') {
         red.classList.add("red-active");
-        var reason = rainDanger
-            ? 'Forecast rain (' + maxForecastRain + 'mm) exceeds ' + crop.name + ' tolerance limit (' + crop.rainLimit + 'mm).'
-            : 'Forecast temp (' + maxForecastTemp + '\u00B0C) far exceeds ' + crop.name + ' ideal max (' + crop.tempMax + '\u00B0C).';
-        vTitle.innerText = "RED: DELAY PLANTING BATCH";
-        vDesc.innerText = "Warning! " + reason + " Seeds risk damage.";
-        vFormula.innerText = rainDanger
-            ? 'Rain: ' + maxForecastRain + 'mm > Limit: ' + crop.rainLimit + 'mm  Danger'
-            : 'Temp: ' + maxForecastTemp + '\u00B0C > Max: ' + crop.tempMax + '\u00B0C  Danger';
-    } else if (rainCaution || tempCaution) {
-        // YELLOW: Plant with caution
+    } else if (data.trafficLight === 'YELLOW') {
         yellow.classList.add("yellow-active");
-        var reason2 = tempCaution
-            ? 'Temperatures (' + maxForecastTemp + '\u00B0C) above ideal for ' + crop.name + ' (' + crop.tempMax + '\u00B0C). Pre-water before planting.'
-            : 'Total forecast rain (' + totalForecastRain + 'mm) approaching ' + crop.name + ' limits (' + crop.rainLimit + 'mm).';
-        vTitle.innerText = "YELLOW: PLANT WITH CAUTION";
-        vDesc.innerText = reason2;
-        vFormula.innerText = tempCaution
-            ? 'Temp: ' + maxForecastTemp + '\u00B0C > Ideal: ' + crop.tempMax + '\u00B0C  Caution'
-            : 'Rain: ' + totalForecastRain + 'mm ~= Limit: ' + crop.rainLimit + 'mm  Caution';
     } else {
-        // GREEN: Safe to plant
         green.classList.add("green-active");
-        vTitle.innerText = "GREEN: SAFE TO PLANT";
-        vDesc.innerText = "Live forecast shows favorable conditions for " + crop.name + ". Rain (" + maxForecastRain + "mm) well within tolerance (" + crop.rainLimit + "mm). Temp (" + maxForecastTemp + "\u00B0C) within ideal range.";
-        vFormula.innerText = 'Rain: ' + maxForecastRain + 'mm < Limit: ' + crop.rainLimit + 'mm  Safe';
+    }
+
+    if (vTitle) vTitle.innerText = data.verdictTitle;
+    if (vDesc) vDesc.innerText = data.verdictDesc;
+
+    if (vFormula && data.metrics) {
+        vFormula.innerText = 'Peak Temp: ' + data.metrics.maxTemp + '°C | Rain Peak: ' + data.metrics.maxDailyRain.toFixed(1) + 'mm | Total Rain: ' + data.metrics.totalForecastRain.toFixed(1) + 'mm';
+    }
+
+    // Factors breakdown
+    if (data.factors) {
+        var tempScore = document.getElementById("factor-temp-score");
+        var tempDesc = document.getElementById("factor-temp-desc");
+        var rainScore = document.getElementById("factor-rain-score");
+        var rainDesc = document.getElementById("factor-rain-desc");
+        var envScore = document.getElementById("factor-env-score");
+        var envDesc = document.getElementById("factor-env-desc");
+
+        if (tempScore) tempScore.innerText = data.factors.temperature.score + '% (' + data.factors.temperature.status + ')';
+        if (tempDesc) tempDesc.innerText = data.factors.temperature.message;
+
+        if (rainScore) rainScore.innerText = data.factors.rainfall.score + '% (' + data.factors.rainfall.status + ')';
+        if (rainDesc) rainDesc.innerText = data.factors.rainfall.message;
+
+        if (envScore) envScore.innerText = data.factors.environment.score + '% (' + data.factors.environment.status + ')';
+        if (envDesc) envDesc.innerText = data.factors.environment.message;
+    }
+
+    // Recommendations list
+    if (recList && Array.isArray(data.recommendations)) {
+        recList.innerHTML = data.recommendations.map(function(r) {
+            return '<li style="margin-bottom:4px;">' + r + '</li>';
+        }).join('');
     }
 }
-if (selectPredictor) selectPredictor.addEventListener("change", updatePredictor);
+
+function fallbackLocalEvaluation(cropKey) {
+    var crop = cropLimits[cropKey] || cropLimits['Rice'];
+    var maxRain = forecastedRain || 0;
+    var maxTemp = 31;
+    var totalRain = 0;
+
+    if (liveForecast && liveForecast.days) {
+        maxRain = Math.max(...liveForecast.days.map(function(d) { return d.rainfall || 0; }));
+        maxTemp = Math.max(...liveForecast.days.map(function(d) { return d.temp_max || 30; }));
+        totalRain = liveForecast.total_forecast_rain || 0;
+    }
+
+    var isDanger = maxRain > crop.rainLimit || maxTemp > crop.tempMax + 3;
+    var isCaution = totalRain > crop.rainLimit * 0.7 || maxTemp > crop.tempMax;
+    var score = isDanger ? 35 : (isCaution ? 65 : 90);
+    var light = isDanger ? 'RED' : (isCaution ? 'YELLOW' : 'GREEN');
+
+    renderPredictorResult({
+        safetyIndex: score,
+        trafficLight: light,
+        verdictTitle: light === 'RED' ? 'RED: DELAY PLANTING BATCH' : (light === 'YELLOW' ? 'YELLOW: PLANT WITH CAUTION' : 'GREEN: SAFE TO PLANT'),
+        verdictDesc: 'Evaluated using current forecast values for ' + crop.name + '.',
+        metrics: { maxTemp: maxTemp, maxDailyRain: maxRain, totalForecastRain: totalRain },
+        factors: {
+            temperature: { score: maxTemp > crop.tempMax ? 40 : 90, status: maxTemp > crop.tempMax ? 'Caution' : 'Ideal', message: 'Forecast temp: ' + maxTemp + '°C' },
+            rainfall: { score: maxRain > crop.rainLimit ? 30 : 85, status: maxRain > crop.rainLimit ? 'Danger' : 'Ideal', message: 'Forecast rain: ' + maxRain + 'mm' },
+            environment: { score: 90, status: 'Ideal', message: 'No severe alerts active.' }
+        },
+        recommendations: [
+            'Monitor local daily rain forecasts before sowing.',
+            'Ensure drainage canals are cleared in case of rainfall.'
+        ]
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    setupCropChipListeners();
+});
+
 
 // Active Plot Realtime Search
 var searchPlots = document.getElementById("plot-search");
@@ -1608,11 +1715,16 @@ function buildEncyclopediaCard(crop) {
         bannerClass = "crop-kangkong";
     }
 
+    var bannerStyle = crop.image_url ? ' style="background: url(\'' + escapeAttr(crop.image_url) + '\') center/cover no-repeat; position: relative;"' : '';
+    var bannerOverlay = crop.image_url ? '<div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0.15));border-radius:inherit;"></div>' : '';
+    var noImagePlaceholder = !crop.image_url ? '<div class="ency-no-image"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span style="display:block;font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);margin-top:6px;">No Image</span></div>' : '';
+
     return (
         '<div class="ency-card" data-name="' + dataName + '">' +
-            '<div class="ency-card-banner ' + bannerClass + '">' +
+            '<div class="ency-card-banner ' + bannerClass + '"' + bannerStyle + '>' +
+                bannerOverlay +
                 '<div class="ency-card-pattern"></div>' +
-                '<div class="ency-card-icon-wrap">' + emoji + '</div>' +
+                noImagePlaceholder +
             '</div>' +
             '<div class="ency-card-body">' +
                 '<div class="ency-card-header">' +
@@ -1841,6 +1953,74 @@ if (searchEncy) {
         renderEncyclopedia();
     });
 }
+
+// Category Pills & 2x2 Grid Category Click Handlers
+function setCategoryFilter(category) {
+    var queryMap = {
+        'all': '',
+        'rice': 'rice',
+        'corn': 'corn',
+        'veg': 'cabbage', // matches cabbage, tomato, eggplant, kangkong
+        'pest': ''
+    };
+    
+    if (category === 'veg') {
+        encySearchQuery = ''; // filter broadly or handle in custom filter if needed
+    } else {
+        encySearchQuery = queryMap[category] !== undefined ? queryMap[category] : category;
+    }
+
+    if (searchEncy) {
+        searchEncy.value = encySearchQuery;
+    }
+
+    // Update active pill state
+    document.querySelectorAll('.repo-cat-pill').forEach(function(pill) {
+        if (pill.getAttribute('data-category') === category) {
+            pill.classList.add('active');
+        } else {
+            pill.classList.remove('active');
+        }
+    });
+
+    encyCurrentPage = 1;
+    renderEncyclopedia();
+
+    // Smooth scroll down to encyclopedia section on mobile
+    var encySection = document.querySelector('.repo-ency-card-container');
+    if (encySection && window.innerWidth <= 768) {
+        encySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+document.addEventListener('click', function(e) {
+    var catPill = e.target.closest('.repo-cat-pill');
+    if (catPill) {
+        var cat = catPill.getAttribute('data-category');
+        if (cat) setCategoryFilter(cat);
+        return;
+    }
+
+    var catCard = e.target.closest('.repo-cat-card');
+    if (catCard) {
+        var cat = catCard.getAttribute('data-category');
+        if (cat) setCategoryFilter(cat);
+        return;
+    }
+
+    var spotlightAction = e.target.closest('#btn-spotlight-action, #btn-spotlight-see-all');
+    if (spotlightAction) {
+        setCategoryFilter('rice');
+        openTipsModal('Palay (IR64)');
+        return;
+    }
+
+    var searchToggle = e.target.closest('#btn-repo-search-toggle');
+    if (searchToggle && searchEncy) {
+        searchEncy.focus();
+        searchEncy.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+});
 
 // Prev / Next
 var prevBtn = document.getElementById("ency-pg-prev");
