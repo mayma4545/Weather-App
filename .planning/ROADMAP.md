@@ -139,4 +139,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 Plans:
 - [x] 07-01-PLAN.md — Gemini service (fetch client, prompt/parse, env key docs)
 - [x] 07-02-PLAN.md — Wire predict-planting: requireAuth, AI override, static fallback
-- [ ] 07-03-PLAN.md — Client language param, loading state, XSS-safe bullets + disclaimer
+- [x] 07-03-PLAN.md — Client language param, loading state, XSS-safe bullets + disclaimer
