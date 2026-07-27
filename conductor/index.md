@@ -12,4 +12,7 @@ Welcome to the Conductor documentation index for **Project Weather**, an Agricul
 ## Tracks
 *Tracks represent distinct features, enhancements, or bug fixes.*
 
-- [Track 001: Upgrade Safe to Plant Predictor](./tracks/safe_to_plant_predictor/index.md) — [Status: Completed]
+- *No active incomplete tracks.*
+
+## Archived Tracks
+- [Track 001: Upgrade Safe to Plant Predictor](./archive/safe_to_plant_predictor/index.md) — [Status: Archived]
