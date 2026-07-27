@@ -24,12 +24,15 @@ const { sendEmail } = require('../services/emailService');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 
-// Configure Cloudinary
+// Configure Cloudinary (credentials must be in env — no hardcoded fallbacks)
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'dir9ljc5q',
-  api_key: process.env.CLOUDINARY_API_KEY || '947544355558482',
-  api_secret: process.env.CLOUDINARY_API_SECRET || 'JmBJHjNTI7MJ597pr79X7xPZ9lE'
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
+if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+  console.warn('⚠️ Cloudinary not configured — image upload disabled');
+}
 
 // Configure Multer for in-memory storage and upload limits
 const upload = multer({
