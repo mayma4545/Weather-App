@@ -15,10 +15,6 @@ Welcome to the Conductor documentation index for **Project Weather**, an Agricul
 - [x] **Track: Modern Weather Analytics UI Redesign**
 *Link: [./tracks/weather_analytics_ui_redesign_20260727/](./tracks/weather_analytics_ui_redesign_20260727/)*
 
----
-
-- [x] **Track: Enhanced AI Weather Actionable Recommendations**
-*Link: [./tracks/ai_recommendation_enrichment_20260727/](./tracks/ai_recommendation_enrichment_20260727/)*
-
 ## Archived Tracks
+- [Track: Enhanced AI Weather Actionable Recommendations](./archive/ai_recommendation_enrichment_20260727/) — [Status: Archived]
 - [Track 001: Upgrade Safe to Plant Predictor](./archive/safe_to_plant_predictor/index.md) — [Status: Archived]
