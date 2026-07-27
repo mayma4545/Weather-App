@@ -18,6 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 4: Crop Decisions & Planting Calendar** - Plots, plantings, hardened advisors, and when-to-plant guidance
 - [ ] **Phase 5: Knowledge Hub** - Browseable crop catalog and best-practice guidelines with admin maintenance
 - [ ] **Phase 6: Campus Pilot UX** - Daily-usable farmer/admin dashboards on mobile with clear empty/loading/error states
+- [ ] **Phase 7: Integrate Google AI (Gemini)** - AI-generated Actionable Field Recommendations on weather-analytics
 
 ## Phase Details
 
@@ -96,7 +97,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -106,6 +107,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 4. Crop Decisions & Planting Calendar | 0/TBD | Not started | - |
 | 5. Knowledge Hub | 0/TBD | Not started | - |
 | 6. Campus Pilot UX | 0/TBD | Not started | - |
+| 7. Integrate Google AI (Gemini) | 0/3 | Planned | - |
 
 ## Coverage Summary
 
@@ -114,8 +116,27 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Authentication & Access | AUTH-01..04 (4) | Phase 1 |
 | Weather | WTHR-01..04 (4) | Phase 2 |
 | Early Warning | ALRT-01..06 (6) | Phase 3 |
-| Crop Decisions | CROP-01..09 (9) | Phase 4 |
+| Crop Decisions | CROP-01..09 (9) | Phase 4 (+ CROP-08/09 enhanced in Phase 7) |
 | Knowledge Hub | KNOW-01..04 (4) | Phase 5 |
-| Platform UX | PLAT-01..04 (4) | Phase 6 |
+| Platform UX | PLAT-01..04 (4) | Phase 6 (+ PLAT-04 for AI loading in Phase 7) |
+| Google AI recommendations | CROP-08, CROP-09, PLAT-04 | Phase 7 |
 
-**v1 coverage:** 31/31 requirements mapped ✓
+**v1 coverage:** 31/31 requirements mapped ✓ (Phase 7 enhances CROP-08/CROP-09/PLAT-04)
+
+### Phase 7: Integrate Google AI (Gemini) into the system
+
+**Goal:** On `/farmer/weather-analytics`, Actionable Field Recommendations are Gemini-generated, crop- and weather-aware bullets (Filipino/English), while rule-based safety scores stay authoritative and static tips remain the fallback
+**Depends on:** Phase 6 (pilot UX surface); practically uses existing weather-analytics + planting predictor
+**Requirements:** CROP-08, CROP-09, PLAT-04
+**Success Criteria** (what must be TRUE):
+  1. When a farmer selects a crop on weather-analytics, Actionable Field Recommendations update automatically (no separate Generate button) with 3–5 concrete field-action bullets
+  2. Recommendation language follows the app language toggle (Filipino or English)
+  3. Safety index, traffic light, verdict, and factor scores remain rule-based (`plantingPredictorService`) — Gemini writes recommendations only
+  4. If Gemini is unconfigured, times out, or errors, static predictor recommendations still display (page never blanks)
+  5. Gemini API key is server-side only; `POST /api/weather/predict-planting` requires authentication; recommendation text is rendered XSS-safe
+**Plans:** 3 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Gemini service (fetch client, prompt/parse, env key docs)
+- [ ] 07-02-PLAN.md — Wire predict-planting: requireAuth, AI override, static fallback
+- [ ] 07-03-PLAN.md — Client language param, loading state, XSS-safe bullets + disclaimer
