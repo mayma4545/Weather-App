@@ -1,0 +1,8 @@
+{
+  "track_id": "ai_recommendation_enrichment_20260727",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-07-27T18:18:00Z",
+  "updated_at": "2026-07-27T18:18:00Z",
+  "description": "change the way the system feeds the promt to ai the actionable field recommendation at http://localhost:4000/farmer/weather-analytics, i want it to be more specific and the ai must take the context from the system including the weather that is given by openrouter and the data about the crop so that the ai could give a useful and understandble actionable recommendation to farmers"
+}
