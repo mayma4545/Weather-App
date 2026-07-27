@@ -12,7 +12,8 @@ Welcome to the Conductor documentation index for **Project Weather**, an Agricul
 ## Tracks
 *Tracks represent distinct features, enhancements, or bug fixes.*
 
-- *No active incomplete tracks.*
+- [ ] **Track: Modern Weather Analytics UI Redesign**
+*Link: [./tracks/weather_analytics_ui_redesign_20260727/](./tracks/weather_analytics_ui_redesign_20260727/)*
 
 ## Archived Tracks
 - [Track 001: Upgrade Safe to Plant Predictor](./archive/safe_to_plant_predictor/index.md) — [Status: Archived]
