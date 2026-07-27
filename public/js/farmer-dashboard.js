@@ -1483,12 +1483,26 @@ function updatePredictor() {
     if (!red || !yellow || !green || !vTitle || !vDesc) return;
 
     var cropKey = selectedPredictorCrop || "Rice";
+    var lang = (currentLanguage === 'filipino' || currentLanguage === 'minasbate') ? 'filipino' : 'english';
 
-    // Call API for prediction assessment
+    // Loading state while recommendations generate (PLAT-04)
+    var recList = document.getElementById('predictor-recommendations-list');
+    if (recList) {
+        recList.innerHTML = '';
+        var li = document.createElement('li');
+        li.textContent = (currentLanguage === 'filipino' || currentLanguage === 'minasbate')
+            ? 'Gumagawa ng rekomendasyon sa bukid…'
+            : 'Generating field recommendations…';
+        recList.appendChild(li);
+    }
+    var srcEl = document.getElementById('predictor-recommendations-source');
+    if (srcEl) srcEl.textContent = '';
+
+    // Call API for prediction assessment (language-aware AI recommendations)
     fetch('/api/weather/predict-planting', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cropKey: cropKey, forecastData: liveForecast })
+        body: JSON.stringify({ cropKey: cropKey, forecastData: liveForecast, language: lang })
     })
     .then(function(res) { return res.json(); })
     .then(function(data) {
@@ -1567,11 +1581,40 @@ function renderPredictorResult(data) {
         if (envDesc) envDesc.innerText = data.factors.environment.message;
     }
 
-    // Recommendations list
-    if (recList && Array.isArray(data.recommendations)) {
-        recList.innerHTML = data.recommendations.map(function(r) {
-            return '<li style="margin-bottom:4px;">' + r + '</li>';
-        }).join('');
+    // Recommendations list — XSS-safe (AI/static text is untrusted)
+    if (recList) {
+        recList.innerHTML = '';
+        if (Array.isArray(data.recommendations) && data.recommendations.length > 0) {
+            data.recommendations.forEach(function(r) {
+                var li = document.createElement('li');
+                li.style.marginBottom = '4px';
+                li.textContent = String(r);
+                recList.appendChild(li);
+            });
+        } else {
+            var emptyLi = document.createElement('li');
+            emptyLi.textContent = (currentLanguage === 'filipino' || currentLanguage === 'minasbate')
+                ? 'Walang rekomendasyon sa ngayon. Subukan muli o piliin ang pananim.'
+                : 'No recommendations available right now. Try again or select a crop.';
+            recList.appendChild(emptyLi);
+        }
+    }
+
+    // Optional source note (gemini vs static fallback)
+    var srcNote = document.getElementById('predictor-recommendations-source');
+    if (srcNote) {
+        var isFil = (currentLanguage === 'filipino' || currentLanguage === 'minasbate');
+        if (data.recommendations_source === 'gemini') {
+            srcNote.textContent = isFil
+                ? 'Mga tip na tinulungan ng AI — kumpirmahin sa lokal na paghatol.'
+                : 'AI-assisted tips — confirm with local judgment.';
+        } else if (data.recommendations_source === 'static') {
+            srcNote.textContent = isFil
+                ? 'Karaniwang tip (hindi available ang AI).'
+                : 'Standard tips (AI unavailable).';
+        } else {
+            srcNote.textContent = '';
+        }
     }
 }
 
