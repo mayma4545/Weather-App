@@ -678,6 +678,10 @@ const PREDICT_PLANTING_CROP_KEYS = [
   'Kangkong', 'Onion', 'Squash', 'Sweet Potato', 'Pepper'
 ];
 
+// Light per-user throttle for Gemini (skip AI if same user called within 3s — chip+select double-fire)
+const geminiLastCallByUser = new Map();
+const GEMINI_USER_THROTTLE_MS = 3000;
+
 // Safe to plant predictor calculation API (auth required — T-07-04)
 router.post('/api/weather/predict-planting', requireAuth, async (req, res) => {
   try {
@@ -696,6 +700,46 @@ router.post('/api/weather/predict-planting', requireAuth, async (req, res) => {
     const evaluation = plantingPredictorService
       ? plantingPredictorService.evaluatePlantingSafety(cropKey, weatherData, alerts)
       : {};
+
+    // D-07: language follows app toggle (minasbate → filipino; invalid → english)
+    let language = (req.body && req.body.language) ? String(req.body.language).toLowerCase() : 'english';
+    if (language === 'minasbate') language = 'filipino';
+    if (language !== 'filipino' && language !== 'english') language = 'english';
+
+    // D-03: rule-based scores stay authoritative; only recommendations may be overridden
+    evaluation.recommendations_source = 'static';
+
+    // Optional 3s per-user skip of Gemini to prevent double-fire (still return static)
+    const userId = req.session && req.session.userId;
+    const now = Date.now();
+    const lastTs = userId != null ? geminiLastCallByUser.get(userId) : null;
+    const skipGemini = lastTs != null && (now - lastTs) < GEMINI_USER_THROTTLE_MS;
+
+    if (
+      !skipGemini &&
+      geminiService &&
+      geminiService.isConfigured &&
+      geminiService.isConfigured()
+    ) {
+      try {
+        if (userId != null) geminiLastCallByUser.set(userId, now);
+        const aiRecs = await geminiService.generateFieldRecommendations(evaluation, {
+          language,
+          timeoutMs: 12000
+        });
+        if (Array.isArray(aiRecs) && aiRecs.length >= 3) {
+          evaluation.recommendations = aiRecs.slice(0, 5);
+          evaluation.recommendations_source = 'gemini';
+          delete evaluation.recommendations_error;
+        }
+      } catch (aiErr) {
+        console.warn('⚠️ Gemini recommendations fallback:', aiErr.message);
+        evaluation.recommendations_source = 'static';
+        evaluation.recommendations_error = 'ai_unavailable'; // short code only — no stack/key
+        // keep static evaluation.recommendations from rule engine
+      }
+    }
+
     res.json(evaluation);
   } catch (err) {
     console.error('Predict Planting API Error:', err.message);
