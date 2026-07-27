@@ -1435,7 +1435,11 @@ var cropLimits = {
     'Tomato': { rainLimit: 20, tempMin: 20, tempMax: 30, name: 'Tomato' },
     'Eggplant': { rainLimit: 40, tempMin: 20, tempMax: 35, name: 'Eggplant' },
     'Ampalaya': { rainLimit: 70, tempMin: 22, tempMax: 35, name: 'Ampalaya' },
-    'Kangkong': { rainLimit: 120, tempMin: 18, tempMax: 38, name: 'Kangkong' }
+    'Kangkong': { rainLimit: 120, tempMin: 18, tempMax: 38, name: 'Kangkong' },
+    'Onion': { rainLimit: 20, tempMin: 13, tempMax: 32, name: 'Onion (Sibuyas)' },
+    'Squash': { rainLimit: 45, tempMin: 18, tempMax: 36, name: 'Squash (Kalabasa)' },
+    'Sweet Potato': { rainLimit: 55, tempMin: 18, tempMax: 37, name: 'Sweet Potato (Kamote)' },
+    'Pepper': { rainLimit: 30, tempMin: 18, tempMax: 36, name: 'Pepper (Siling Labuyo)' }
 };
 
 var selectedPredictorCrop = "Rice";
