@@ -10,7 +10,7 @@ const { requireAuth, requireAdmin } = require('../middlewares/auth');
 const { User, FarmPlot, PlantingRecord, CropRepository, WeatherLog, Alert, Trivia, SoilProfile, StationDevice, Otp } = require('../models');
 
 // Lazy-load agricultural services (created after routes file)
-let irrigationService, diseaseRiskService, fertilizerService, gddService, typhoonAlertService, todoService, satelliteService, plantingPredictorService;
+let irrigationService, diseaseRiskService, fertilizerService, gddService, typhoonAlertService, todoService, satelliteService, plantingPredictorService, geminiService;
 try { irrigationService = require('../services/irrigationService'); } catch(e) { console.warn('irrigationService not loaded:', e.message); }
 try { diseaseRiskService = require('../services/diseaseRiskService'); } catch(e) { console.warn('diseaseRiskService not loaded:', e.message); }
 try { fertilizerService = require('../services/fertilizerService'); } catch(e) { console.warn('fertilizerService not loaded:', e.message); }
@@ -19,6 +19,7 @@ try { typhoonAlertService = require('../services/typhoonAlertService'); } catch(
 try { todoService = require('../services/todoService'); } catch(e) { console.warn('todoService not loaded:', e.message); }
 try { satelliteService = require('../services/satelliteService'); } catch(e) { console.warn('satelliteService not loaded:', e.message); }
 try { plantingPredictorService = require('../services/plantingPredictorService'); } catch(e) { console.warn('plantingPredictorService not loaded:', e.message); }
+try { geminiService = require('../services/geminiService'); } catch(e) { console.warn('geminiService not loaded:', e.message); }
 const { sendEmail } = require('../services/emailService');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
@@ -671,16 +672,30 @@ router.get('/api/weather/risks', async (req, res) => {
   }
 });
 
-// Safe to plant predictor calculation API
-router.post('/api/weather/predict-planting', async (req, res) => {
+// Allowed crop keys for planting predictor (match plantingPredictorService profiles)
+const PREDICT_PLANTING_CROP_KEYS = [
+  'Rice', 'Corn', 'Tomato', 'Eggplant', 'Ampalaya',
+  'Kangkong', 'Onion', 'Squash', 'Sweet Potato', 'Pepper'
+];
+
+// Safe to plant predictor calculation API (auth required — T-07-04)
+router.post('/api/weather/predict-planting', requireAuth, async (req, res) => {
   try {
-    const { cropKey, forecastData, lat, lon } = req.body;
+    const { forecastData, lat, lon } = req.body;
+    // cropKey hardening: sanitize + allowlist (invalid/missing → Rice)
+    let cropKey = req.body && req.body.cropKey != null ? sanitizeInput(String(req.body.cropKey)) : 'Rice';
+    if (!PREDICT_PLANTING_CROP_KEYS.includes(cropKey)) {
+      cropKey = 'Rice';
+    }
     let weatherData = forecastData;
     if (!weatherData && weatherService) {
       weatherData = await weatherService.fetchForecast(lat, lon);
     }
-    const alerts = (req.user && req.user.id) ? await Alert.findAll({ where: { is_active: true } }) : [];
-    const evaluation = plantingPredictorService ? plantingPredictorService.evaluatePlantingSafety(cropKey, weatherData, alerts) : {};
+    // Session-authenticated path: load active alerts (requireAuth guarantees session)
+    const alerts = await Alert.findAll({ where: { is_active: true }, limit: 20 });
+    const evaluation = plantingPredictorService
+      ? plantingPredictorService.evaluatePlantingSafety(cropKey, weatherData, alerts)
+      : {};
     res.json(evaluation);
   } catch (err) {
     console.error('Predict Planting API Error:', err.message);
