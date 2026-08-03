@@ -286,7 +286,7 @@ router.post('/login', async (req, res) => {
     res.redirect('/login?error=Invalid email or password.');
   } catch (err) {
     console.error('Login error:', err);
-    res.status(500).send('Login failed. Please try again.');
+    res.redirect('/login?error=' + encodeURIComponent('Something went wrong on our end — please try again in a moment.'));
   }
 });
 

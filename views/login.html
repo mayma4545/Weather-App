@@ -32,6 +32,15 @@
         </svg>
     </button>
 
+    <!-- Full-screen loading overlay -->
+    <div class="auth-loading" id="authLoading" role="alert" aria-live="assertive" aria-busy="true">
+        <div class="auth-loading__card">
+            <span class="auth-loading__spinner" aria-hidden="true"></span>
+            <span class="auth-loading__text" id="authLoadingText">Signing you in…</span>
+            <span class="auth-loading__sub">This will only take a moment.</span>
+        </div>
+    </div>
+
     <div class="auth-shell">
 
         <!-- ====================================================
@@ -266,6 +275,17 @@
         })();
 
         /* =====================================================
+           Full-screen loading overlay helpers
+           ===================================================== */
+        function showLoading(msg) {
+            if (msg) document.getElementById('authLoadingText').textContent = msg;
+            document.getElementById('authLoading').classList.add('is-visible');
+        }
+        function hideLoading() {
+            document.getElementById('authLoading').classList.remove('is-visible');
+        }
+
+        /* =====================================================
            Show server-side error banner (?error=...)
            ===================================================== */
         (function() {
@@ -273,7 +293,11 @@
             var errorMsg = params.get('error');
             if (errorMsg) {
                 var banner = document.getElementById('error-message');
-                document.getElementById('error-text').textContent = decodeURIComponent(errorMsg);
+                var raw = decodeURIComponent(errorMsg);
+                var friendly = {
+                    'Invalid email or password.': "Those details don't match our records — please try again."
+                };
+                document.getElementById('error-text').textContent = friendly[raw] || raw;
                 banner.classList.add('is-visible');
             }
         })();
@@ -322,7 +346,7 @@
                 }
                 fieldEmail.classList.remove('is-valid');
                 fieldEmail.classList.add('is-invalid');
-                msgEmail.textContent = 'Please enter a valid email address.';
+                msgEmail.textContent = "Hmm, that email doesn't look quite right.";
                 return false;
             }
 
@@ -340,7 +364,7 @@
                 }
                 fieldPw.classList.remove('is-valid');
                 fieldPw.classList.add('is-invalid');
-                msgPw.textContent = 'Password must be at least 8 characters.';
+                msgPw.textContent = 'Passwords need at least 8 characters.';
                 return false;
             }
 
@@ -362,7 +386,7 @@
             form.addEventListener('submit', function(e) {
                 if (!email.value) {
                     fieldEmail.classList.add('is-invalid', 'shake');
-                    msgEmail.textContent = 'Email is required.';
+                    msgEmail.textContent = 'We need your email to sign you in.';
                     setTimeout(function(){ fieldEmail.classList.remove('shake'); }, 450);
                     email.focus();
                     e.preventDefault();
@@ -370,7 +394,7 @@
                 }
                 if (!emailRe.test(email.value.trim())) {
                     fieldEmail.classList.add('is-invalid', 'shake');
-                    msgEmail.textContent = 'Please enter a valid email address.';
+                    msgEmail.textContent = "Hmm, that email doesn't look quite right.";
                     setTimeout(function(){ fieldEmail.classList.remove('shake'); }, 450);
                     email.focus();
                     e.preventDefault();
@@ -378,7 +402,7 @@
                 }
                 if (!password.value) {
                     fieldPw.classList.add('is-invalid', 'shake');
-                    msgPw.textContent = 'Password is required.';
+                    msgPw.textContent = 'Please enter your password.';
                     setTimeout(function(){ fieldPw.classList.remove('shake'); }, 450);
                     password.focus();
                     e.preventDefault();
@@ -388,6 +412,7 @@
                 /* Validation passed — show loading, native POST continues */
                 btn.classList.add('is-loading');
                 btn.disabled = true;
+                showLoading();
             });
         })();
     </script>

@@ -32,6 +32,15 @@
         </svg>
     </button>
 
+    <!-- Full-screen loading overlay -->
+    <div class="auth-loading" id="authLoading" role="alert" aria-live="assertive" aria-busy="true">
+        <div class="auth-loading__card">
+            <span class="auth-loading__spinner" aria-hidden="true"></span>
+            <span class="auth-loading__text" id="authLoadingText">Creating your account…</span>
+            <span class="auth-loading__sub">This will only take a moment.</span>
+        </div>
+    </div>
+
     <div class="auth-shell">
 
         <!-- ====================================================
@@ -419,6 +428,26 @@
         var phoneRe = /^[0-9]{10,11}$/;
 
         /* =====================================================
+           Full-screen loading overlay helpers
+           ===================================================== */
+        function showLoading(msg) {
+            if (msg) document.getElementById('authLoadingText').textContent = msg;
+            document.getElementById('authLoading').classList.add('is-visible');
+        }
+        function hideLoading() {
+            document.getElementById('authLoading').classList.remove('is-visible');
+        }
+
+        /* Friendly rewording of server-side error messages */
+        var FRIENDLY_SERVER_ERRORS = {
+            'An account with this email already exists.': 'Looks like this email already has an account — try signing in instead.',
+            'Missing required fields.': 'A few required fields are missing — please check the form.',
+            'Please provide a valid email address.': "Hmm, that email doesn't look quite right.",
+            'Password does not meet security requirements.': 'Almost — please check the password requirements below.',
+            'Registration failed. Please try again.': 'Something went wrong on our end — please try again in a moment.'
+        };
+
+        /* =====================================================
            Helpers
            ===================================================== */
         function setInvalid(fieldId, msg) {
@@ -547,7 +576,7 @@
             }
             confirmField.classList.remove('is-valid');
             confirmField.classList.add('is-invalid');
-            matchMsg.textContent = 'Passwords do not match.';
+            matchMsg.textContent = "These passwords don't match yet.";
             return false;
         }
 
@@ -557,21 +586,21 @@
         function validateFullName() {
             var v = fullNameEl.value.trim();
             if (!v) { neutral('full_name'); return false; }
-            if (v.length < 2) { setInvalid('full_name', 'Name is too short.'); return false; }
+            if (v.length < 2) { setInvalid('full_name', 'That name seems a bit short.'); return false; }
             setValid('full_name', ''); return true;
         }
 
         function validateContact() {
             var v = contactEl.value.trim();
             if (!v) { neutral('contact'); return true; }
-            if (!phoneRe.test(v)) { setInvalid('contact', 'Enter a valid mobile number.'); return false; }
+            if (!phoneRe.test(v)) { setInvalid('contact', "That phone number doesn't look right — 10 to 11 digits, please."); return false; }
             setValid('contact', ''); return true;
         }
 
         function validateEmail() {
             var v = emailEl.value.trim();
             if (!v) { neutral('email'); return false; }
-            if (!emailRe.test(v)) { setInvalid('email', 'Please enter a valid email.'); return false; }
+            if (!emailRe.test(v)) { setInvalid('email', "Hmm, that email doesn't look quite right."); return false; }
             setValid('email', 'Looks good.'); return true;
         }
 
@@ -584,7 +613,7 @@
                 document.getElementById('msg-password').querySelector('span').textContent = '';
                 return true;
             }
-            setInvalid('password', 'Password does not meet all requirements.');
+            setInvalid('password', 'Almost — please check the password requirements below.');
             return false;
         }
 
@@ -627,10 +656,10 @@
             clearFormError();
 
             var failures = [];
-            if (!fullNameEl.value.trim()) { setInvalid('full_name', 'Name is required.'); shake('full_name'); failures.push('full_name'); }
+            if (!fullNameEl.value.trim()) { setInvalid('full_name', 'What should we call you?'); shake('full_name'); failures.push('full_name'); }
             else if (!validateFullName()) { shake('full_name'); failures.push('full_name'); }
 
-            if (!emailEl.value.trim()) { setInvalid('email', 'Email is required.'); shake('email'); failures.push('email'); }
+            if (!emailEl.value.trim()) { setInvalid('email', 'We need your email to create your account.'); shake('email'); failures.push('email'); }
             else if (!validateEmail()) { shake('email'); failures.push('email'); }
 
             if (!contactEl.value.trim()) {
@@ -645,29 +674,29 @@
             }
 
             if (!passwordEl.value) {
-                setInvalid('password', 'Password is required.');
+                setInvalid('password', "You'll need a password to keep your account safe.");
                 shake('password');
                 pwRequirements.classList.add('show');
                 failures.push('password');
             } else if (!isValidPassword()) {
-                setInvalid('password', 'Password does not meet all requirements.');
+                setInvalid('password', 'Almost — please check the password requirements below.');
                 shake('password');
                 pwRequirements.classList.add('show');
                 failures.push('password');
             }
 
             if (!confirmEl.value) {
-                setInvalid('confirm_password', 'Please confirm your password.');
+                setInvalid('confirm_password', 'Please type your password once more.');
                 shake('confirm_password');
                 failures.push('confirm_password');
             } else if (passwordEl.value !== confirmEl.value) {
-                setInvalid('confirm_password', 'Passwords do not match.');
+                setInvalid('confirm_password', "These passwords don't match yet.");
                 shake('confirm_password');
                 failures.push('confirm_password');
             }
 
             if (failures.length > 0) {
-                showFormError('Please fix the highlighted fields.');
+                showFormError('Almost there — a few fields need a quick fix.');
                 document.getElementById(failures[0]).querySelector('input').focus();
                 return;
             }
@@ -675,6 +704,7 @@
             /* Submit via async fetch — show loading */
             submitBtn.classList.add('is-loading');
             submitBtn.disabled = true;
+            showLoading();
 
             try {
                 var formData = new FormData(form);
@@ -691,13 +721,16 @@
                 if (response.ok && result.success) {
                     window.location.href = result.redirectUrl;
                 } else {
-                    showFormError(result.error || 'An error occurred during registration.');
+                    var serverMsg = result.error ? (FRIENDLY_SERVER_ERRORS[result.error] || result.error) : 'Something went wrong on our end — please try again.';
+                    showFormError(serverMsg);
+                    hideLoading();
                     submitBtn.classList.remove('is-loading');
                     submitBtn.disabled = false;
                 }
             } catch (err) {
                 console.error('Submit error:', err);
-                showFormError('Network error. Please try again.');
+                showFormError("We couldn't reach the server — check your connection and try again.");
+                hideLoading();
                 submitBtn.classList.remove('is-loading');
                 submitBtn.disabled = false;
             }
