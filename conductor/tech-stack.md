@@ -23,7 +23,8 @@
 
 ## Services & Integrations
 - **Cloud Storage:** Cloudinary (`^2.10.0`) & Multer (`^2.2.0`) for media/file uploads
-- **Weather & AI Services:** Google Weather API, multi-crop Planting Safety Index prediction engine (`plantingPredictorService.js`), Google AI / Gemini service (`geminiService.js`) for context-enriched field recommendations, & local station log ingestion
+- **Weather & AI Services:** OpenWeather API, multi-crop Planting Safety Index prediction engine (`plantingPredictorService.js`), Google AI / Gemini service (`geminiService.js`) for context-enriched field recommendations, & local station log ingestion
+- **Notification & Scheduling:** `node-cron` for scheduled jobs (daily weather reports at 6 AM, storm checks every 5 min), `nodemailer` (`^9.0.3`) for email delivery, SMS API integration (stub-ready)
 - **Middlewares & Logging:** `morgan` (`^1.10.1`), `cors` (`^2.8.6`), `dotenv` (`^17.4.2`)
 
 ## Development & Operations

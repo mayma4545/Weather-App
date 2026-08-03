@@ -19,7 +19,9 @@ To empower farmers and agricultural professionals with precision weather intelli
 3. **Automated Agricultural Decision Support:**
    - Rule-based decision models for disease risk estimation, fertilizer timing, smart irrigation schedules, multi-factor Safe-to-Plant prediction engine, and context-enriched AI field recommendations with quantifiable numerical targets.
 4. **Early Warning & Alert System:**
-   - Automated notifications for unseasonal heat, extreme rainfall, drought risks, and typhoon alerts via dashboard and OTP/email notifications.
+   - Automated notifications for unseasonal heat, extreme rainfall, drought risks, and typhoon alerts via dashboard, email, and SMS notifications.
+   - Daily 6 AM weather report emails with personalized crop impact analysis sent to all farmers.
+   - Real-time storm monitoring (5-minute intervals) with automatic email and SMS alerts when typhoon risk is detected.
 5. **Digital Knowledge Repository & Trivia:**
    - Centralized agricultural knowledge base, crop varieties guide, and interactive trivia for learning best practices.
 6. **Multi-Role Authentication & Administration:**
