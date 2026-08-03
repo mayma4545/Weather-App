@@ -127,10 +127,34 @@
                 </button>
                 <div class="page-header">
                     <div>
-                        <div class="page-title">Crop Management</div>
-                        <div class="page-subtitle">Plant, monitor growth timelines, and archive your seasonal yields.</div>
+                        <div class="eyebrow">FIELD OPERATIONS / 04</div>
+                        <div class="page-title">Crop management<span class="title-mark">.</span></div>
+                        <div class="page-subtitle">A live view of every growing cycle, from first seed to final harvest.</div>
                     </div>
+                    <div class="header-signal"><span class="signal-dot"></span>Station network online</div>
                 </div>
+
+                <section class="crop-command-hero" aria-labelledby="crop-command-title">
+                    <div class="hero-copy">
+                        <span class="hero-kicker">MASBATE / GROWING SEASON 04</span>
+                        <h1 id="crop-command-title">Read the field<br><em>before it speaks.</em></h1>
+                        <p>Turn weather signals and crop rhythms into calmer, more precise decisions.</p>
+                        <a class="hero-link" href="#active-plots-dashboard-grid">Explore active plots <span>&rarr;</span></a>
+                    </div>
+                    <div class="hero-orbit" aria-hidden="true">
+                        <div class="orbit-ring ring-one"></div><div class="orbit-ring ring-two"></div>
+                        <div class="orbit-core"><span>NDVI</span><strong>0.78</strong><small>canopy vitality</small></div>
+                        <span class="orbit-label label-top">03 / PLANTED</span><span class="orbit-label label-bottom">LAST SYNC 08:42</span>
+                    </div>
+                    <div class="hero-note"><span class="note-index">01</span><span>Next field check<br><strong>Tomorrow / 06:30</strong></span></div>
+                </section>
+
+                <section class="crop-metrics" aria-label="Season overview">
+                    <article class="crop-metric metric-feature"><span>Season pulse</span><strong id="crop-season-score">78<small>%</small></strong><i>+6.4% vs last cycle</i></article>
+                    <article class="crop-metric"><span>Active plots</span><strong id="crop-active-count">--</strong><i class="metric-muted">across the station</i></article>
+                    <article class="crop-metric"><span>Water outlook</span><strong>34<small>mm</small></strong><i>low stress / 5 days</i></article>
+                    <article class="crop-metric crop-metric-action"><span>Ready to plant?</span><strong>Open a new cycle</strong><button type="button" class="text-action" id="hero-open-planting">+ register batch</button></article>
+                </section>
 
                 <div class="card satellite-monitoring-card">
                     <div class="satellite-header">
@@ -459,6 +483,20 @@
             </div>
             <button type="submit" class="btn-submit">Create Crop</button>
         </form>
+    </div>
+</div>
+
+<div id="crop-analytics-modal" class="analytics-modal" aria-labelledby="analytics-modal-title" role="dialog" aria-modal="true">
+    <div class="analytics-modal-panel">
+        <div class="analytics-modal-topline"><span>FIELD INTELLIGENCE / LIVE READOUT</span><button type="button" class="analytics-close" id="btn-close-analytics-modal" aria-label="Close analytics">&times;</button></div>
+        <div class="analytics-modal-heading"><div><span class="modal-kicker" id="analytics-modal-plot">PLOT ANALYSIS</span><h2 id="analytics-modal-title">Crop analytics</h2><p id="analytics-modal-subtitle">Latest crop health signals and recommended actions.</p></div><span class="analytics-health" id="analytics-modal-health">HEALTHY</span></div>
+        <div class="analytics-grid">
+            <div class="analytics-score"><span>FIELD SCORE</span><strong id="analytics-modal-score">--</strong><small>/ 100</small><div class="score-track"><i id="analytics-modal-score-bar"></i></div><p id="analytics-modal-advice">Monitoring live conditions...</p></div>
+            <div class="analytics-signal"><span>GROWTH STAGE</span><strong id="analytics-modal-stage">--</strong><small id="analytics-modal-days">--</small></div>
+            <div class="analytics-signal"><span>RAINFALL EXPOSURE</span><strong id="analytics-modal-damage">--</strong><small>forecast sensitivity</small></div>
+            <div class="analytics-signal"><span>CANOPY INDEX</span><strong>0.78</strong><small>satellite estimate</small></div>
+        </div>
+        <div class="analytics-recommendation"><span>RECOMMENDED NEXT MOVE</span><strong id="analytics-modal-recommendation">Keep monitoring the canopy after the next rain event.</strong><span class="recommendation-line"></span></div>
     </div>
 </div>
 

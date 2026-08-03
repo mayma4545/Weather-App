@@ -1345,6 +1345,9 @@ var activeCrops = [];
             var resultCountEl = document.getElementById("filter-result-count");
             if (!grid || !statusContainer) return;
 
+            var activeCountEl = document.getElementById('crop-active-count');
+            if (activeCountEl) activeCountEl.textContent = activeCrops.filter(function (crop) { return !!crop.planted; }).length;
+
             // Gather filter values
             var searchInput = document.getElementById("plot-search");
             var query = searchInput ? searchInput.value.toLowerCase().trim() : "";
@@ -1410,7 +1413,7 @@ var activeCrops = [];
                     '<div class="plot-card-body">' +
                         '<div class="plot-card-advice">' + advice + '</div>' +
                     '</div>' +
-                    (c.record_id ? '<div class="plot-card-actions"><button class="btn btn-sm btn-outline edit-btn" data-record-id="' + c.record_id + '">Edit</button></div>' : '') +
+                    (c.record_id ? '<div class="plot-card-actions"><button class="action-btn analytics-btn" data-analytics-id="' + c.record_id + '">View analytics <span>&rarr;</span></button><button class="btn btn-sm btn-outline edit-btn" data-record-id="' + c.record_id + '">Edit</button></div>' : '') +
                 '</div>';
             });
             statusContainer.innerHTML = statusHtml + '</tbody></table>';
@@ -2180,13 +2183,67 @@ document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") closeTipsModal();
 });
 
-// Delegated click for Edit buttons (no inline JS)
+function openCropAnalytics(recordId) {
+    var crop = activeCrops.find(function (item) { return String(item.record_id) === String(recordId); });
+    var modal = document.getElementById('crop-analytics-modal');
+    if (!crop || !modal) return;
+
+    var days = calculateDaysGrown(crop.planted);
+    var stage = getGrowthStage(crop.crop, days);
+    var health = computePlotHealth(crop);
+    var advice = cropDataRepo[crop.crop] ? cropDataRepo[crop.crop].advice : 'Keep the plot clear and observe the next weather cycle.';
+    var values = {
+        'analytics-modal-plot': crop.plot,
+        'analytics-modal-title': crop.crop,
+        'analytics-modal-subtitle': crop.size + ' / planting cycle started ' + new Date(crop.planted).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        'analytics-modal-health': health.label.toUpperCase(),
+        'analytics-modal-score': health.score === null ? '--' : health.score,
+        'analytics-modal-stage': stage,
+        'analytics-modal-days': 'Day ' + days + ' of current cycle',
+        'analytics-modal-damage': crop.damage,
+        'analytics-modal-advice': advice,
+        'analytics-modal-recommendation': health.label === 'Healthy' ? 'Maintain the current rhythm. Schedule the next canopy check after rainfall.' : 'Inspect drainage and canopy stress before the next field visit.'
+    };
+    Object.keys(values).forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = values[id];
+    });
+    var scoreBar = document.getElementById('analytics-modal-score-bar');
+    if (scoreBar) scoreBar.style.width = (health.score || 0) + '%';
+    var healthEl = document.getElementById('analytics-modal-health');
+    if (healthEl) healthEl.className = 'analytics-health ' + health.badgeClass;
+    modal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCropAnalytics() {
+    var modal = document.getElementById('crop-analytics-modal');
+    if (modal) modal.classList.remove('is-open');
+    document.body.style.overflow = '';
+}
+
+// Delegated click for analytics and Edit buttons (no inline JS)
 document.addEventListener('click', function (e) {
+    var analyticsBtn = e.target.closest('.analytics-btn');
+    if (analyticsBtn) {
+        openCropAnalytics(analyticsBtn.getAttribute('data-analytics-id'));
+        return;
+    }
     var btn = e.target.closest('.edit-btn');
     if (btn) {
         var recordId = btn.getAttribute('data-record-id');
         if (recordId) openEditModal(recordId);
     }
+});
+
+var analyticsModal = document.getElementById('crop-analytics-modal');
+var analyticsClose = document.getElementById('btn-close-analytics-modal');
+if (analyticsClose) analyticsClose.addEventListener('click', closeCropAnalytics);
+if (analyticsModal) analyticsModal.addEventListener('click', function (e) {
+    if (e.target === analyticsModal) closeCropAnalytics();
+});
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeCropAnalytics();
 });
 
 // Initial load from API
@@ -2549,6 +2606,9 @@ if (overlay) overlay.addEventListener('click', closeSidebar);
 // CSP: Attach event listeners instead of inline onclick handlers
 var btnFabOpenPlanting = document.getElementById('fab-open-planting');
 if (btnFabOpenPlanting) btnFabOpenPlanting.addEventListener('click', openPlantingModal);
+
+var heroOpenPlanting = document.getElementById('hero-open-planting');
+if (heroOpenPlanting) heroOpenPlanting.addEventListener('click', openPlantingModal);
 
 var btnClosePlantingModal = document.getElementById('btn-close-planting-modal');
 if (btnClosePlantingModal) btnClosePlantingModal.addEventListener('click', closePlantingModal);
