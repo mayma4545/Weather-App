@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
 const session = require('express-session');
+const { startSchedulers } = require('./services/notificationScheduler');
 
 const app = express();
 
@@ -60,6 +61,9 @@ sequelize.sync({ alter: false })
     console.log('✅ Database schema synchronized non-destructively (alter: true)');
     app.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);
+
+      // Start notification schedulers after server is ready
+      startSchedulers();
     });
   })
   .catch(err => {
