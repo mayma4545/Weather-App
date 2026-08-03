@@ -21,5 +21,5 @@ Welcome to the Conductor documentation index for **Project Weather**, an Agricul
 
 ---
 
-- [ ] **Track: Farmer Notification System (Email & SMS)**
+- [x] **Track: Farmer Notification System (Email & SMS)**
 *Link: [./tracks/farmer_notification_20260803/](./tracks/farmer_notification_20260803/)*
