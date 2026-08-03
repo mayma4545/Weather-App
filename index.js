@@ -55,7 +55,7 @@ const { sequelize } = require('./models');
 
 const PORT = process.env.PORT || 4000;
 
-sequelize.sync({ alter: true })
+sequelize.sync({ alter: false })
   .then(() => {
     console.log('✅ Database schema synchronized non-destructively (alter: true)');
     app.listen(PORT, () => {

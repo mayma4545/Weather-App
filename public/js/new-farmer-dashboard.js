@@ -1555,12 +1555,13 @@ function updatePredictor() {
     if (!red || !yellow || !green || !vTitle || !vDesc) return;
 
     var cropKey = selectedPredictorCrop || "Rice";
+    var lang = currentLanguage || 'english';
 
     // Call API for prediction assessment
     fetch('/api/weather/predict-planting', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cropKey: cropKey, forecastData: liveForecast })
+        body: JSON.stringify({ cropKey: cropKey, forecastData: liveForecast, language: lang })
     })
     .then(function(res) { return res.json(); })
     .then(function(data) {

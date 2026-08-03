@@ -1487,17 +1487,22 @@ function updatePredictor() {
     if (!red || !yellow || !green || !vTitle || !vDesc) return;
 
     var cropKey = selectedPredictorCrop || "Rice";
-    var lang = (currentLanguage === 'filipino' || currentLanguage === 'minasbate') ? 'filipino' : 'english';
+    var lang = currentLanguage || 'english';
 
-    // Loading state while recommendations generate (PLAT-04)
+    // Lazy loading animation while AI generates recommendations
     var recList = document.getElementById('predictor-recommendations-list');
     if (recList) {
         recList.innerHTML = '';
-        var li = document.createElement('li');
-        li.textContent = (currentLanguage === 'filipino' || currentLanguage === 'minasbate')
-            ? 'Gumagawa ng rekomendasyon sa bukid…'
-            : 'Generating field recommendations…';
-        recList.appendChild(li);
+        var loaderLi = document.createElement('li');
+        loaderLi.style.listStyle = 'none';
+        loaderLi.style.marginLeft = '-18px';
+        loaderLi.innerHTML = '<div class="predictor-loader">'
+            + '<span>' + ((currentLanguage === 'filipino' || currentLanguage === 'minasbate')
+                ? 'Gumagawa ng rekomendasyon'
+                : 'Generating recommendations') + '</span>'
+            + '<span class="dot-pulse"><span></span><span></span><span></span></span>'
+            + '</div>';
+        recList.appendChild(loaderLi);
     }
     var srcEl = document.getElementById('predictor-recommendations-source');
     if (srcEl) srcEl.textContent = '';
@@ -1517,6 +1522,78 @@ function updatePredictor() {
         console.warn('API predictor error, falling back:', err);
         fallbackLocalEvaluation(cropKey);
     });
+}
+
+/**
+ * Typewriter effect: renders each recommendation bullet character by character
+ * with a blinking cursor, creating a chatbot-typing feel.
+ * @param {HTMLElement} listEl - The <ul> element to render into
+ * @param {string[]} bullets - Array of recommendation text strings
+ * @param {number} [charDelay=18] - ms per character
+ * @param {number} [bulletPause=300] - ms pause before next bullet
+ * @param {function} [onDone] - called when all bullets are fully typed
+ */
+function typeWriterRecommendations(listEl, bullets, charDelay, bulletPause, onDone) {
+    if (!listEl) return;
+    charDelay = charDelay || 18;
+    bulletPause = bulletPause || 300;
+
+    // Clear loading state
+    listEl.innerHTML = '';
+
+    if (!Array.isArray(bullets) || bullets.length === 0) {
+        var emptyLi = document.createElement('li');
+        emptyLi.textContent = (currentLanguage === 'filipino' || currentLanguage === 'minasbate')
+            ? 'Walang rekomendasyon sa ngayon.'
+            : 'No recommendations available right now.';
+        listEl.appendChild(emptyLi);
+        if (onDone) onDone();
+        return;
+    }
+
+    // Create li elements upfront with a typing cursor
+    var items = [];
+    bullets.forEach(function(text) {
+        var li = document.createElement('li');
+        li.className = 'predictor-typing-bullet';
+        li.style.display = 'none'; // hidden until its turn
+        listEl.appendChild(li);
+        items.push({ el: li, text: text });
+    });
+
+    var bulletIndex = 0;
+    var charIndex = 0;
+    var currentEl = null;
+
+    function typeNextBullet() {
+        if (bulletIndex >= items.length) {
+            if (onDone) onDone();
+            return;
+        }
+        var item = items[bulletIndex];
+        currentEl = item.el;
+        currentEl.style.display = '';
+        currentEl.textContent = '';
+        currentEl.classList.add('typing-cursor');
+        charIndex = 0;
+
+        function typeChar() {
+            if (charIndex < item.text.length) {
+                currentEl.textContent += item.text.charAt(charIndex);
+                charIndex++;
+                // Auto-scroll into view
+                currentEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                setTimeout(typeChar, charDelay);
+            } else {
+                currentEl.classList.remove('typing-cursor');
+                bulletIndex++;
+                setTimeout(typeNextBullet, bulletPause);
+            }
+        }
+        typeChar();
+    }
+
+    typeNextBullet();
 }
 
 function renderPredictorResult(data) {
@@ -1585,29 +1662,10 @@ function renderPredictorResult(data) {
         if (envDesc) envDesc.innerText = data.factors.environment.message;
     }
 
-    // Recommendations list — XSS-safe (AI/static text is untrusted)
-    if (recList) {
-        recList.innerHTML = '';
-        if (Array.isArray(data.recommendations) && data.recommendations.length > 0) {
-            data.recommendations.forEach(function(r) {
-                var li = document.createElement('li');
-                li.style.marginBottom = '4px';
-                li.textContent = String(r);
-                recList.appendChild(li);
-            });
-        } else {
-            var emptyLi = document.createElement('li');
-            emptyLi.textContent = (currentLanguage === 'filipino' || currentLanguage === 'minasbate')
-                ? 'Walang rekomendasyon sa ngayon. Subukan muli o piliin ang pananim.'
-                : 'No recommendations available right now. Try again or select a crop.';
-            recList.appendChild(emptyLi);
-        }
-    }
-
-    // Optional source note (gemini vs static fallback)
+    // Source note (rendered before typing starts)
     var srcNote = document.getElementById('predictor-recommendations-source');
+    var isFil = (currentLanguage === 'filipino' || currentLanguage === 'minasbate');
     if (srcNote) {
-        var isFil = (currentLanguage === 'filipino' || currentLanguage === 'minasbate');
         if (data.recommendations_source === 'gemini') {
             srcNote.textContent = isFil
                 ? 'Mga tip na tinulungan ng AI — kumpirmahin sa lokal na paghatol.'
@@ -1619,6 +1677,12 @@ function renderPredictorResult(data) {
         } else {
             srcNote.textContent = '';
         }
+    }
+
+    // Recommendations — typewriter effect (chatbot-typing style)
+    if (recList) {
+        var bullets = Array.isArray(data.recommendations) ? data.recommendations : [];
+        typeWriterRecommendations(recList, bullets, 15, 350);
     }
 }
 

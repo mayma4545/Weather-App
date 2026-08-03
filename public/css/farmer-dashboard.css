@@ -2682,3 +2682,51 @@
     font-size: 16px;
 }
 
+/* ── Predictor Lazy Loading Animation ── */
+.predictor-loader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 13px;
+    color: #2D5A2D;
+}
+.predictor-loader .dot-pulse {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.predictor-loader .dot-pulse span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #1BE035;
+    animation: pulse-dot 1.4s ease-in-out infinite;
+}
+.predictor-loader .dot-pulse span:nth-child(2) {
+    animation-delay: 0.25s;
+}
+.predictor-loader .dot-pulse span:nth-child(3) {
+    animation-delay: 0.5s;
+}
+@keyframes pulse-dot {
+    0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1.15); }
+}
+
+/* ── Typewriter Cursor ── */
+.typing-cursor::after {
+    content: '|';
+    animation: blink-cursor 0.7s step-end infinite;
+    color: #1BE035;
+    font-weight: 300;
+    margin-left: 2px;
+}
+@keyframes blink-cursor {
+    50% { opacity: 0; }
+}
+.predictor-typing-bullet {
+    margin-bottom: 5px;
+    line-height: 1.6;
+}
+

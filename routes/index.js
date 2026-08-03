@@ -711,10 +711,9 @@ router.post('/api/weather/predict-planting', requireAuth, async (req, res) => {
       ? plantingPredictorService.evaluatePlantingSafety(cropKey, weatherData, alerts)
       : {};
 
-    // D-07: language follows app toggle (minasbate → filipino; invalid → english)
-    let language = (req.body && req.body.language) ? String(req.body.language).toLowerCase() : 'english';
-    if (language === 'minasbate') language = 'filipino';
-    if (language !== 'filipino' && language !== 'english') language = 'english';
+    // Language follows app toggle / current user language preference
+    let language = (req.body && req.body.language) ? String(req.body.language).toLowerCase().trim() : 'english';
+    if (!language) language = 'english';
 
     // Aggregate user active crop profiles, farm plots, and soil context
     const userId = req.session && req.session.userId;
