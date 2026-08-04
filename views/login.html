@@ -246,8 +246,6 @@
                             <path d="M12 9C 12 6 15 4 20 4C 20 7 17 9 12 9Z"/>
                         </svg>
                         <span class="btn-primary__label">Sign in</span>
-                        <span class="btn-primary__spinner spinner" aria-hidden="true"></span>
-                        <span class="btn-primary__loading-text">Signing in…</span>
                     </button>
                 </form>
 
@@ -409,10 +407,7 @@
                     return;
                 }
 
-                /* Validation passed — show loading, native POST continues */
-                btn.classList.add('is-loading');
-                btn.disabled = true;
-                showLoading();
+                /* Validation passed — native POST continues */
             });
         })();
     </script>

@@ -373,8 +373,6 @@
                             <path d="M12 9C 12 6 15 4 20 4C 20 7 17 9 12 9Z"/>
                         </svg>
                         <span class="btn-primary__label">Create account</span>
-                        <span class="btn-primary__spinner spinner" aria-hidden="true"></span>
-                        <span class="btn-primary__loading-text">Sending verification code…</span>
                     </button>
                 </form>
 
@@ -701,9 +699,7 @@
                 return;
             }
 
-            /* Submit via async fetch — show loading */
-            submitBtn.classList.add('is-loading');
-            submitBtn.disabled = true;
+            /* Submit via async fetch */
             showLoading();
 
             try {
@@ -724,15 +720,11 @@
                     var serverMsg = result.error ? (FRIENDLY_SERVER_ERRORS[result.error] || result.error) : 'Something went wrong on our end — please try again.';
                     showFormError(serverMsg);
                     hideLoading();
-                    submitBtn.classList.remove('is-loading');
-                    submitBtn.disabled = false;
                 }
             } catch (err) {
                 console.error('Submit error:', err);
                 showFormError("We couldn't reach the server — check your connection and try again.");
                 hideLoading();
-                submitBtn.classList.remove('is-loading');
-                submitBtn.disabled = false;
             }
         });
     </script>
