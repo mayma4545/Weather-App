@@ -1,5 +1,5 @@
 /**
- * Notification Service for Project Weather.
+ * Notification Service for AGRIDEB.
  * Handles orchestration of weather reports and storm alerts to farmers.
  */
 
@@ -8,6 +8,31 @@ const weatherService = require('../utils/weatherService');
 const typhoonAlertService = require('./typhoonAlertService');
 const emailService = require('./emailService');
 const smsService = require('./smsService');
+const { Op } = require('sequelize');
+
+/**
+ * Returns whether a farmer already received today's report in Manila time.
+ * @param {number} userId - Farmer user ID.
+ * @returns {Promise<boolean>} Whether today's report was already recorded.
+ */
+async function hasDailyWeatherReportToday(userId) {
+  const manilaDate = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Manila',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date());
+  const startOfDay = new Date(`${manilaDate}T00:00:00+08:00`);
+  const startOfNextDay = new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000);
+
+  return Boolean(await Alert.findOne({
+    where: {
+      user_id: userId,
+      alert_type: 'daily_weather_report',
+      created_at: { [Op.gte]: startOfDay, [Op.lt]: startOfNextDay }
+    }
+  }));
+}
 
 /**
  * Generates the HTML for the daily weather report email.
@@ -108,7 +133,7 @@ function generateWeatherEmailHtml(weather, forecast, farmerCrops) {
         ${forecastHtml}
         ${cropAnalysisHtml}
         <p style="margin-top: 20px; font-size: 12px; color: #777; text-align: center;">
-          Provided by Project Weather Agricultural Platform
+          Provided by AGRIDEB Agricultural Platform
         </p>
       </div>
     </div>
@@ -178,7 +203,7 @@ function generateStormAlertEmailHtml(typhoonAssessment, farmerCrops) {
         ${emergencyChecklistHtml}
         ${cropAnalysisHtml}
         <p style="margin-top: 20px; font-size: 12px; color: #777; text-align: center;">
-          Stay Safe! Provided by Project Weather Agricultural Platform
+          Stay Safe! Provided by AGRIDEB Agricultural Platform
         </p>
       </div>
     </div>
@@ -216,6 +241,11 @@ async function sendDailyWeatherReport() {
     });
 
     for (const farmer of farmers) {
+      if (await hasDailyWeatherReportToday(farmer.user_id)) {
+        console.log(`ℹ️ Daily weather report already sent to user ${farmer.user_id} today.`);
+        continue;
+      }
+
       // Extract unique crops the farmer is currently growing
       const farmerCrops = [];
       const cropIds = new Set();
@@ -238,14 +268,14 @@ async function sendDailyWeatherReport() {
       if (farmer.email) {
         await emailService.sendEmail({
           to: farmer.email,
-          subject: 'Your Daily Agricultural Weather Report 🌤',
+          subject: '[AGRIDEB] Daily Agricultural Weather Report 🌤',
           text: 'Please view this email in an HTML-compatible client.',
           html: htmlContent
         });
       }
 
       if (farmer.sms_opt_in && farmer.contact_number) {
-        const smsMessage = `Weather Update: Temp ${weather.temperature}C, ${weather.description || 'Clear'}. Check your email for full crop impact analysis.`;
+        const smsMessage = `[AGRIDEB] Weather Update: Temp ${weather.temperature}C, ${weather.description || 'Clear'}. Check your email for full crop impact analysis.`;
         await smsService.sendSms({
           to: farmer.contact_number,
           message: smsMessage
@@ -329,14 +359,14 @@ async function checkAndSendStormAlerts() {
       if (farmer.email) {
         await emailService.sendEmail({
           to: farmer.email,
-          subject: `STORM ALERT: ${typhoonAssessment.overallRisk} ⚠️`,
+          subject: `[AGRIDEB] STORM ALERT: ${typhoonAssessment.overallRisk} ⚠️`,
           text: 'A severe weather event has been detected. Please view this email in an HTML-compatible client.',
           html: htmlContent
         });
       }
 
       if (farmer.sms_opt_in && farmer.contact_number) {
-        const smsMessage = `STORM ${typhoonAssessment.overallRisk}: Severe weather detected. Secure your farm and check your email for full details.`;
+        const smsMessage = `[AGRIDEB] STORM ${typhoonAssessment.overallRisk}: Severe weather detected. Secure your farm and check your email for full details.`;
         await smsService.sendSms({
           to: farmer.contact_number,
           message: smsMessage
@@ -364,5 +394,6 @@ module.exports = {
   sendDailyWeatherReport,
   checkAndSendStormAlerts,
   generateWeatherEmailHtml,
-  generateStormAlertEmailHtml
+  generateStormAlertEmailHtml,
+  hasDailyWeatherReportToday
 };

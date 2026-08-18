@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farmer Dashboard - profile</title>
+    <title>AGRIDEB — Profile</title>
     <link rel="stylesheet" href="/css/farmer-dashboard.css">
 </head>
 <body>
@@ -11,20 +11,10 @@
 
     <div class="topbar">
         <div class="topbar-brand">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M12 2C6 2 2 8 2 14c0 4 2.5 6 5 7h10c2.5-1 5-3 5-7 0-6-4-12-10-12z" />
-                <path d="M12 2v20M8 6c2 2 2 5 0 8M16 6c-2 2-2 5 0 8" />
-            </svg>
-            Project Weather
+            <img src="/img/logo.jpg" alt="AGRIDEB Logo" style="width: 32px; height: 32px; border-radius: 8px; object-fit: cover; display: inline-block;">
+            AGRIDEB
         </div>
         <div class="topbar-right">
-            <!-- <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open navigation">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D6D3CB" stroke-width="2.2">
-                    <line x1="3" y1="6" x2="21" y2="6" />
-                    <line x1="3" y1="12" x2="21" y2="12" />
-                    <line x1="3" y1="18" x2="21" y2="18" />
-                </svg>
-            </button> -->
             <div class="loc">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
@@ -32,17 +22,17 @@
                 </svg>
                 <span class="dynamic-location">Detecting Location...</span> 
             </div>
-            <div class="alert-pill">
+            <div class="alert-pill" id="topbar-alert-pill">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                     <line x1="12" y1="9" x2="12" y2="13" />
                     <line x1="12" y1="17" x2="12.01" y2="17" />
                 </svg>
-                2 Active Alerts
+                <span id="topbar-alert-count">0 Alerts</span>
             </div>
             <div style="display:flex;align-items:center;gap:8px;">
                 <div
-                    style="width:34px;height:34px;border-radius:50%;background:#1BE035;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#FFFFFF;">
+                    style="width:34px;height:34px;border-radius:50%;background:#349954;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#FFFFFF;">
                     JR</div>
             </div>
         </div>
@@ -93,7 +83,7 @@
                     </svg>
                     Profile Page
                 </a>
-                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 2px solid #C8F0C8; padding-top: 18px; color: #D44A1A;">
+                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 2px solid #349954; padding-top: 18px; color: #D44A1A;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                         <polyline points="16 17 21 12 16 7" />
@@ -111,18 +101,18 @@
             </div>
 
             <div class="sidebar-section">
-                <div class="sidebar-label">Masbate Region</div>
-                <div style="font-size: 12px; color: #4A8A4A; padding-left: 12px;">
+                <div class="sidebar-label">DEBESMSCAT Mandaon</div>
+                <div style="font-size: 12px; color: #349954; padding-left: 12px;">
                     Station ID: <span
-                        style="font-family:monospace; font-weight:700; color:#1BE035;">Masbate-04</span><br>
-                    Status: <span style="color:#1BE035; font-weight:700;">CONNECTED</span>
+                        style="font-family:monospace; font-weight:700; color:#349954;">DEBESMSCAT-01</span><br>
+                    Status: <span style="color:#349954; font-weight:700;">CONNECTED</span>
                 </div>
             </div>
         </div>
 
         <!-- Main Content Area -->
         <div class="main">
-<div id="page-profile" class="page-content active">
+            <div id="page-profile" class="page-content active">
                 <div class="page-header">
                     <div>
                         <div class="page-title">My Profile</div>
@@ -130,127 +120,243 @@
                     </div>
                 </div>
 
-                <div class="grid-profile">
-                    <!-- Left Column: Avatar & Quick Info -->
-                    <div class="main-left-col">
-                        <div class="profile-card" style="flex-direction:column; text-align:center; padding:30px 20px;">
-                            <div class="profile-avatar" id="profile-avatar-large">JR</div>
-                            <div class="profile-info" style="margin-top:10px;">
-                                <h3 id="profile-display-name">Juan Ramos</h3>
-                                <p style="color:#1BE035; font-weight:700; font-size:13px; margin-bottom:2px;" id="profile-display-role">Masbate Precision Partner</p>
-                                <p><span class="dynamic-location">Detecting Location...</span> </p>
-                            </div>
-                        </div>
-
-                        <!-- Quick Farm stats -->
-                        <div class="card">
-                            <div class="card-title">Season Overview</div>
-                            <div class="card-sub">Key agricultural stats</div>
-                            <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px;">
-                                <div style="display:flex; justify-content:space-between; font-size:14px;">
-                                    <span style="color:#5A8A5A; font-weight:600;">Total Farm Size:</span>
-                                    <span style="font-weight:700; color:#0D5E1A;" id="profile-farm-size">0.0 Hectares</span>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; font-size:14px;">
-                                    <span style="color:#5A8A5A; font-weight:600;">Active Fields:</span>
-                                    <span style="font-weight:700; color:#0D5E1A;" id="profile-active-plots">0 Plots</span>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; font-size:14px;">
-                                    <span style="color:#5A8A5A; font-weight:600;">Harvest Rate MTD:</span>
-                                    <span style="font-weight:700; color:#1BE035;" id="profile-harvest-rate">100.0% Success</span>
-                                </div>
+                <!-- Unified Hero Profile & Metrics Banner -->
+                <div class="profile-hero-card">
+                    <div class="profile-identity-section">
+                        <div class="profile-avatar" id="profile-avatar-large">--</div>
+                        <div class="profile-info">
+                            <h3 id="profile-display-name">Farmer Profile</h3>
+                            <div class="profile-badges-row">
+                                <span class="profile-badge role" id="profile-display-role">DEBESMSCAT Precision Partner</span>
+                                <span class="profile-badge loc">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                                        <circle cx="12" cy="9" r="2.5" />
+                                    </svg>
+                                    <span class="dynamic-location">Detecting Location...</span>
+                                </span>
+                                <span class="profile-badge station">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                        <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                                        <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                                        <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                                    </svg>
+                                    Station DEBESMSCAT-01
+                                </span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Right Column: Settings and Toggles -->
-                    <div class="main-right-col">
-                        <div class="card">
-                            <div class="card-title">Farm Settings & Alerts</div>
-                            <div class="card-sub">Customize notification rules and telemetry linkages</div>
+                    <!-- Season Overview Metric Badges -->
+                    <div class="profile-stats-strip">
+                        <div class="profile-stat-box">
+                            <div class="profile-stat-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                                    <line x1="9" y1="21" x2="9" y2="9"></line>
+                                </svg>
+                            </div>
+                            <div class="profile-stat-content">
+                                <span class="profile-stat-label">Farm Size</span>
+                                <span class="profile-stat-val" id="profile-farm-size">0.0 Hectares</span>
+                            </div>
+                        </div>
 
-                            <div class="toggle-row">
-                                <div>
-                                    <div style="font-size:15px; font-weight:700; color:#0D5E1A;">SMS Alert
-                                        Notification</div>
-                                    <div style="font-size:13px; color:#5A8A5A; margin-top:3px; font-weight:500;">Receive direct sms
-                                        warnings on unseasonal heatwaves or heavy rains.</div>
+                        <div class="profile-stat-box">
+                            <div class="profile-stat-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                    <path d="M2 17l10 5 10-5"></path>
+                                    <path d="M2 12l10 5 10-5"></path>
+                                </svg>
+                            </div>
+                            <div class="profile-stat-content">
+                                <span class="profile-stat-label">Active Plots</span>
+                                <span class="profile-stat-val" id="profile-active-plots">0 Plots</span>
+                            </div>
+                        </div>
+
+                        <div class="profile-stat-box">
+                            <div class="profile-stat-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                    <polyline points="17 6 23 6 23 12"></polyline>
+                                </svg>
+                            </div>
+                            <div class="profile-stat-content">
+                                <span class="profile-stat-label">Harvest Rate</span>
+                                <span class="profile-stat-val" id="profile-harvest-rate">100.0% Success</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Balanced 2-Column Main Settings Grid -->
+                <div class="profile-main-grid">
+                    <!-- Column 1: Personal & Account Details -->
+                    <div class="card">
+                        <div class="profile-card-header">
+                            <div class="profile-card-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="card-title" style="margin-bottom:0;">Account & Contact Details</div>
+                                <div class="card-sub" style="margin-bottom:0;">Manage identity and language preferences</div>
+                            </div>
+                        </div>
+
+                        <form id="profile-details-form">
+                            <div class="profile-form-grid">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label for="profile-fullname">Full Name</label>
+                                    <div class="profile-input-wrapper">
+                                        <svg class="profile-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                        <input type="text" id="profile-fullname" class="form-control" placeholder="Enter Full Name" required>
+                                    </div>
                                 </div>
-                                <label class="switch">
+
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label for="profile-contact">Contact Number</label>
+                                    <div class="profile-input-wrapper">
+                                        <svg class="profile-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                        </svg>
+                                        <input type="text" id="profile-contact" class="form-control" placeholder="09XX XXX XXXX">
+                                    </div>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label for="profile-email">Email Address</label>
+                                    <div class="profile-input-wrapper">
+                                        <svg class="profile-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                            <polyline points="22,6 12,13 2,6"></polyline>
+                                        </svg>
+                                        <input type="email" id="profile-email" class="form-control" readonly title="Email cannot be changed directly">
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="card-language-settings" style="margin-bottom:0;">
+                                    <label for="language-select">System Language</label>
+                                    <div class="profile-input-wrapper">
+                                        <svg class="profile-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                        </svg>
+                                        <select id="language-select" class="form-control" style="cursor: pointer;">
+                                            <option value="filipino">Filipino (Default)</option>
+                                            <option value="minasbate">Minasbate</option>
+                                            <option value="english">English</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; justify-content:flex-end;">
+                                <button type="submit" id="btn-save-profile" class="btn-submit" style="width: auto; min-width: 140px; padding: 11px 22px; font-size: 14.5px; border-radius: 10px;">
+                                    Save Profile
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Column 2: Farm Settings & Alerts -->
+                    <div class="card">
+                        <div class="profile-card-header">
+                            <div class="profile-card-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="card-title" style="margin-bottom:0;">Farm Settings & Alerts</div>
+                                <div class="card-sub" style="margin-bottom:0;">Notification thresholds and telemetry linkages</div>
+                            </div>
+                        </div>
+
+                        <div class="profile-toggle-list">
+                            <div class="toggle-item">
+                                <div class="toggle-left">
+                                    <div class="toggle-icon-wrap">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="toggle-title">SMS Alert Notification</div>
+                                        <div class="toggle-desc">Receive instant SMS warnings on unseasonal heatwaves or heavy rains.</div>
+                                    </div>
+                                </div>
+                                <label class="switch" aria-label="SMS Alert Notification toggle">
                                     <input type="checkbox" checked id="toggle-sms">
                                     <span class="slider"></span>
                                 </label>
                             </div>
 
-                            <div class="toggle-row">
-                                <div>
-                                    <div style="font-size:15px; font-weight:700; color:#0D5E1A;">Automated Irrigation
-                                        Prompts</div>
-                                    <div style="font-size:13px; color:#5A8A5A; margin-top:3px; font-weight:500;">Allow our decision
-                                        models to automatically suggest irrigation sequences.</div>
+                            <div class="toggle-item">
+                                <div class="toggle-left">
+                                    <div class="toggle-icon-wrap">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="toggle-title">Automated Irrigation Prompts</div>
+                                        <div class="toggle-desc">Allow decision models to automatically suggest optimal irrigation sequences.</div>
+                                    </div>
                                 </div>
-                                <label class="switch">
+                                <label class="switch" aria-label="Automated Irrigation Prompts toggle">
                                     <input type="checkbox" checked id="toggle-irr">
                                     <span class="slider"></span>
                                 </label>
                             </div>
 
-                            <div class="toggle-row">
-                                <div>
-                                    <div style="font-size:15px; font-weight:700; color:#0D5E1A;">Station Cloud Linkage
+                            <div class="toggle-item">
+                                <div class="toggle-left">
+                                    <div class="toggle-icon-wrap">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+                                        </svg>
                                     </div>
-                                    <div style="font-size:13px; color:#5A8A5A; margin-top:3px; font-weight:500;">Connect to on-site
-                                        physical barometers and soil moisture sensors.</div>
+                                    <div>
+                                        <div class="toggle-title">Station Cloud Linkage</div>
+                                        <div class="toggle-desc">Connect to on-site physical barometers and soil moisture sensors.</div>
+                                    </div>
                                 </div>
-                                <label class="switch">
+                                <label class="switch" aria-label="Station Cloud Linkage toggle">
                                     <input type="checkbox" checked id="toggle-cloud">
                                     <span class="slider"></span>
                                 </label>
                             </div>
                         </div>
 
-                        <div class="card" id="card-language-settings">
-                            <div class="card-title">Language Selection</div>
-                            <div class="card-sub">Select your preferred language for the system.</div>
-                            <div class="form-group" style="margin-top: 15px; margin-bottom: 0;">
-                                <label for="language-select">System Language</label>
-                                <select id="language-select" class="form-control" style="cursor: pointer;">
-                                    <option value="filipino">Filipino (Default)</option>
-                                    <option value="minasbate">Minasbate</option>
-                                    <option value="english">English</option>
-                                </select>
+                        <!-- Hardware Telemetry Status Strip -->
+                        <div class="profile-station-status-box">
+                            <div>
+                                <span style="font-weight: 700; color: #1E293B;">Node:</span> DEBESMSCAT-01 (Mandaon)
                             </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-title">Contact & Regional Details</div>
-                            <div class="card-sub">Change account identification</div>
-                            <form id="profile-details-form" style="margin-top:8px; display:flex; flex-direction:column; gap:14px;">
-                                <div class="form-group" style="margin-bottom:0;">
-                                    <label>Full Name</label>
-                                    <input type="text" id="profile-fullname" class="form-control" placeholder="Enter Full Name" required>
-                                </div>
-                                <div class="form-group" style="margin-bottom:0;">
-                                    <label>Contact Number</label>
-                                    <input type="text" id="profile-contact" class="form-control" placeholder="Enter Phone/Contact Number">
-                                </div>
-                                <div class="form-group" style="margin-bottom:0;">
-                                    <label>Email Address</label>
-                                    <input type="email" id="profile-email" class="form-control" readonly style="opacity: 0.7; cursor: not-allowed; background: #fafafa;">
-                                </div>
-                                <div style="margin-top: 6px;">
-                                    <button type="submit" id="btn-save-profile" class="btn-submit" style="width: auto; padding: 12px 24px; font-size: 14px; border-radius: 10px;">Save Profile</button>
-                                </div>
-                            </form>
+                            <div class="station-status-indicator">
+                                <span class="station-status-dot"></span>
+                                Telemetry Linked
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
-</div>
+
 <!-- Bottom Navigation (Mobile Tabpane View) -->
 <nav class="bottom-nav" id="bottomNav" aria-label="Mobile navigation">
     <div class="bottom-nav-inner">
@@ -293,11 +399,7 @@
     </div>
 </nav>
 
-<!-- Edit Crop Modal & CSS styling -->
-
-
-
-    <script>
+<script>
     document.addEventListener("DOMContentLoaded", () => {
         let path = window.location.pathname.split("/").pop();
         if(!path || path === "farmer") path = "dashboard";
@@ -308,7 +410,5 @@
     });
 </script>
 <script src="/js/farmer-dashboard.js"></script>
-<!-- JavaScript Engine -->
 </body>
 </html>
-

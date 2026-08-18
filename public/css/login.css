@@ -685,6 +685,35 @@ a { color: inherit; }
 }
 
 .text-link:hover { color: var(--color-primary-hover); text-decoration: underline; }
+.text-link--button { border: 0; background: transparent; cursor: pointer; font-family: inherit; }
+
+/* ============================================================
+   PASSWORD RESET MODAL
+   ============================================================ */
+.reset-modal { position: fixed; inset: 0; z-index: 150; display: grid; place-items: center; padding: var(--sp-md); visibility: hidden; opacity: 0; transition: opacity var(--dur-mid) var(--ease-out), visibility var(--dur-mid); }
+.reset-modal.is-open { visibility: visible; opacity: 1; }
+.reset-modal__backdrop { position: absolute; inset: 0; background: rgba(8, 18, 10, .58); backdrop-filter: blur(7px); }
+.reset-modal__card { position: relative; width: min(100%, 440px); padding: 34px; border: 1px solid var(--color-border); border-radius: 20px; background: var(--color-card); box-shadow: var(--shadow-lifted); transform: translateY(14px) scale(.98); transition: transform var(--dur-mid) var(--ease-out); }
+.reset-modal.is-open .reset-modal__card { transform: translateY(0) scale(1); }
+.reset-modal__close { position: absolute; top: 14px; right: 16px; width: 32px; height: 32px; border: 0; border-radius: 50%; color: var(--text-secondary); background: var(--color-muted); cursor: pointer; font-size: 24px; line-height: 1; }
+.reset-modal__badge { display: inline-block; margin-bottom: 14px; padding: 5px 10px; border-radius: var(--r-pill); color: var(--color-primary); background: var(--color-success-soft); font-size: 12px; font-weight: 700; letter-spacing: .02em; }
+.reset-modal h2 { margin-bottom: 8px; font-size: 25px; letter-spacing: -.04em; }
+.reset-modal__intro { margin-bottom: 24px; color: var(--text-secondary); font-size: 14px; line-height: 1.55; }
+.reset-form { display: grid; gap: 10px; }
+.reset-form label { margin-top: 4px; color: var(--text-primary); font-size: 13px; font-weight: 700; }
+.reset-form input { width: 100%; min-height: 47px; padding: 12px 13px; border: 1px solid var(--color-border-strong); border-radius: var(--r-input); background: var(--color-input-bg); color: var(--text-primary); font: inherit; outline: none; }
+.reset-form input:focus { border-color: var(--color-primary); box-shadow: var(--shadow-focus); }
+#resetOtp { font-size: 21px; font-weight: 700; letter-spacing: .34em; text-align: center; }
+.reset-form .btn-primary { width: 100%; margin-top: 8px; }
+.reset-form__message { min-height: 20px; color: var(--color-success); font-size: 13px; }
+.reset-form__message.is-error { color: var(--color-destructive); }
+.reset-form__hint { color: var(--text-tertiary); font-size: 12px; }
+.reset-form__secondary { padding: 4px; border: 0; background: transparent; color: var(--color-primary); cursor: pointer; font: inherit; font-size: 13px; font-weight: 600; }
+.reset-success { text-align: center; }
+.reset-success__mark { display: grid; place-items: center; width: 54px; height: 54px; margin: 4px auto 16px; border-radius: 50%; color: #fff; background: var(--color-success); font-size: 27px; font-weight: 700; }
+.reset-success h3 { margin-bottom: 8px; font-size: 21px; }
+.reset-success p { margin-bottom: 24px; color: var(--text-secondary); font-size: 14px; }
+.reset-success .btn-primary { width: 100%; }
 
 /* ============================================================
    ALERT BANNERS (top of form)

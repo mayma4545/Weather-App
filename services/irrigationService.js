@@ -6,10 +6,10 @@
 /**
  * Approximate extraterrestrial radiation (Ra) in mm/day based on latitude and day of year.
  * @param {number} dayOfYear - 1 to 365
- * @param {number} latitude - Latitude in degrees (default 12.37 for Masbate)
+ * @param {number} latitude - Latitude in degrees (default 12.2275 for DEBESMSCAT, Mandaon)
  * @returns {number} Ra in mm/day equivalent evaporation
  */
-function estimateRa(dayOfYear, latitude = 12.37) {
+function estimateRa(dayOfYear, latitude = 12.2275) {
   const latRad = (latitude * Math.PI) / 180;
   const dr = 1 + 0.033 * Math.cos((2 * Math.PI * dayOfYear) / 365);
   const delta = 0.409 * Math.sin((2 * Math.PI * dayOfYear) / 365 - 1.39);
@@ -32,7 +32,7 @@ function estimateRa(dayOfYear, latitude = 12.37) {
  * @param {number} latitude - Latitude in degrees
  * @returns {number} ET0 in mm/day
  */
-function calculateET0(tMax, tMin, dayOfYear, latitude = 12.37) {
+function calculateET0(tMax, tMin, dayOfYear, latitude = 12.2275) {
   const tMean = (tMax + tMin) / 2;
   const tempDiff = Math.max(0.1, tMax - tMin);
   const Ra = estimateRa(dayOfYear || 180, latitude);

@@ -126,7 +126,7 @@ router.post('/register', async (req, res) => {
     const htmlEmail = `
       <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; padding: 32px; border: 1px solid #e2e8f0;">
         <div style="text-align: center; margin-bottom: 24px;">
-          <h2 style="color: #0f172a; margin: 0;">Project Weather</h2>
+          <h2 style="color: #0f172a; margin: 0;">AGRIDEB</h2>
           <p style="color: #64748b; font-size: 14px;">Agricultural Weather & Crop Management System</p>
         </div>
         <div style="background: #f8fafc; border-radius: 8px; padding: 24px; text-align: center; margin-bottom: 24px;">
@@ -137,15 +137,15 @@ router.post('/register', async (req, res) => {
           </div>
           <p style="color: #94a3b8; font-size: 12px; margin-top: 16px; margin-bottom: 0;">This code expires in 10 minutes.</p>
         </div>
-        <p style="color: #64748b; font-size: 14px;">If you did not request to create an account on Project Weather, please ignore this email.</p>
+        <p style="color: #64748b; font-size: 14px;">If you did not request to create an account on AGRIDEB, please ignore this email.</p>
       </div>
     `;
 
     try {
       await sendEmail({
         to: email,
-        subject: 'Project Weather - Your Verification Code (OTP)',
-        text: `Your Project Weather verification code is ${otp_code}. It expires in 10 minutes.`,
+        subject: 'AGRIDEB - Your Verification Code (OTP)',
+        text: `Your AGRIDEB verification code is ${otp_code}. It expires in 10 minutes.`,
         html: htmlEmail
       });
     } catch (emailErr) {
@@ -163,6 +163,130 @@ router.post('/register', async (req, res) => {
 
 router.get('/verify-otp', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'views', 'verify-otp.html'));
+});
+
+// Password-reset OTPs share the existing short-lived OTP store. The `purpose`
+// marker prevents a registration code from ever being accepted to reset a password.
+router.post('/password-reset/request', async (req, res) => {
+  try {
+    const email = sanitizeInput(req.body.email)?.toLowerCase();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      return res.status(400).json({ success: false, message: 'Please enter a valid email address.' });
+    }
+
+    const user = await User.findOne({ where: { email } });
+    // Always return the same response so this endpoint does not reveal which
+    // email addresses have an account.
+    if (!user) {
+      return res.json({ success: true, message: 'If an account uses that email, a verification code has been sent.' });
+    }
+
+    const otp_code = crypto.randomInt(100000, 1000000).toString();
+    await Otp.destroy({ where: { email } });
+    await Otp.create({
+      email,
+      otp_code,
+      attempts: 0,
+      user_data: JSON.stringify({ purpose: 'password_reset', user_id: user.user_id }),
+      expires_at: new Date(Date.now() + 10 * 60 * 1000)
+    });
+
+    try {
+      await sendEmail({
+        to: email,
+        subject: 'AGRIDEB - Password reset code',
+        text: `Your AGRIDEB password reset code is ${otp_code}. It expires in 10 minutes. If you did not request this, you can safely ignore this email.`,
+        html: `
+        <div style="font-family:Inter,Arial,sans-serif;max-width:560px;margin:auto;padding:32px;border:1px solid #e4e8e3;border-radius:16px;color:#0f1a12">
+          <p style="margin:0 0 8px;color:#16a34a;font-weight:700">AGRIDEB</p>
+          <h1 style="font-size:22px;margin:0 0 12px">Reset your password</h1>
+          <p style="color:#47564b;line-height:1.6">Use this verification code to choose a new password. It expires in 10 minutes.</p>
+          <div style="margin:24px 0;padding:18px;text-align:center;background:#f0fdf4;border-radius:12px;font-size:30px;font-weight:700;letter-spacing:8px;color:#15803d">${otp_code}</div>
+          <p style="color:#7a877d;font-size:13px;line-height:1.5">If you did not request a password reset, you can safely ignore this email.</p>
+        </div>`
+      });
+    } catch (emailErr) {
+      // A code that was not delivered must never remain usable.
+      await Otp.destroy({ where: { email, otp_code } });
+      throw emailErr;
+    }
+
+    res.json({ success: true, message: 'If an account uses that email, a verification code has been sent.' });
+  } catch (err) {
+    console.error('Password reset request error:', err);
+    res.status(500).json({ success: false, message: 'We could not send a reset code right now. Please try again.' });
+  }
+});
+
+router.post('/password-reset/verify', async (req, res) => {
+  try {
+    const email = sanitizeInput(req.body.email)?.toLowerCase();
+    const otp_code = String(req.body.otp_code || '').trim();
+    if (!email || !/^\d{6}$/.test(otp_code)) return res.status(400).json({ success: false, message: 'Enter the 6-digit verification code.' });
+
+    const record = await Otp.findOne({ where: { email } });
+    let data = {};
+    try { data = record ? JSON.parse(record.user_data) : {}; } catch (_) {}
+    if (!record || data.purpose !== 'password_reset') {
+      return res.status(400).json({ success: false, message: 'That reset code is no longer valid. Request a new one.' });
+    }
+    if (new Date() > new Date(record.expires_at)) {
+      await record.destroy();
+      return res.status(400).json({ success: false, message: 'That reset code has expired. Request a new one.' });
+    }
+    if (record.otp_code !== otp_code) {
+      record.attempts += 1;
+      if (record.attempts >= 3) {
+        await record.destroy();
+        return res.status(400).json({ success: false, message: 'Too many incorrect attempts. Request a new code.' });
+      }
+      await record.save();
+      return res.status(400).json({ success: false, message: `That code is incorrect. ${3 - record.attempts} attempt${3 - record.attempts === 1 ? '' : 's'} left.` });
+    }
+
+    data.reset_verified = true;
+    record.user_data = JSON.stringify(data);
+    await record.save();
+    res.json({ success: true, message: 'Code verified. You can now choose a new password.' });
+  } catch (err) {
+    console.error('Password reset verification error:', err);
+    res.status(500).json({ success: false, message: 'We could not verify that code right now. Please try again.' });
+  }
+});
+
+router.post('/password-reset/confirm', async (req, res) => {
+  try {
+    const email = sanitizeInput(req.body.email)?.toLowerCase();
+    const password = req.body.password;
+    if (!email || !password) return res.status(400).json({ success: false, message: 'Enter a new password.' });
+    if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/\d/.test(password)) {
+      return res.status(400).json({ success: false, message: 'Use at least 8 characters with an uppercase letter, lowercase letter, and number.' });
+    }
+
+    const record = await Otp.findOne({ where: { email } });
+    let data = {};
+    try { data = record ? JSON.parse(record.user_data) : {}; } catch (_) {}
+    if (!record || data.purpose !== 'password_reset' || !data.reset_verified) {
+      return res.status(400).json({ success: false, message: 'Verify your reset code before changing your password.' });
+    }
+    if (new Date() > new Date(record.expires_at)) {
+      await record.destroy();
+      return res.status(400).json({ success: false, message: 'That reset code has expired. Request a new one.' });
+    }
+
+    const user = await User.findByPk(data.user_id);
+    if (!user) {
+      await record.destroy();
+      return res.status(400).json({ success: false, message: 'That reset request is no longer valid. Request a new code.' });
+    }
+    await user.update({ password_hash: await bcrypt.hash(password, 10) });
+    await record.destroy();
+    res.json({ success: true, message: 'Your password has been changed successfully. You can now sign in.' });
+  } catch (err) {
+    console.error('Password reset confirmation error:', err);
+    res.status(500).json({ success: false, message: 'We could not reset your password right now. Please try again.' });
+  }
 });
 
 router.post('/verify-otp', async (req, res) => {
@@ -220,7 +344,7 @@ router.post('/verify-otp', async (req, res) => {
     const welcomeHtml = `
       <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; padding: 32px; border: 1px solid #e2e8f0;">
         <div style="text-align: center; margin-bottom: 24px;">
-          <h2 style="color: #0ea5e9; margin: 0;">Welcome to Project Weather! 🌱</h2>
+          <h2 style="color: #0ea5e9; margin: 0;">Welcome to AGRIDEB! 🌱</h2>
           <p style="color: #64748b; font-size: 14px;">Agricultural Weather & Crop Management System</p>
         </div>
         <div style="color: #0f172a; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
@@ -238,14 +362,14 @@ router.post('/verify-otp', async (req, res) => {
           <a href="${loginLink}" style="color: #0ea5e9;">${loginLink}</a>
         </p>
         <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0;">
-        <p style="color: #94a3b8; font-size: 12px; text-align: center; margin: 0;">Project Weather Team</p>
+        <p style="color: #94a3b8; font-size: 12px; text-align: center; margin: 0;">AGRIDEB Team</p>
       </div>
     `;
 
     try {
       await sendEmail({
         to: newUser.email,
-        subject: 'Welcome to Project Weather! Registration Successful 🌱',
+        subject: 'Welcome to AGRIDEB! Registration Successful 🌱',
         text: `Welcome ${newUser.full_name}! Your registration is complete. Login here: ${loginLink}`,
         html: welcomeHtml
       });
@@ -692,6 +816,34 @@ function pruneGeminiThrottleMap() {
   }
 }
 
+function localizeStaticRecommendations(evaluation, language) {
+  if (language !== 'filipino' || !evaluation || typeof evaluation !== 'object') return;
+  const cropName = evaluation.crop && evaluation.crop.name ? evaluation.crop.name : 'pananim';
+  const metrics = evaluation.metrics || {};
+  const rain = Number.isFinite(metrics.maxDailyRain) ? metrics.maxDailyRain.toFixed(1) : null;
+  const temp = Number.isFinite(metrics.maxTemp) ? metrics.maxTemp : null;
+
+  if (evaluation.trafficLight === 'RED') {
+    evaluation.recommendations = [
+      `Ipagpaliban ang pagtatanim ng ${cropName} hanggang maging matatag ang lagay ng panahon.`,
+      rain ? `Maglinis ng mga kanal bago ang inaasahang ${rain} mm/araw na ulan.` : 'Maglinis ng mga kanal bago magtanim upang maiwasan ang pagbaha.',
+      'Itago ang binhi sa tuyo at may bubong na lugar; magtanim kapag lampas 75% ang safety index.'
+    ];
+  } else if (evaluation.trafficLight === 'YELLOW') {
+    evaluation.recommendations = [
+      `Maaaring itanim ang ${cropName}, ngunit ihanda muna ang mga kanal sa paligid ng taniman.`,
+      temp ? `Maglagay ng malts sa punlaan kung umabot sa ${temp}°C ang init.` : 'Maglagay ng malts sa punlaan upang mapanatili ang halumigmig ng lupa.',
+      'Suriin ang forecast araw-araw bago maghasik o maglipat ng punla.'
+    ];
+  } else {
+    evaluation.recommendations = [
+      `Maayos ang panahon para ihanda at itanim ang ${cropName}.`,
+      'Panatilihing mamasa-masa ang lupa at tiyaking bukas ang mga daluyan ng tubig.',
+      'Suriin ang forecast araw-araw sa susunod na 5 araw bago maghasik.'
+    ];
+  }
+}
+
 // Safe to plant predictor calculation API (auth required — T-07-04)
 router.post('/api/weather/predict-planting', requireAuth, async (req, res) => {
   try {
@@ -711,12 +863,25 @@ router.post('/api/weather/predict-planting', requireAuth, async (req, res) => {
       ? plantingPredictorService.evaluatePlantingSafety(cropKey, weatherData, alerts)
       : {};
 
-    // Language follows app toggle / current user language preference
-    let language = (req.body && req.body.language) ? String(req.body.language).toLowerCase().trim() : 'english';
-    if (!language) language = 'english';
+    // The saved account setting is authoritative. The page can request an
+    // evaluation before its profile fetch completes, so trusting only the
+    // browser value would wrongly send English to the AI for Filipino users.
+    const userId = req.session && req.session.userId;
+    const allowedRecommendationLanguages = new Set(['english', 'filipino', 'minasbate']);
+    let language = 'filipino';
+    if (userId) {
+      try {
+        const user = await User.findByPk(userId, { attributes: ['language_pref'] });
+        const savedLanguage = user && user.language_pref
+          ? String(user.language_pref).toLowerCase().trim()
+          : '';
+        if (allowedRecommendationLanguages.has(savedLanguage)) language = savedLanguage;
+      } catch (userErr) {
+        console.warn('Could not load user language preference:', userErr.message);
+      }
+    }
 
     // Aggregate user active crop profiles, farm plots, and soil context
-    const userId = req.session && req.session.userId;
     let userCropContext = '';
     if (userId) {
       try {
@@ -767,6 +932,7 @@ router.post('/api/weather/predict-planting', requireAuth, async (req, res) => {
 
     // D-03: rule-based scores stay authoritative; only recommendations may be overridden
     evaluation.recommendations_source = 'static';
+    localizeStaticRecommendations(evaluation, language);
 
     // Optional 3s per-user skip of Gemini to prevent double-fire (still return static)
     const now = Date.now();
@@ -947,8 +1113,8 @@ async function getPlotContext(plotId) {
   });
 
   // Get current weather and forecast
-  const lat = plot.latitude || process.env.WEATHER_LAT || '12.3703';
-  const lon = plot.longitude || process.env.WEATHER_LON || '123.6217';
+  const lat = plot.latitude || process.env.WEATHER_LAT || '12.2275';
+  const lon = plot.longitude || process.env.WEATHER_LON || '123.2355';
 
   let currentWeather = null;
   let forecast = null;
@@ -1088,8 +1254,8 @@ router.get('/api/advisor/typhoon', requireAuth, async (req, res) => {
 
     const { lat, lon } = req.query;
     const forecast = await weatherService.fetchForecast(
-      lat || process.env.WEATHER_LAT || '12.3703',
-      lon || process.env.WEATHER_LON || '123.6217'
+      lat || process.env.WEATHER_LAT || '12.2275',
+      lon || process.env.WEATHER_LON || '123.2355'
     );
 
     const result = typhoonAlertService.assessTyphoonRisk(forecast.days);
@@ -1690,7 +1856,7 @@ router.post('/api/admin/alerts', requireAuth, requireAdmin, async (req, res) => 
           <!-- Header -->
           <tr>
             <td style="background: linear-gradient(135deg, #1b5e20, #2e7d32); padding: 40px 30px; text-align: center;">
-              <span style="font-size: 14px; text-transform: uppercase; letter-spacing: 2px; color: #a5d6a7; font-weight: bold; display: block; margin-bottom: 8px;">Project Weather</span>
+              <span style="font-size: 14px; text-transform: uppercase; letter-spacing: 2px; color: #a5d6a7; font-weight: bold; display: block; margin-bottom: 8px;">AGRIDEB</span>
               <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">Agricultural Advisory</h1>
             </td>
           </tr>
@@ -1738,11 +1904,11 @@ router.post('/api/admin/alerts', requireAuth, requireAdmin, async (req, res) => 
           <tr>
             <td style="background-color: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #eeeeee;">
               <p style="margin: 0; font-size: 12px; color: #95a5a6; line-height: 1.5;">
-                This email was sent by the Project Weather Platform Administrator.<br>
+                This email was sent by the AGRIDEB Platform Administrator.<br>
                 You are receiving this because you are registered as an Agriculturist.
               </p>
               <p style="margin: 10px 0 0 0; font-size: 12px; color: #bdc3c7;">
-                &copy; ${currentYear} Project Weather. All rights reserved.
+                &copy; ${currentYear} AGRIDEB. All rights reserved.
               </p>
             </td>
           </tr>
@@ -1756,8 +1922,8 @@ router.post('/api/admin/alerts', requireAuth, requireAdmin, async (req, res) => 
       try {
         await sendEmail({
           to: user.email,
-          subject: `[Advisory] Project Weather Update: ${scopeLabel}`,
-          text: `Project Weather Agricultural Advisory:\n\n${message}\n\nScope: ${scopeLabel}\nDate: ${dateStr}`,
+          subject: `[Advisory] AGRIDEB Update: ${scopeLabel}`,
+          text: `AGRIDEB Agricultural Advisory:\n\n${message}\n\nScope: ${scopeLabel}\nDate: ${dateStr}`,
           html: emailHtml
         });
         successCount++;

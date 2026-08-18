@@ -1,9 +1,18 @@
 // ACTIVE STATE DATABASE (Client-Side State)
-var currentLanguage = 'filipino';
+var currentLanguage = localStorage.getItem('language_pref') || 'filipino';
+
+// Immediately apply translations on DOMContentLoaded
+document.addEventListener("DOMContentLoaded", function() {
+    applyTranslations(currentLanguage);
+});
 
 var substringKeys = [
   "Good morning",
   "Good morning,",
+  "Good afternoon",
+  "Good afternoon,",
+  "Good evening",
+  "Good evening,",
   "Temperature:",
   "Temperature",
   "Feels like",
@@ -43,11 +52,12 @@ var translations = {
     "Profile Page": "Pahina ng Profile",
     "Logout": "Mag-log Out",
     "Active Fields": "Aktibong mga Bukid",
-    "Masbate Region": "Rehiyon ng Masbate",
+    "DEBESMSCAT Mandaon": "DEBESMSCAT Mandaon",
+    "Masbate Region": "DEBESMSCAT Mandaon",
     "Station ID:": "ID ng Estasyon:",
     "Status:": "Katayuan:",
-    "CONNECTED": "NAKAKONEKTA",
-    "Project Weather": "Proyektong Panahon",
+    "AGRIDEB": "AGRIDEB",
+    "Project Weather": "AGRIDEB",
     "Detecting Location...": "Inaalam ang Lokasyon...",
     "Active Alerts": "Aktibong Babala",
     "Alerts": "mga Babala",
@@ -87,7 +97,12 @@ var translations = {
     "English": "English",
 
     // Farmer Dashboard
-    "Good morning, Juan.": "Magandang umaga, Juan.",
+    "Good morning": "Magandang umaga",
+    "Good morning,": "Magandang umaga,",
+    "Good afternoon": "Magandang hapon",
+    "Good afternoon,": "Magandang hapon,",
+    "Good evening": "Magandang gabi",
+    "Good evening,": "Magandang gabi,",
     "Here's how your farm looks today.": "Narito ang hitsura ng iyong bukid ngayon.",
     "Loading weather data...": "Naglo-load ng data ng panahon...",
     "Heat": "Temperatura",
@@ -100,7 +115,8 @@ var translations = {
     "Vulnerability": "Kahinaan",
     "Soil Prep": "Paghahanda ng Lupa",
     "None (Soil Prep)": "Wala (Paghahanda ng Lupa)",
-    "Masbate Precision Partner": "Kasosyo sa Katumpakan sa Masbate",
+    "DEBESMSCAT Precision Partner": "Kasosyo sa Katumpakan sa DEBESMSCAT",
+    "Masbate Precision Partner": "Kasosyo sa Katumpakan sa DEBESMSCAT",
     "Active Alerts:": "Aktibong mga Babala:",
     "Weather Forecast": "Ulat ng Panahon",
     "Fast Planting": "Mabilisang Pagtatanim",
@@ -160,24 +176,29 @@ var translations = {
     "Confirm & Register Planting": "Kumpirmahin at Irehistro ang Pagtatanim",
 
     // Weather Analytics Page
+    "Weather Analytics": "Pagsusuri ng Panahon",
     "Weather Analytics & Historical Archive": "Pagsusuri ng Panahon at Nakaraang Archive",
-    "Masbate Regional station metrics, 5-day predictive trends, and historical logs.": "Mga sukatan ng rehiyonal na estasyon sa Masbate, 5-araw na hula, at mga nakaraang tala.",
+    "DEBESMSCAT station metrics, 5-day predictive trends, and historical logs.": "Mga sukatan ng estasyon sa DEBESMSCAT, 5-araw na hula, at mga nakaraang tala.",
+    "Masbate Regional station metrics, 5-day predictive trends, and historical logs.": "Mga sukatan ng estasyon sa DEBESMSCAT, 5-araw na hula, at mga nakaraang tala.",
     "5-Day Forecast": "5-Araw na Hula",
     "Predictive rain and temperature models": "Mga modelo ng hula para sa ulan at temperatura",
     "Rainfall Trend & Accumulation": "Trend at Accumulation ng Ulan",
     "5-day projected rain volume in mm": "Hula sa dami ng ulan sa loob ng 5 araw sa mm",
     "Crop Health Risk Forecast": "Hula sa Panganib sa Kalusugan ng Pananim",
-    "Vulnerability index based on forecasted conditions": "Index ng kahinaan batong sa inihulang kondisyon",
+    "Vulnerability index based on forecasted conditions": "Index ng kahinaan batay sa inihulang kondisyon",
     "Weather Archive": "Archive ng Panahon",
     "Historical database of registered local logs": "Nakaraang database ng mga nakarehistrong lokal na tala",
     "Rule-based predictive analysis powered by OpenWeather live data.": "Pagsusuri ng hula batay sa panuntunan na pinapagana ng live na data ng OpenWeather.",
 
     // Digital Repository Page
+    "Digital Repository": "Digital na Imbakan",
     "Digital Repository & Agropedia": "Digital na Imbakan at Agropedia",
-    "Central agricultural knowledge, crop vulnerabilities, and Masbate region trivia.": "Pangunahing kaalaman sa agrikultura, mga kahinaan ng pananim, at trivia sa rehiyon ng Masbate.",
+    "Central agricultural knowledge, crop vulnerabilities, and DEBESMSCAT & Mandaon region trivia.": "Pangunahing kaalaman sa agrikultura, mga kahinaan ng pananim, at trivia sa DEBESMSCAT at Mandaon.",
+    "Central agricultural knowledge, crop vulnerabilities, and Masbate region trivia.": "Pangunahing kaalaman sa agrikultura, mga kahinaan ng pananim, at trivia sa DEBESMSCAT at Mandaon.",
     "Agropedia Knowledge Base": "Basehan ng Kaalaman sa Agropedia",
     "Official crop parameters and growth details": "Opisyal na parameter ng pananim at mga detalye ng paglaki",
-    "Masbate Agricultural Trivia": "Trivia sa Agrikultura ng Masbate",
+    "DEBESMSCAT Agricultural Trivia": "Trivia sa Agrikultura sa DEBESMSCAT / Mandaon",
+    "Masbate Agricultural Trivia": "Trivia sa Agrikultura sa DEBESMSCAT / Mandaon",
     "Fun facts and local farming stories": "Kagiliw-giliw na katotohanan at lokal na kwento ng pagsasaka",
     "Crop Guidelines": "Mga Alituntunin sa Pananim",
     "Best practices for local growers": "Pinakamahusay na kasanayan para sa mga lokal na magsasaka",
@@ -193,11 +214,12 @@ var translations = {
     "Profile Page": "Pahina sang Profile",
     "Logout": "Mag-log Out",
     "Active Fields": "Aktibo na mga Talamnan",
-    "Masbate Region": "Rehiyon sang Masbate",
+    "DEBESMSCAT Mandaon": "DEBESMSCAT Mandaon",
+    "Masbate Region": "DEBESMSCAT Mandaon",
     "Station ID:": "Estasyon ID:",
     "Status:": "Estado:",
-    "CONNECTED": "NAKASUMPAY",
-    "Project Weather": "Proyektong Panahon",
+    "AGRIDEB": "AGRIDEB",
+    "Project Weather": "AGRIDEB",
     "Detecting Location...": "Ginalantaw ang Lokasyon...",
     "Active Alerts": "Aktibo na mga Alerto",
     "Alerts": "mga Alerto",
@@ -237,7 +259,12 @@ var translations = {
     "English": "English",
 
     // Farmer Dashboard
-    "Good morning, Juan.": "Maayo na aga, Juan.",
+    "Good morning": "Maayo na aga",
+    "Good morning,": "Maayo na aga,",
+    "Good afternoon": "Maayo na hapon",
+    "Good afternoon,": "Maayo na hapon,",
+    "Good evening": "Maayo na gab-i",
+    "Good evening,": "Maayo na gab-i,",
     "Here's how your farm looks today.": "Kadi an hitsura sang imo talamnan subong na adlaw.",
     "Loading weather data...": "Ginaload an data sang panahon...",
     "Heat": "Temperatura",
@@ -250,7 +277,8 @@ var translations = {
     "Vulnerability": "Kahinaan",
     "Soil Prep": "Paghahanda sang Duta",
     "None (Soil Prep)": "Wara (Paghahanda sang Duta)",
-    "Masbate Precision Partner": "Katimbang sa Precision sa Masbate",
+    "DEBESMSCAT Precision Partner": "Katimbang sa Katumpakan sa DEBESMSCAT",
+    "Masbate Precision Partner": "Katimbang sa Katumpakan sa DEBESMSCAT",
     "Active Alerts:": "Aktibo na mga Alerto:",
     "Weather Forecast": "Uran kag Panahon",
     "Fast Planting": "Dalian na Pagtanom",
@@ -310,8 +338,10 @@ var translations = {
     "Confirm & Register Planting": "Kumpirmahon kag Irehistro an Pagtanom",
 
     // Weather Analytics Page
+    "Weather Analytics": "Analisis sang Panahon",
     "Weather Analytics & Historical Archive": "Pagsusuri sang Panahon kag Nakaagi na Archive",
-    "Masbate Regional station metrics, 5-day predictive trends, and historical logs.": "Mga sukatan sang estasyon sa rehiyon sang Masbate, 5-adlaw na prediksyon, kag mga nakaagi na talaan.",
+    "DEBESMSCAT station metrics, 5-day predictive trends, and historical logs.": "Mga sukatan sang estasyon sa DEBESMSCAT, 5-adlaw na prediksyon, kag mga nakaagi na talaan.",
+    "Masbate Regional station metrics, 5-day predictive trends, and historical logs.": "Mga sukatan sang estasyon sa DEBESMSCAT, 5-adlaw na prediksyon, kag mga nakaagi na talaan.",
     "5-Day Forecast": "5-Adlaw na Prediksyon",
     "Predictive rain and temperature models": "Mga modelo sang prediksyon sa uran kag temperatura",
     "Rainfall Trend & Accumulation": "Trend kag Accumulation sang Uran",
@@ -323,11 +353,14 @@ var translations = {
     "Rule-based predictive analysis powered by OpenWeather live data.": "Analisis sang prediksyon base sa data sang panahon.",
 
     // Digital Repository Page
+    "Digital Repository": "Digital na Burutangan",
     "Digital Repository & Agropedia": "Digital na Imbakan kag Agropedia",
-    "Central agricultural knowledge, crop vulnerabilities, and Masbate region trivia.": "Pang-una na kaalaman sa agrikultura, mga kahinaan sang tanom, kag trivia sa rehiyon sang Masbate.",
+    "Central agricultural knowledge, crop vulnerabilities, and DEBESMSCAT & Mandaon region trivia.": "Pang-una na kaalaman sa agrikultura, mga kahinaan sang tanom, kag trivia sa DEBESMSCAT kag Mandaon.",
+    "Central agricultural knowledge, crop vulnerabilities, and Masbate region trivia.": "Pang-una na kaalaman sa agrikultura, mga kahinaan sang tanom, kag trivia sa DEBESMSCAT kag Mandaon.",
     "Agropedia Knowledge Base": "Basehan sang Kaalaman sa Agropedia",
     "Official crop parameters and growth details": "Opisyal na parameter sang tanom kag detalye sang pagtubo",
-    "Masbate Agricultural Trivia": "Trivia sa Agrikultura sang Masbate",
+    "DEBESMSCAT Agricultural Trivia": "Trivia sa Agrikultura sang DEBESMSCAT / Mandaon",
+    "Masbate Agricultural Trivia": "Trivia sa Agrikultura sang DEBESMSCAT / Mandaon",
     "Fun facts and local farming stories": "Mga makalingaw na katotohanan kag kwento sang pag-uma",
     "Crop Guidelines": "Mga Alituntunin sa Tanom",
     "Best practices for local growers": "Pinakamaayo na kasanayan para sa mga lokal na parauma",
@@ -1054,15 +1087,24 @@ var activeCrops = [];
                 const data = await response.json();
                 
                 if (data.user && data.user.full_name) {
-                    var names = data.user.full_name.split(' ');
+                    var names = data.user.full_name.trim().split(/\s+/);
+                    var firstName = data.user.first_name || (names.length > 0 ? names[0] : 'Farmer');
                     var initials = names.map(function(n) { return n[0]; }).join('').substring(0, 2).toUpperCase();
                     document.querySelectorAll('.topbar-right div').forEach(function(el) {
                         if (el.textContent.trim() === 'JR' || el.id === 'user-avatar-initials') {
                             el.textContent = initials;
                             el.id = 'user-avatar-initials';
-                            el.title = data.user.full_name + ' (' + data.user.role + ')';
+                            el.title = data.user.full_name + ' (' + (data.user.role || 'Farmer') + ')';
                         }
                     });
+
+                    // Update greeting in dashboard with actual first name
+                    var pageTitleEl = document.querySelector('#page-dashboard .page-title') || document.querySelector('.page-title');
+                    if (pageTitleEl) {
+                        var baseGreeting = 'Good morning, ' + firstName + '.';
+                        pageTitleEl.textContent = baseGreeting;
+                        pageTitleEl.originalValue = baseGreeting;
+                    }
 
                     // Dynamic Farmer Profile Page Rendering
                     var elAvatarLarge = document.getElementById('profile-avatar-large');
@@ -1084,10 +1126,12 @@ var activeCrops = [];
 
                     // Set user preference language
                     currentLanguage = data.user.language_pref || 'filipino';
+                    localStorage.setItem('language_pref', currentLanguage);
                     var selectLang = document.getElementById('language-select');
                     if (selectLang) {
                         selectLang.value = currentLanguage;
                     }
+                    applyTranslations(currentLanguage);
                 }
                 
                 dbPlots = data.plots;
@@ -1445,7 +1489,167 @@ var cropLimits = {
     'Pepper': { rainLimit: 30, tempMin: 18, tempMax: 36, name: 'Pepper (Siling Labuyo)' }
 };
 
-var selectedPredictorCrop = "Rice";
+var selectedPredictorCrop = null;
+var predictorRequestId = 0;
+
+function computeLocalSafety(cropKey) {
+    var crop = cropLimits[cropKey] || { rainLimit: 50, tempMin: 18, tempMax: 35, name: cropKey };
+    if (typeof cropDataRepo !== 'undefined' && cropDataRepo && cropDataRepo[cropKey]) {
+        if (cropDataRepo[cropKey].limit) crop.rainLimit = cropDataRepo[cropKey].limit;
+        if (cropDataRepo[cropKey].tempMin) crop.tempMin = cropDataRepo[cropKey].tempMin;
+        if (cropDataRepo[cropKey].tempMax) crop.tempMax = cropDataRepo[cropKey].tempMax;
+    }
+
+    var maxRain = typeof forecastedRain !== 'undefined' ? (forecastedRain || 0) : 0;
+    var maxTemp = 31;
+    var minTemp = 23;
+    var totalRain = 0;
+    var maxWind = 15;
+    var maxHumidity = 75;
+
+    if (typeof liveForecast !== 'undefined' && liveForecast && liveForecast.days && liveForecast.days.length > 0) {
+        maxRain = Math.max.apply(null, liveForecast.days.map(function(d) { return d.rainfall || 0; }));
+        maxTemp = Math.max.apply(null, liveForecast.days.map(function(d) { return d.temp_max || d.temp || 30; }));
+        minTemp = Math.min.apply(null, liveForecast.days.map(function(d) { return d.temp_min || d.temp || 22; }));
+        totalRain = liveForecast.total_forecast_rain || liveForecast.days.reduce(function(acc, d) { return acc + (d.rainfall || 0); }, 0);
+        maxWind = Math.max.apply(null, liveForecast.days.map(function(d) { return d.wind_speed || 0; }));
+        maxHumidity = Math.max.apply(null, liveForecast.days.map(function(d) { return d.humidity || 0; }));
+    }
+
+    var isFil = (currentLanguage === 'filipino' || currentLanguage === 'minasbate');
+
+    // 1. Temperature factor
+    var tempScore = 95;
+    var tempStatus = 'Ideal';
+    var tempMsg = isFil
+        ? 'Ang temperatura (' + minTemp.toFixed(0) + '°C - ' + maxTemp.toFixed(0) + '°C) ay angkop sa ' + crop.name + ' (' + crop.tempMin + '°C - ' + crop.tempMax + '°C).'
+        : 'Forecast temperatures (' + minTemp.toFixed(0) + '°C - ' + maxTemp.toFixed(0) + '°C) are within optimal range (' + crop.tempMin + '°C - ' + crop.tempMax + '°C).';
+
+    if (maxTemp > crop.tempMax + 4 || minTemp < crop.tempMin - 4) {
+        tempScore = 30;
+        tempStatus = 'Danger';
+        tempMsg = isFil
+            ? 'Mataas na init/lamig ang inaasahan (Peak ' + maxTemp.toFixed(0) + '°C laban sa limit na ' + crop.tempMax + '°C).'
+            : 'Extreme temperature stress forecasted (Peak ' + maxTemp.toFixed(0) + '°C vs crop tolerance ' + crop.tempMax + '°C).';
+    } else if (maxTemp > crop.tempMax || minTemp < crop.tempMin) {
+        tempScore = 65;
+        tempStatus = 'Caution';
+        tempMsg = isFil
+            ? 'Medyo mainit para sa pananim (Peak ' + maxTemp.toFixed(0) + '°C). Maghanda ng pandilig.'
+            : 'Borderline temperatures expected (Peak ' + maxTemp.toFixed(0) + '°C). Monitor heat index.';
+    }
+
+    // 2. Rainfall factor
+    var rainScore = 90;
+    var rainStatus = 'Ideal';
+    var rainMsg = isFil
+        ? 'Ang inaasahang ulan (Peak ' + maxRain.toFixed(1) + 'mm) ay kayang tiisin ng ' + crop.name + ' (' + crop.rainLimit + 'mm limit).'
+        : 'Forecast rainfall (Peak ' + maxRain.toFixed(1) + 'mm) is within ' + crop.name + ' tolerance (' + crop.rainLimit + 'mm).';
+
+    if (maxRain > crop.rainLimit || totalRain > crop.rainLimit * 1.5) {
+        rainScore = 25;
+        rainStatus = 'Danger';
+        rainMsg = isFil
+            ? 'Peligro sa malakas na ulan! Peak ' + maxRain.toFixed(1) + 'mm laban sa ' + crop.rainLimit + 'mm limit.'
+            : 'Heavy rainfall risk! Peak daily rain (' + maxRain.toFixed(1) + 'mm) exceeds crop tolerance (' + crop.rainLimit + 'mm).';
+    } else if (maxRain > crop.rainLimit * 0.7 || totalRain > crop.rainLimit * 0.9) {
+        rainScore = 60;
+        rainStatus = 'Caution';
+        rainMsg = isFil
+            ? 'Katamtamang buhos ng ulan (' + maxRain.toFixed(1) + 'mm peak). Siguraduhing maayos ang drainage.'
+            : 'Moderate rainfall forecasted (' + maxRain.toFixed(1) + 'mm daily peak). Ensure drainage.';
+    }
+
+    // 3. Environmental / Wind factor
+    var envScore = 90;
+    var envStatus = 'Ideal';
+    var envMsg = isFil
+        ? 'Katamtamang halumigmig (' + maxHumidity.toFixed(0) + '%) at banayad na hangin (' + maxWind.toFixed(0) + ' km/h).'
+        : 'Favorable humidity (' + maxHumidity.toFixed(0) + '%) and mild wind (' + maxWind.toFixed(0) + ' km/h).';
+
+    if (maxWind > 45 || maxHumidity > 90) {
+        envScore = 45;
+        envStatus = 'Caution';
+        envMsg = isFil
+            ? 'Medyo malakas ang hangin o halumigmig (' + maxWind.toFixed(0) + ' km/h, ' + maxHumidity.toFixed(0) + '% humidity).'
+            : 'Elevated wind/moisture levels (' + maxWind.toFixed(0) + ' km/h wind, ' + maxHumidity.toFixed(0) + '% humidity).';
+    }
+
+    // Total safety index & traffic light
+    var totalSafety = Math.round(tempScore * 0.35 + rainScore * 0.45 + envScore * 0.20);
+    var trafficLight = 'GREEN';
+
+    var verdictTitle = isFil ? 'LUNTIAN: LIGTAS ITANIM' : 'GREEN: SAFE TO PLANT';
+    var verdictDesc = isFil 
+        ? 'Paborable ang kondisyon ng panahon para sa ' + crop.name + '. Mababa ang peligro ng pagkasira.'
+        : 'Current weather outlook is favorable for planting ' + crop.name + '. Low meteorological risk.';
+
+    if (totalSafety < 50 || rainStatus === 'Danger' || tempStatus === 'Danger') {
+        trafficLight = 'RED';
+        verdictTitle = isFil ? 'PULA: IPAGPALIBAN ANG PAGTATANIM' : 'RED: DELAY PLANTING BATCH';
+        verdictDesc = isFil
+            ? 'Mataas ang peligro sa panahon para sa ' + crop.name + '. Ipagpaliban muna ang pagtatanim upang maiwasan ang pagkalugi.'
+            : 'Adverse weather risk detected for ' + crop.name + '. Recommend delaying seeding until conditions normalize.';
+    } else if (totalSafety < 75 || rainStatus === 'Caution' || tempStatus === 'Caution') {
+        trafficLight = 'YELLOW';
+        verdictTitle = isFil ? 'DILAW: MAGTANIM NANG MAY PAG-IINGAT' : 'YELLOW: PLANT WITH CAUTION';
+        verdictDesc = isFil
+            ? 'Katamtamang peligro para sa ' + crop.name + '. Maghanda ng kanal at sundin ang mga pag-iingat.'
+            : 'Moderate weather sensitivity for ' + crop.name + '. Prepare drainage channels and monitor soil saturation.';
+    }
+
+    var defaultRecs = [];
+    if (trafficLight === 'GREEN') {
+        defaultRecs = isFil ? [
+            'Ihanda ang kama ng lupa at simulan ang paghahasik habang maganda ang panahon.',
+            'Panatilihin ang regular na iskedyul ng patubig at subaybayan ang moisture ng lupa.',
+            'Mag-aplay ng panimulang pataba ayon sa pangangailangan ng ' + crop.name + '.'
+        ] : [
+            'Prepare seedbed and proceed with scheduled planting under optimal conditions.',
+            'Maintain baseline irrigation and monitor daily topsoil moisture levels.',
+            'Apply starter fertilizer according to standard ' + crop.name + ' agronomic guidelines.'
+        ];
+    } else if (trafficLight === 'YELLOW') {
+        defaultRecs = isFil ? [
+            'Linisin ang mga kanal ng patubig upang maiwasan ang pagbabara sa ulan.',
+            'Magtanim sa mga elevated plots o gumamit ng raised garden beds.',
+            'Tingnan ang lagay ng panahon bawat 24 oras bago maglagay ng pataba.'
+        ] : [
+            'Clear drainage canals to prevent root waterlogging from forecast rainfall.',
+            'Use raised planting beds or focus on elevated field plots.',
+            'Check daily weather updates before applying fertilizer or pesticide treatments.'
+        ];
+    } else {
+        defaultRecs = isFil ? [
+            'Ipagpaliban ang paghahasik ng mga bagong binhi hanggang sa bumuti ang panahon.',
+            'Siguraduhin ang maayos na daluyan ng tubig upang hindi malunod ang mga pananim.',
+            'Protektahan ang mga bagong sibol na punla gamit ang protective cover o mulch.'
+        ] : [
+            'Postpone new seed sowing until extreme forecast conditions subside.',
+            'Inspect drainage outlets to prevent soil erosion and field submergence.',
+            'Protect vulnerable seedlings with temporary canopy covers or organic mulch.'
+        ];
+    }
+
+    return {
+        safetyIndex: totalSafety,
+        trafficLight: trafficLight,
+        verdictTitle: verdictTitle,
+        verdictDesc: verdictDesc,
+        metrics: {
+            maxTemp: Number(maxTemp.toFixed(1)),
+            maxDailyRain: Number(maxRain.toFixed(1)),
+            totalForecastRain: Number(totalRain.toFixed(1))
+        },
+        factors: {
+            temperature: { score: tempScore, status: tempStatus, message: tempMsg },
+            rainfall: { score: rainScore, status: rainStatus, message: rainMsg },
+            environment: { score: envScore, status: envStatus, message: envMsg }
+        },
+        recommendations: defaultRecs,
+        recommendations_source: 'static'
+    };
+}
 
 function setupCropChipListeners() {
     var chips = document.querySelectorAll(".crop-chip");
@@ -1464,7 +1668,9 @@ function setupCropChipListeners() {
     var sel = document.getElementById("predict-crop-select");
     if (sel) {
         sel.addEventListener("change", function() {
-            selectedPredictorCrop = this.value;
+            var cropKey = this.value;
+            if (!cropKey) return;
+            selectedPredictorCrop = cropKey;
             chips.forEach(function(c) {
                 if (c.getAttribute("data-crop") === selectedPredictorCrop) {
                     c.classList.add("active");
@@ -1477,7 +1683,7 @@ function setupCropChipListeners() {
     }
 }
 
-function updatePredictor() {
+function renderPredictorScoreAndFactors(data) {
     var red = document.getElementById("light-red");
     var yellow = document.getElementById("light-yellow");
     var green = document.getElementById("light-green");
@@ -1487,30 +1693,186 @@ function updatePredictor() {
     var scoreVal = document.getElementById("safety-score-val");
     var scoreCircle = document.getElementById("safety-score-circle");
 
+    if (!red || !yellow || !green) return;
+
+    red.className = "light-indicator";
+    yellow.className = "light-indicator";
+    green.className = "light-indicator";
+
+    if (scoreVal) scoreVal.innerText = (data.safetyIndex !== null && data.safetyIndex !== undefined) ? data.safetyIndex + '%' : '--%';
+
+    if (scoreCircle) {
+        if (data.trafficLight === 'GREEN') {
+            scoreCircle.style.borderColor = '#1BE035';
+            scoreCircle.style.color = '#0D5E1A';
+        } else if (data.trafficLight === 'YELLOW') {
+            scoreCircle.style.borderColor = '#F5A623';
+            scoreCircle.style.color = '#B36B00';
+        } else if (data.trafficLight === 'RED') {
+            scoreCircle.style.borderColor = '#D44A1A';
+            scoreCircle.style.color = '#8A2000';
+        } else {
+            scoreCircle.style.borderColor = '#C8E6C9';
+            scoreCircle.style.color = '#349954';
+        }
+    }
+
+    if (data.trafficLight === 'RED') {
+        red.classList.add("red-active");
+    } else if (data.trafficLight === 'YELLOW') {
+        yellow.classList.add("yellow-active");
+    } else if (data.trafficLight === 'GREEN') {
+        green.classList.add("green-active");
+    }
+
+    if (vTitle && data.verdictTitle) vTitle.innerText = data.verdictTitle;
+    if (vDesc && data.verdictDesc) vDesc.innerText = data.verdictDesc;
+
+    if (vFormula && data.metrics) {
+        vFormula.innerText = 'Peak Temp: ' + data.metrics.maxTemp + '°C | Rain Peak: ' + Number(data.metrics.maxDailyRain).toFixed(1) + 'mm | Total Rain: ' + Number(data.metrics.totalForecastRain).toFixed(1) + 'mm';
+    }
+
+    // Factors breakdown
+    if (data.factors) {
+        var tempScore = document.getElementById("factor-temp-score");
+        var tempDesc = document.getElementById("factor-temp-desc");
+        var rainScore = document.getElementById("factor-rain-score");
+        var rainDesc = document.getElementById("factor-rain-desc");
+        var envScore = document.getElementById("factor-env-score");
+        var envDesc = document.getElementById("factor-env-desc");
+
+        if (tempScore && data.factors.temperature) tempScore.innerText = data.factors.temperature.score + '% (' + data.factors.temperature.status + ')';
+        if (tempDesc && data.factors.temperature) tempDesc.innerText = data.factors.temperature.message;
+
+        if (rainScore && data.factors.rainfall) rainScore.innerText = data.factors.rainfall.score + '% (' + data.factors.rainfall.status + ')';
+        if (rainDesc && data.factors.rainfall) rainDesc.innerText = data.factors.rainfall.message;
+
+        if (envScore && data.factors.environment) envScore.innerText = data.factors.environment.score + '% (' + data.factors.environment.status + ')';
+        if (envDesc && data.factors.environment) envDesc.innerText = data.factors.environment.message;
+    }
+}
+
+function renderPredictorRecommendations(data) {
+    var recList = document.getElementById("predictor-recommendations-list");
+    var srcNote = document.getElementById('predictor-recommendations-source');
+    var isFil = (currentLanguage === 'filipino' || currentLanguage === 'minasbate');
+
+    if (srcNote) {
+        if (data.recommendations_source === 'gemini') {
+            srcNote.textContent = isFil
+                ? 'Mga tip na binuo ng AI Agronomist — kumpirmahin sa lokal na kondisyon ng bukid.'
+                : 'AI Agronomist actionable guidance — verified against live forecast.';
+        } else if (data.recommendations_source === 'static') {
+            srcNote.textContent = isFil
+                ? 'Karaniwang agronomic best practices para sa ' + (selectedPredictorCrop || 'pananim') + '.'
+                : 'Standard agronomic best practices for ' + (selectedPredictorCrop || 'selected crop') + '.';
+        } else {
+            srcNote.textContent = '';
+        }
+    }
+
+    if (recList) {
+        var bullets = Array.isArray(data.recommendations) ? data.recommendations : [];
+        typeWriterRecommendations(recList, bullets, 12, 280);
+    }
+}
+
+function updatePredictor() {
+    var red = document.getElementById("light-red");
+    var yellow = document.getElementById("light-yellow");
+    var green = document.getElementById("light-green");
+    var vTitle = document.getElementById("predictor-verdict-title");
+    var vDesc = document.getElementById("predictor-verdict-desc");
+    var vFormula = document.getElementById("predictor-formula");
+    var scoreVal = document.getElementById("safety-score-val");
+    var scoreCircle = document.getElementById("safety-score-circle");
+    var recList = document.getElementById('predictor-recommendations-list');
+    var srcEl = document.getElementById('predictor-recommendations-source');
+
     if (!red || !yellow || !green || !vTitle || !vDesc) return;
 
-    var cropKey = selectedPredictorCrop || "Rice";
-    var lang = currentLanguage || 'english';
+    var isFil = (currentLanguage === 'filipino' || currentLanguage === 'minasbate');
 
-    // Lazy loading animation while AI generates recommendations
-    var recList = document.getElementById('predictor-recommendations-list');
+    // 1. Initial awaiting state when no crop is selected yet
+    if (!selectedPredictorCrop) {
+        red.className = "light-indicator";
+        yellow.className = "light-indicator";
+        green.className = "light-indicator";
+
+        if (scoreVal) scoreVal.innerText = '--%';
+        if (scoreCircle) {
+            scoreCircle.style.borderColor = '#C8E6C9';
+            scoreCircle.style.color = '#349954';
+        }
+
+        vTitle.innerText = isFil ? "Pumili ng Pananim na Susuriin" : "Select a Crop to Evaluate";
+        vDesc.innerText = isFil 
+            ? "I-click ang alinman sa mga pananim sa itaas upang suriin ang kaligtasan at makakuha ng AI rekomendasyon."
+            : "Click any crop above or choose from the dropdown to analyze weather suitability and generate AI recommendations.";
+        if (vFormula) vFormula.innerText = isFil ? "Naghihintay ng pagpili ng pananim..." : "Awaiting crop selection...";
+
+        var tempScore = document.getElementById("factor-temp-score");
+        var tempDesc = document.getElementById("factor-temp-desc");
+        var rainScore = document.getElementById("factor-rain-score");
+        var rainDesc = document.getElementById("factor-rain-desc");
+        var envScore = document.getElementById("factor-env-score");
+        var envDesc = document.getElementById("factor-env-desc");
+
+        if (tempScore) tempScore.innerText = "--";
+        if (tempDesc) tempDesc.innerText = isFil ? "Pumili ng pananim para sa temperatura." : "Select a crop to evaluate temperature suitability.";
+        if (rainScore) rainScore.innerText = "--";
+        if (rainDesc) rainDesc.innerText = isFil ? "Pumili ng pananim para sa ulan." : "Select a crop to evaluate rainfall tolerance.";
+        if (envScore) envScore.innerText = "--";
+        if (envDesc) envDesc.innerText = isFil ? "Pumili ng pananim para sa hangin at stress." : "Select a crop to check environmental stress.";
+
+        if (recList) {
+            recList.innerHTML = '<li>' + (isFil 
+                ? 'Pumili ng pananim sa itaas upang tingnan ang mga rekomendasyon.' 
+                : 'Select a crop above to view agronomic recommendations.') + '</li>';
+        }
+        if (srcEl) srcEl.textContent = '';
+        return;
+    }
+
+    var cropKey = selectedPredictorCrop;
+    var lang = currentLanguage || 'english';
+    var cropDisplay = (cropLimits[cropKey] && cropLimits[cropKey].name) ? cropLimits[cropKey].name : cropKey;
+
+    // 2. IMMEDIATELY compute and render the top verdict, safety score %, and factor breakdown (0ms latency)
+    var localEvaluation = computeLocalSafety(cropKey);
+    renderPredictorScoreAndFactors(localEvaluation);
+
+    // 3. IMMEDIATELY show high-contrast, polished AI loading indicator in the recommendations box
+    predictorRequestId++;
+    var currentRequestId = predictorRequestId;
+
     if (recList) {
         recList.innerHTML = '';
         var loaderLi = document.createElement('li');
         loaderLi.style.listStyle = 'none';
         loaderLi.style.marginLeft = '-18px';
         loaderLi.innerHTML = '<div class="predictor-loader">'
-            + '<span>' + ((currentLanguage === 'filipino' || currentLanguage === 'minasbate')
-                ? 'Gumagawa ng rekomendasyon'
-                : 'Generating recommendations') + '</span>'
-            + '<span class="dot-pulse"><span></span><span></span><span></span></span>'
+            + '<div class="predictor-loader-header">'
+            + '  <div class="predictor-loader-spinner"></div>'
+            + '  <div>'
+            + '    <div class="predictor-loader-text">'
+            + '      <span>' + (isFil ? 'Sinusuri ng AI Agronomist ang ' + cropDisplay + '...' : 'AI Agronomist analyzing weather impact for ' + cropDisplay + '...') + '</span>'
+            + '      <span class="dot-pulse"><span></span><span></span><span></span></span>'
+            + '    </div>'
+            + '    <div class="predictor-loader-sub">' + (isFil ? 'Kinakalkula ang temperatura, ulan, at payo sa pagtatanim...' : 'Evaluating live forecast, rainfall limits & agronomic guidance...') + '</div>'
+            + '  </div>'
+            + '</div>'
+            + '<div class="ai-skeleton-loader">'
+            + '  <div class="ai-skeleton-line" style="width: 92%;"></div>'
+            + '  <div class="ai-skeleton-line" style="width: 78%;"></div>'
+            + '  <div class="ai-skeleton-line" style="width: 85%;"></div>'
+            + '</div>'
             + '</div>';
         recList.appendChild(loaderLi);
     }
-    var srcEl = document.getElementById('predictor-recommendations-source');
     if (srcEl) srcEl.textContent = '';
 
-    // Call API for prediction assessment (language-aware AI recommendations)
+    // 4. Asynchronously fetch rich AI recommendations from the server
     fetch('/api/weather/predict-planting', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1518,12 +1880,22 @@ function updatePredictor() {
     })
     .then(function(res) { return res.json(); })
     .then(function(data) {
-        if (!data || !data.safetyIndex && data.safetyIndex !== 0) return fallbackLocalEvaluation(cropKey);
-        renderPredictorResult(data);
+        // Discard outdated request if user quickly clicked another crop
+        if (currentRequestId !== predictorRequestId) return;
+
+        if (data && (data.safetyIndex || data.safetyIndex === 0)) {
+            // Update top scores if server returned alert-adjusted numbers
+            renderPredictorScoreAndFactors(data);
+            renderPredictorRecommendations(data);
+        } else {
+            renderPredictorRecommendations(localEvaluation);
+        }
     })
     .catch(function(err) {
-        console.warn('API predictor error, falling back:', err);
-        fallbackLocalEvaluation(cropKey);
+        console.warn('API predictor error, using instant agronomic guidelines:', err);
+        if (currentRequestId === predictorRequestId) {
+            renderPredictorRecommendations(localEvaluation);
+        }
     });
 }
 
@@ -1532,14 +1904,14 @@ function updatePredictor() {
  * with a blinking cursor, creating a chatbot-typing feel.
  * @param {HTMLElement} listEl - The <ul> element to render into
  * @param {string[]} bullets - Array of recommendation text strings
- * @param {number} [charDelay=18] - ms per character
- * @param {number} [bulletPause=300] - ms pause before next bullet
+ * @param {number} [charDelay=12] - ms per character
+ * @param {number} [bulletPause=280] - ms pause before next bullet
  * @param {function} [onDone] - called when all bullets are fully typed
  */
 function typeWriterRecommendations(listEl, bullets, charDelay, bulletPause, onDone) {
     if (!listEl) return;
-    charDelay = charDelay || 18;
-    bulletPause = bulletPause || 300;
+    charDelay = charDelay || 12;
+    bulletPause = bulletPause || 280;
 
     // Clear loading state
     listEl.innerHTML = '';
@@ -1584,7 +1956,6 @@ function typeWriterRecommendations(listEl, bullets, charDelay, bulletPause, onDo
             if (charIndex < item.text.length) {
                 currentEl.textContent += item.text.charAt(charIndex);
                 charIndex++;
-                // Auto-scroll into view
                 currentEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
                 setTimeout(typeChar, charDelay);
             } else {
@@ -1600,128 +1971,13 @@ function typeWriterRecommendations(listEl, bullets, charDelay, bulletPause, onDo
 }
 
 function renderPredictorResult(data) {
-    var red = document.getElementById("light-red");
-    var yellow = document.getElementById("light-yellow");
-    var green = document.getElementById("light-green");
-    var vTitle = document.getElementById("predictor-verdict-title");
-    var vDesc = document.getElementById("predictor-verdict-desc");
-    var vFormula = document.getElementById("predictor-formula");
-    var scoreVal = document.getElementById("safety-score-val");
-    var scoreCircle = document.getElementById("safety-score-circle");
-    var recList = document.getElementById("predictor-recommendations-list");
-
-    if (!red || !yellow || !green) return;
-
-    red.className = "light-indicator";
-    yellow.className = "light-indicator";
-    green.className = "light-indicator";
-
-    if (scoreVal) scoreVal.innerText = data.safetyIndex + '%';
-
-    if (scoreCircle) {
-        if (data.trafficLight === 'GREEN') {
-            scoreCircle.style.borderColor = '#1BE035';
-            scoreCircle.style.color = '#0D5E1A';
-        } else if (data.trafficLight === 'YELLOW') {
-            scoreCircle.style.borderColor = '#F5A623';
-            scoreCircle.style.color = '#B36B00';
-        } else {
-            scoreCircle.style.borderColor = '#D44A1A';
-            scoreCircle.style.color = '#8A2000';
-        }
-    }
-
-    if (data.trafficLight === 'RED') {
-        red.classList.add("red-active");
-    } else if (data.trafficLight === 'YELLOW') {
-        yellow.classList.add("yellow-active");
-    } else {
-        green.classList.add("green-active");
-    }
-
-    if (vTitle) vTitle.innerText = data.verdictTitle;
-    if (vDesc) vDesc.innerText = data.verdictDesc;
-
-    if (vFormula && data.metrics) {
-        vFormula.innerText = 'Peak Temp: ' + data.metrics.maxTemp + '°C | Rain Peak: ' + data.metrics.maxDailyRain.toFixed(1) + 'mm | Total Rain: ' + data.metrics.totalForecastRain.toFixed(1) + 'mm';
-    }
-
-    // Factors breakdown
-    if (data.factors) {
-        var tempScore = document.getElementById("factor-temp-score");
-        var tempDesc = document.getElementById("factor-temp-desc");
-        var rainScore = document.getElementById("factor-rain-score");
-        var rainDesc = document.getElementById("factor-rain-desc");
-        var envScore = document.getElementById("factor-env-score");
-        var envDesc = document.getElementById("factor-env-desc");
-
-        if (tempScore) tempScore.innerText = data.factors.temperature.score + '% (' + data.factors.temperature.status + ')';
-        if (tempDesc) tempDesc.innerText = data.factors.temperature.message;
-
-        if (rainScore) rainScore.innerText = data.factors.rainfall.score + '% (' + data.factors.rainfall.status + ')';
-        if (rainDesc) rainDesc.innerText = data.factors.rainfall.message;
-
-        if (envScore) envScore.innerText = data.factors.environment.score + '% (' + data.factors.environment.status + ')';
-        if (envDesc) envDesc.innerText = data.factors.environment.message;
-    }
-
-    // Source note (rendered before typing starts)
-    var srcNote = document.getElementById('predictor-recommendations-source');
-    var isFil = (currentLanguage === 'filipino' || currentLanguage === 'minasbate');
-    if (srcNote) {
-        if (data.recommendations_source === 'gemini') {
-            srcNote.textContent = isFil
-                ? 'Mga tip na tinulungan ng AI — kumpirmahin sa lokal na paghatol.'
-                : 'AI-assisted tips — confirm with local judgment.';
-        } else if (data.recommendations_source === 'static') {
-            srcNote.textContent = isFil
-                ? 'Karaniwang tip (hindi available ang AI).'
-                : 'Standard tips (AI unavailable).';
-        } else {
-            srcNote.textContent = '';
-        }
-    }
-
-    // Recommendations — typewriter effect (chatbot-typing style)
-    if (recList) {
-        var bullets = Array.isArray(data.recommendations) ? data.recommendations : [];
-        typeWriterRecommendations(recList, bullets, 15, 350);
-    }
+    renderPredictorScoreAndFactors(data);
+    renderPredictorRecommendations(data);
 }
 
 function fallbackLocalEvaluation(cropKey) {
-    var crop = cropLimits[cropKey] || cropLimits['Rice'];
-    var maxRain = forecastedRain || 0;
-    var maxTemp = 31;
-    var totalRain = 0;
-
-    if (liveForecast && liveForecast.days) {
-        maxRain = Math.max(...liveForecast.days.map(function(d) { return d.rainfall || 0; }));
-        maxTemp = Math.max(...liveForecast.days.map(function(d) { return d.temp_max || 30; }));
-        totalRain = liveForecast.total_forecast_rain || 0;
-    }
-
-    var isDanger = maxRain > crop.rainLimit || maxTemp > crop.tempMax + 3;
-    var isCaution = totalRain > crop.rainLimit * 0.7 || maxTemp > crop.tempMax;
-    var score = isDanger ? 35 : (isCaution ? 65 : 90);
-    var light = isDanger ? 'RED' : (isCaution ? 'YELLOW' : 'GREEN');
-
-    renderPredictorResult({
-        safetyIndex: score,
-        trafficLight: light,
-        verdictTitle: light === 'RED' ? 'RED: DELAY PLANTING BATCH' : (light === 'YELLOW' ? 'YELLOW: PLANT WITH CAUTION' : 'GREEN: SAFE TO PLANT'),
-        verdictDesc: 'Evaluated using current forecast values for ' + crop.name + '.',
-        metrics: { maxTemp: maxTemp, maxDailyRain: maxRain, totalForecastRain: totalRain },
-        factors: {
-            temperature: { score: maxTemp > crop.tempMax ? 40 : 90, status: maxTemp > crop.tempMax ? 'Caution' : 'Ideal', message: 'Forecast temp: ' + maxTemp + '°C' },
-            rainfall: { score: maxRain > crop.rainLimit ? 30 : 85, status: maxRain > crop.rainLimit ? 'Danger' : 'Ideal', message: 'Forecast rain: ' + maxRain + 'mm' },
-            environment: { score: 90, status: 'Ideal', message: 'No severe alerts active.' }
-        },
-        recommendations: [
-            'Monitor local daily rain forecasts before sowing.',
-            'Ensure drainage canals are cleared in case of rainfall.'
-        ]
-    });
+    var evalResult = computeLocalSafety(cropKey);
+    renderPredictorResult(evalResult);
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -2188,30 +2444,99 @@ function openCropAnalytics(recordId) {
     var modal = document.getElementById('crop-analytics-modal');
     if (!crop || !modal) return;
 
-    var days = calculateDaysGrown(crop.planted);
+    var days = crop.planted ? calculateDaysGrown(crop.planted) : 0;
+    var repoItem = cropDataRepo[crop.crop] || {};
+    var totalDays = repoItem.growthDays || 120;
     var stage = getGrowthStage(crop.crop, days);
+    if (crop.progressPct > 90) { stage = "Harvest Ready"; }
+    if (!crop.planted) { stage = "Soil Preparation"; }
+    
+    var progressPct = crop.planted ? Math.min(100, Math.round((days / (totalDays || 120)) * 100)) : 0;
     var health = computePlotHealth(crop);
-    var advice = cropDataRepo[crop.crop] ? cropDataRepo[crop.crop].advice : 'Keep the plot clear and observe the next weather cycle.';
+    var advice = repoItem.advice || 'Follow regular weeding, moisture monitoring, and field drainage checks.';
+    
+    var plantedDateStr = 'Not planted yet';
+    var harvestEtaStr = 'Soil preparation in progress';
+    if (crop.planted) {
+        var pDate = new Date(crop.planted);
+        plantedDateStr = isNaN(pDate.getTime()) ? crop.planted : pDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        
+        if (totalDays > 0) {
+            var hDate = new Date(pDate.getTime() + totalDays * 24 * 60 * 60 * 1000);
+            var daysRemaining = Math.max(0, totalDays - days);
+            harvestEtaStr = 'Est. Harvest: ' + hDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' (~' + daysRemaining + ' days left)';
+        }
+    }
+
+    var healthDesc = health.label === 'Healthy'
+        ? 'Field and canopy vigor are optimal with negligible weather stress.'
+        : (health.label === 'Attention'
+            ? 'Moderate stress detected. Monitor soil saturation and pest signs.'
+            : 'Elevated weather vulnerability. Prompt field inspection recommended.');
+
+    var idealTempStr = repoItem.idealTemp || '20°C - 35°C';
+    var rainLimitStr = (repoItem.limit && repoItem.limit < 900) ? (repoItem.limit + ' mm/day max') : 'Moderate Rain';
+    var damageStr = crop.damage || '0%';
+    
+    var riskDesc = damageStr.indexOf('High') !== -1 
+        ? 'Heavy rainfall or storm winds may cause waterlogging or crop lodging.'
+        : (damageStr.indexOf('Mild') !== -1 
+            ? 'Mild weather interference detected. Ensure field canals remain open.'
+            : 'Safe field conditions. Weather parameters remain within tolerance.');
+
+    var riskLabel = damageStr.indexOf('High') !== -1 ? '⚠️ High Weather Risk' : (damageStr.indexOf('Mild') !== -1 ? '⚡ Moderate Vulnerability' : '✅ Calm Conditions');
+
     var values = {
-        'analytics-modal-plot': crop.plot,
+        'analytics-modal-plot': crop.plot ? (crop.plot.toUpperCase() + ' · CROP ANALYTICS') : 'PLOT ANALYTICS',
         'analytics-modal-title': crop.crop,
-        'analytics-modal-subtitle': crop.size + ' / planting cycle started ' + new Date(crop.planted).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        'analytics-modal-subtitle': (crop.size || '--') + ' · Planted: ' + plantedDateStr,
+        'analytics-modal-sensitivity': 'Vulnerability: ' + (crop.sensitivity || 'Medium'),
         'analytics-modal-health': health.label.toUpperCase(),
         'analytics-modal-score': health.score === null ? '--' : health.score,
+        'analytics-modal-health-desc': healthDesc,
         'analytics-modal-stage': stage,
-        'analytics-modal-days': 'Day ' + days + ' of current cycle',
-        'analytics-modal-damage': crop.damage,
+        'analytics-modal-days': crop.planted ? ('Day ' + days + ' of ' + totalDays + ' days') : 'Soil Preparation',
+        'analytics-modal-progress-pct': progressPct + '%',
+        'analytics-modal-harvest-eta': harvestEtaStr,
+        'analytics-modal-ideal-temp': idealTempStr,
+        'analytics-modal-rain-limit': rainLimitStr,
+        'analytics-modal-temp-status': 'Recommended vegetative range: ' + idealTempStr,
+        'analytics-modal-damage': damageStr,
+        'analytics-modal-risk-label': riskLabel,
+        'analytics-modal-risk-desc': riskDesc,
         'analytics-modal-advice': advice,
-        'analytics-modal-recommendation': health.label === 'Healthy' ? 'Maintain the current rhythm. Schedule the next canopy check after rainfall.' : 'Inspect drainage and canopy stress before the next field visit.'
+        'analytics-modal-recommendation': health.label === 'Healthy' 
+            ? 'Maintain current rhythm. Ensure soil drainage remains unobstructed.' 
+            : (health.label === 'Attention' 
+                ? 'Moderate weather vulnerability detected. Monitor soil moisture and field drainage.' 
+                : 'Inspect field drainage, canopy stress, and structural exposure before next weather event.')
     };
+
     Object.keys(values).forEach(function (id) {
         var el = document.getElementById(id);
         if (el) el.textContent = values[id];
     });
+
     var scoreBar = document.getElementById('analytics-modal-score-bar');
-    if (scoreBar) scoreBar.style.width = (health.score || 0) + '%';
+    if (scoreBar) scoreBar.style.width = (health.score !== null ? health.score : 0) + '%';
+
+    var stageBar = document.getElementById('analytics-modal-stage-bar');
+    if (stageBar) stageBar.style.width = progressPct + '%';
+
     var healthEl = document.getElementById('analytics-modal-health');
-    if (healthEl) healthEl.className = 'analytics-health ' + health.badgeClass;
+    if (healthEl) healthEl.className = 'analytics-health ' + (health.badgeClass || 'badge-green');
+
+    var damageEl = document.getElementById('analytics-modal-damage');
+    if (damageEl) {
+        damageEl.className = 'stat-value risk-value' + (damageStr.indexOf('High') !== -1 ? ' is-high' : (damageStr.indexOf('Mild') !== -1 ? ' is-mild' : ''));
+    }
+
+    var editBtn = document.getElementById('analytics-modal-edit-btn');
+    if (editBtn) {
+        editBtn.setAttribute('data-record-id', recordId || '');
+        editBtn.style.display = recordId ? 'inline-flex' : 'none';
+    }
+
     modal.classList.add('is-open');
     document.body.style.overflow = 'hidden';
 }
@@ -2222,23 +2547,50 @@ function closeCropAnalytics() {
     document.body.style.overflow = '';
 }
 
-// Delegated click for analytics and Edit buttons (no inline JS)
+// Delegated click for analytics, edit, and close buttons
 document.addEventListener('click', function (e) {
     var analyticsBtn = e.target.closest('.analytics-btn');
     if (analyticsBtn) {
         openCropAnalytics(analyticsBtn.getAttribute('data-analytics-id'));
         return;
     }
+    
+    // Check close triggers (close button, backdrop, or explicit data-analytics-close)
+    var closeAnalyticsBtn = e.target.closest('.analytics-close') || 
+                           e.target.closest('#btn-close-analytics-modal') || 
+                           e.target.closest('[data-analytics-close]');
+    if (closeAnalyticsBtn) {
+        closeCropAnalytics();
+        return;
+    }
+
+    // Modal panel background click
+    var modal = document.getElementById('crop-analytics-modal');
+    if (modal && e.target === modal) {
+        closeCropAnalytics();
+        return;
+    }
+
+    // Edit button inside analytics modal
+    var analyticsEditBtn = e.target.closest('#analytics-modal-edit-btn');
+    if (analyticsEditBtn) {
+        var recId = analyticsEditBtn.getAttribute('data-record-id');
+        closeCropAnalytics();
+        if (recId) openEditModal(recId);
+        return;
+    }
+
+    // General plot edit button
     var btn = e.target.closest('.edit-btn');
-    if (btn) {
+    if (btn && btn.id !== 'analytics-modal-edit-btn') {
         var recordId = btn.getAttribute('data-record-id');
         if (recordId) openEditModal(recordId);
     }
 });
 
-var analyticsModal = document.getElementById('crop-analytics-modal');
 var analyticsClose = document.getElementById('btn-close-analytics-modal');
 if (analyticsClose) analyticsClose.addEventListener('click', closeCropAnalytics);
+var analyticsModal = document.getElementById('crop-analytics-modal');
 if (analyticsModal) analyticsModal.addEventListener('click', function (e) {
     if (e.target === analyticsModal) closeCropAnalytics();
 });
@@ -2847,7 +3199,7 @@ async function loadSatelliteImagery() {
             loadingEl.style.display = 'none';
             errorEl.style.display = 'block';
             errorEl.innerHTML = '<strong>Satellite Data Pending</strong><br>' +
-                (data.message || 'No recent satellite passes over Mandaon, Masbate. Sentinel-2 revisits every 3-5 days. Check back soon.');
+                (data.message || 'No recent satellite passes over DEBESMSCAT, Mandaon. Sentinel-2 revisits every 3-5 days. Check back soon.');
             if (refreshBtn) refreshBtn.disabled = false;
             return;
         }
@@ -2905,7 +3257,7 @@ function renderSatelliteMeta(latest, data) {
         '</div>' +
         '<div class="satellite-meta-item">' +
             '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
-            '<span>Mandaon, Masbate</span>' +
+            '<span>DEBESMSCAT, Mandaon</span>' +
         '</div>';
 }
 

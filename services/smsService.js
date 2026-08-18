@@ -1,5 +1,5 @@
 /**
- * @fileoverview Dummy SMS Service for Project Weather.
+ * @fileoverview SMS Service for AGRIDEB.
  * Sends SMS via a configured endpoint, or stubs it to console if no endpoint is configured.
  */
 

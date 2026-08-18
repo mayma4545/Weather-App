@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Weather — Sign In</title>
+    <title>AGRIDEB — Sign In</title>
     <link rel="stylesheet" href="/css/login.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -106,14 +106,10 @@
             </div>
 
             <div class="brand-mark">
-                <div class="brand-mark__logo">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 21V11"/>
-                        <path d="M12 11C 12 7 8 5 4 5C 4 9 8 11 12 11Z"/>
-                        <path d="M12 9C 12 6 15 4 20 4C 20 7 17 9 12 9Z"/>
-                    </svg>
+                <div class="brand-mark__logo" style="overflow: hidden; padding: 0; background: none;">
+                    <img src="/img/logo.jpg" alt="AGRIDEB Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px; display: block;">
                 </div>
-                <div class="brand-mark__name">Project <span>Weather</span></div>
+                <div class="brand-mark__name">AGRI<span>DEB</span></div>
             </div>
 
             <div class="auth-visual__content">
@@ -162,14 +158,10 @@
         <main class="auth-panel">
             <div class="auth-card">
                 <div class="brand-mobile brand-mark">
-                    <div class="brand-mark__logo">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 21V11"/>
-                            <path d="M12 11C 12 7 8 5 4 5C 4 9 8 11 12 11Z"/>
-                            <path d="M12 9C 12 6 15 4 20 4C 20 7 17 9 12 9Z"/>
-                        </svg>
+                    <div class="brand-mark__logo" style="overflow: hidden; padding: 0; background: none;">
+                        <img src="/img/logo.jpg" alt="AGRIDEB Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px; display: block;">
                     </div>
-                    <div class="brand-mark__name">Project <span>Weather</span></div>
+                    <div class="brand-mark__name">AGRI<span>DEB</span></div>
                 </div>
 
                 <h2 class="auth-title">Welcome back</h2>
@@ -236,7 +228,7 @@
                             <input type="checkbox" name="remember">
                             <span>Remember me</span>
                         </label>
-                        <a href="#" class="text-link">Forgot password?</a>
+                        <button type="button" class="text-link text-link--button" id="forgotPasswordBtn">Forgot password?</button>
                     </div>
 
                     <button type="submit" class="btn-primary" id="loginBtn">
@@ -249,9 +241,47 @@
                     </button>
                 </form>
 
-                <p class="auth-footer">New to Project Weather? <a href="/register">Create an account</a></p>
+                <p class="auth-footer">New to AGRIDEB? <a href="/register">Create an account</a></p>
             </div>
         </main>
+    </div>
+
+    <div class="reset-modal" id="resetModal" aria-hidden="true">
+        <div class="reset-modal__backdrop" data-reset-close></div>
+        <section class="reset-modal__card" role="dialog" aria-modal="true" aria-labelledby="resetTitle">
+            <button type="button" class="reset-modal__close" aria-label="Close password reset" data-reset-close>&times;</button>
+            <div class="reset-modal__badge">Secure account recovery</div>
+            <h2 id="resetTitle">Reset your password</h2>
+            <p class="reset-modal__intro" id="resetIntro">Enter the email linked to your account. We'll send a six-digit verification code.</p>
+            <form id="resetEmailForm" class="reset-form" novalidate>
+                <label for="resetEmail">Email address</label>
+                <input type="email" id="resetEmail" autocomplete="email" placeholder="farmer@field.com" required>
+                <p class="reset-form__message" id="resetEmailMessage" aria-live="polite"></p>
+                <button type="submit" class="btn-primary"><span>Send verification code</span></button>
+            </form>
+            <form id="resetOtpForm" class="reset-form" novalidate hidden>
+                <label for="resetOtp">Verification code</label>
+                <input type="text" id="resetOtp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" required>
+                <p class="reset-form__hint">Your code expires after 10 minutes.</p>
+                <p class="reset-form__message" id="resetOtpMessage" aria-live="polite"></p>
+                <button type="submit" class="btn-primary"><span>Verify code</span></button>
+                <button type="button" class="reset-form__secondary" id="resetStartOver">Use a different email</button>
+            </form>
+            <form id="resetPasswordForm" class="reset-form" novalidate hidden>
+                <label for="resetNewPassword">Create a new password</label>
+                <input type="password" id="resetNewPassword" autocomplete="new-password" placeholder="8+ characters, upper/lowercase and number" required>
+                <label for="resetConfirmPassword">Confirm new password</label>
+                <input type="password" id="resetConfirmPassword" autocomplete="new-password" placeholder="Re-enter your new password" required>
+                <p class="reset-form__message" id="resetPasswordMessage" aria-live="polite"></p>
+                <button type="submit" class="btn-primary"><span>Change password</span></button>
+            </form>
+            <div class="reset-success" id="resetSuccess" hidden role="status">
+                <div class="reset-success__mark">✓</div>
+                <h3>Password changed successfully</h3>
+                <p>You can now sign in using your new password.</p>
+                <button type="button" class="btn-primary" id="resetDone"><span>Back to sign in</span></button>
+            </div>
+        </section>
     </div>
 
     <script>
@@ -269,6 +299,87 @@
                     document.documentElement.setAttribute('data-theme', 'dark');
                     try { localStorage.setItem('pw-theme', 'dark'); } catch (e) {}
                 }
+            });
+        })();
+
+        /* Password reset modal */
+        (function() {
+            var modal = document.getElementById('resetModal');
+            var emailForm = document.getElementById('resetEmailForm');
+            var otpForm = document.getElementById('resetOtpForm');
+            var passwordForm = document.getElementById('resetPasswordForm');
+            var emailInput = document.getElementById('resetEmail');
+            var emailMessage = document.getElementById('resetEmailMessage');
+            var otpMessage = document.getElementById('resetOtpMessage');
+            var passwordMessage = document.getElementById('resetPasswordMessage');
+            var resetSuccess = document.getElementById('resetSuccess');
+            var activeEmail = '';
+            // Kept as an alias while the OTP step owns its submit button.
+            var confirmForm = otpForm;
+
+            function openModal() { modal.classList.add('is-open'); modal.setAttribute('aria-hidden', 'false'); emailInput.focus(); }
+            function closeModal() { modal.classList.remove('is-open'); modal.setAttribute('aria-hidden', 'true'); }
+            function showMessage(element, message, isError) { element.textContent = message; element.classList.toggle('is-error', !!isError); }
+            function resetToEmail() {
+                activeEmail = ''; emailForm.hidden = false; otpForm.hidden = true; passwordForm.hidden = true; resetSuccess.hidden = true;
+                emailMessage.textContent = ''; otpMessage.textContent = ''; passwordMessage.textContent = ''; document.getElementById('resetIntro').textContent = "Enter the email linked to your account. We'll send a six-digit verification code.";
+                emailInput.focus();
+            }
+            document.getElementById('forgotPasswordBtn').addEventListener('click', openModal);
+            document.querySelectorAll('[data-reset-close]').forEach(function(el) { el.addEventListener('click', closeModal); });
+            document.getElementById('resetStartOver').addEventListener('click', resetToEmail);
+            document.getElementById('resetDone').addEventListener('click', function() { closeModal(); resetToEmail(); document.getElementById('password').focus(); });
+            document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal(); });
+
+            passwordForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                var password = document.getElementById('resetNewPassword').value;
+                var confirmation = document.getElementById('resetConfirmPassword').value;
+                if (password !== confirmation) return showMessage(passwordMessage, 'The passwords do not match.', true);
+                var button = passwordForm.querySelector('button[type="submit"]');
+                button.disabled = true;
+                try {
+                    var response = await fetch('/password-reset/confirm', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: activeEmail, password: password }) });
+                    var result = await response.json();
+                    if (!response.ok) throw new Error(result.message);
+                    passwordForm.hidden = true;
+                    resetSuccess.hidden = false;
+                } catch (err) {
+                    showMessage(passwordMessage, err.message || 'Unable to change your password. Please try again.', true);
+                } finally {
+                    button.disabled = false;
+                }
+            });
+
+            emailForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                if (!emailInput.validity.valid) return showMessage(emailMessage, 'Enter a valid email address.', true);
+                var button = emailForm.querySelector('button[type="submit"]'); button.disabled = true; button.querySelector('span').textContent = 'Sending…';
+                try {
+                    var response = await fetch('/password-reset/request', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: emailInput.value.trim() }) });
+                    var result = await response.json();
+                    if (!response.ok) throw new Error(result.message);
+                    activeEmail = emailInput.value.trim(); emailForm.hidden = true; otpForm.hidden = false;
+                    document.getElementById('resetIntro').textContent = 'Check your inbox, then enter the six-digit verification code.';
+                    document.getElementById('resetOtp').focus();
+                } catch (err) { showMessage(emailMessage, err.message || 'Unable to send the code. Please try again.', true); }
+                finally { button.disabled = false; button.querySelector('span').textContent = 'Send verification code'; }
+            });
+
+            otpForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                var otp = document.getElementById('resetOtp').value.replace(/\D/g, '');
+                if (otp.length !== 6) return showMessage(otpMessage, 'Enter the complete 6-digit code.', true);
+                var button = confirmForm.querySelector('button[type="submit"]'); button.disabled = true; button.querySelector('span').textContent = 'Changing password…';
+                try {
+                    var response = await fetch('/password-reset/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: activeEmail, otp_code: otp }) });
+                    var result = await response.json();
+                    if (!response.ok) throw new Error(result.message);
+                    otpForm.hidden = true; passwordForm.hidden = false;
+                    document.getElementById('resetIntro').textContent = 'Your code is verified. Create a strong new password.';
+                    document.getElementById('resetNewPassword').focus();
+                } catch (err) { showMessage(otpMessage, err.message || 'Unable to verify the code. Please try again.', true); }
+                finally { button.disabled = false; button.querySelector('span').textContent = 'Change password'; }
             });
         })();
 

@@ -5,9 +5,9 @@
 
 /* Design Tokens for Digital Repository */
 .digital-repo-container {
-    --repo-accent: #FF5E36;
-    --repo-accent-hover: #E04822;
-    --repo-accent-light: rgba(255, 94, 54, 0.08);
+    --repo-accent: #349954;
+    --repo-accent-hover: #349954;
+    --repo-accent-light: rgba(52, 153, 84, 0.08);
     --repo-bg: #F8F9FA;
     --repo-card-bg: #FFFFFF;
     --repo-text-dark: #1A1D20;
@@ -107,7 +107,7 @@
 .repo-cat-pill.active {
     background: var(--repo-accent);
     color: #FFFFFF;
-    box-shadow: 0 4px 14px rgba(255, 94, 54, 0.35);
+    box-shadow: 0 4px 14px rgba(52, 153, 84, 0.35);
 }
 
 .repo-cat-pill:hover:not(.active) {
@@ -116,7 +116,7 @@
 }
 
 .repo-cat-badge {
-    background: rgba(255, 94, 54, 0.15);
+    background: rgba(52, 153, 84, 0.15);
     color: var(--repo-accent);
     font-size: 11px;
     padding: 2px 7px;
@@ -334,7 +334,7 @@
 
 /* Category card background variations */
 .repo-cat-card.rice {
-    background-image: linear-gradient(135deg, rgba(16, 185, 129, 0.8), rgba(5, 150, 105, 0.8)), url('https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&w=600&q=80');
+    background-image: linear-gradient(135deg, rgba(52, 153, 84, 0.8), rgba(52, 153, 84, 0.8)), url('https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&w=600&q=80');
 }
 .repo-cat-card.corn {
     background-image: linear-gradient(135deg, rgba(245, 158, 11, 0.8), rgba(217, 119, 6, 0.8)), url('https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=600&q=80');
@@ -390,7 +390,7 @@
 .repo-search-input:focus {
     background: #FFFFFF;
     border-color: var(--repo-accent);
-    box-shadow: 0 0 0 3px rgba(255, 94, 54, 0.15);
+    box-shadow: 0 0 0 3px rgba(52, 153, 84, 0.15);
 }
 
 /* Crop Encyclopedia Cards Grid */
@@ -411,7 +411,7 @@
 }
 
 .repo-crop-item-card:hover {
-    border-color: rgba(255, 94, 54, 0.3);
+    border-color: rgba(52, 153, 84, 0.3);
     box-shadow: var(--repo-shadow-card);
     transform: translateY(-2px);
 }
@@ -577,10 +577,10 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #FF5E36, #FF2A00);
+    background: linear-gradient(135deg, #349954, #349954);
     color: #FFFFFF;
     border: 3px solid #FFFFFF;
-    box-shadow: 0 6px 18px rgba(255, 94, 54, 0.45);
+    box-shadow: 0 6px 18px rgba(52, 153, 84, 0.45);
     display: flex;
     align-items: center;
     justify-content: center;

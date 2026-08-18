@@ -48,7 +48,7 @@ async function sendEmail({ to, subject, text, html, attachments }) {
   }
 
   const mailOptions = {
-    from: `"Project Weather Alert" <${process.env.EMAIL_USER}>`,
+    from: `"AGRIDEB Alert" <${process.env.EMAIL_USER}>`,
     to: Array.isArray(to) ? to.join(', ') : to,
     subject: subject,
     text: text,

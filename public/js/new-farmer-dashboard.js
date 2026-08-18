@@ -1,5 +1,10 @@
 // ACTIVE STATE DATABASE (Client-Side State)
-var currentLanguage = 'filipino';
+var currentLanguage = localStorage.getItem('language_pref') || 'filipino';
+
+// Immediately apply translations on DOMContentLoaded to prevent FOUC
+document.addEventListener("DOMContentLoaded", function() {
+    applyTranslations(currentLanguage);
+});
 
 var substringKeys = [
   "Good morning",
@@ -42,14 +47,15 @@ var translations = {
     "Active Fields": "Aktibong mga Bukid",
     "Masbate Region": "Rehiyon ng Masbate",
     "Station ID:": "ID ng Estasyon:",
-    "Status:": "Katayuan:",
-    "CONNECTED": "NAKAKONEKTA",
-    "Project Weather": "Proyektong Panahon",
+    "AGRIDEB": "AGRIDEB",
+    "Project Weather": "AGRIDEB",
     "Detecting Location...": "Inaalam ang Lokasyon...",
     "Active Alerts": "Aktibong Babala",
     "Alerts": "mga Babala",
     "Success": "Tagumpay",
     "Plots": "mga Plot",
+    "Crops": "Mga Pananim",
+    "Profile": "Profile",
 
     // Profile Page
     "My Profile": "Aking Profile",
@@ -246,15 +252,15 @@ var translations = {
     "Logout": "Mag-log Out",
     "Active Fields": "Aktibo na mga Talamnan",
     "Masbate Region": "Rehiyon sang Masbate",
-    "Station ID:": "Estasyon ID:",
-    "Status:": "Estado:",
-    "CONNECTED": "NAKASUMPAY",
-    "Project Weather": "Proyektong Panahon",
+    "AGRIDEB": "AGRIDEB",
+    "Project Weather": "AGRIDEB",
     "Detecting Location...": "Ginalantaw ang Lokasyon...",
     "Active Alerts": "Aktibo na mga Alerto",
     "Alerts": "mga Alerto",
     "Success": "Matam-is na Kauswagan",
     "Plots": "mga Plot",
+    "Crops": "Mga Tanom",
+    "Profile": "Profile",
 
     // Profile Page
     "My Profile": "Akon Profile",
@@ -894,7 +900,7 @@ var activeCrops = [];
                 'Temperature range: <strong>' + minTemp + '\u00B0C \u2014 ' + maxTemp + '\u00B0C</strong><br>' +
                 'Total expected rainfall: <strong>' + totalRain + ' mm</strong><br>' +
                 'Average humidity: <strong>' + avgHumidity + '%</strong><br>' +
-                '<span style="font-size:11px; color:#5A7A90; margin-top:4px; display:inline-block;">Data from OpenWeather API \u00B7 Masbate City, Masbate</span>';
+                '<span style="font-size:11px; color:#5A7A90; margin-top:4px; display:inline-block;">Data from OpenWeather API \u00B7 DEBESMSCAT, Mandaon</span>';
         }
 
         function renderWeatherArchive(forecast) {
@@ -1122,15 +1128,24 @@ var activeCrops = [];
                 const data = await response.json();
                 
                 if (data.user && data.user.full_name) {
-                    var names = data.user.full_name.split(' ');
+                    var names = data.user.full_name.trim().split(/\s+/);
+                    var firstName = data.user.first_name || (names.length > 0 ? names[0] : 'Farmer');
                     var initials = names.map(function(n) { return n[0]; }).join('').substring(0, 2).toUpperCase();
                     document.querySelectorAll('.topbar-right div').forEach(function(el) {
                         if (el.textContent.trim() === 'JR' || el.id === 'user-avatar-initials') {
                             el.textContent = initials;
                             el.id = 'user-avatar-initials';
-                            el.title = data.user.full_name + ' (' + data.user.role + ')';
+                            el.title = data.user.full_name + ' (' + (data.user.role || 'Farmer') + ')';
                         }
                     });
+
+                    // Update greeting in dashboard with actual first name
+                    var pageTitleEl = document.querySelector('#page-dashboard .page-title') || document.querySelector('.page-title');
+                    if (pageTitleEl) {
+                        var baseGreeting = 'Good morning, ' + firstName + '.';
+                        pageTitleEl.textContent = baseGreeting;
+                        pageTitleEl.originalValue = baseGreeting;
+                    }
 
                     // Dynamic Farmer Profile Page Rendering
                     var elAvatarLarge = document.getElementById('profile-avatar-large');
@@ -1152,6 +1167,7 @@ var activeCrops = [];
 
                     // Set user preference language
                     currentLanguage = data.user.language_pref || 'filipino';
+                    localStorage.setItem('language_pref', currentLanguage);
                     var selectLang = document.getElementById('language-select');
                     if (selectLang) {
                         selectLang.value = currentLanguage;
@@ -1510,7 +1526,7 @@ var cropLimits = {
     'Kangkong': { rainLimit: 120, tempMin: 18, tempMax: 38, name: 'Kangkong' }
 };
 
-var selectedPredictorCrop = "Rice";
+var selectedPredictorCrop = null;
 
 function setupCropChipListeners() {
     var chips = document.querySelectorAll(".crop-chip");
@@ -1529,7 +1545,9 @@ function setupCropChipListeners() {
     var sel = document.getElementById("predict-crop-select");
     if (sel) {
         sel.addEventListener("change", function() {
-            selectedPredictorCrop = this.value;
+            var cropKey = this.value;
+            if (!cropKey) return;
+            selectedPredictorCrop = cropKey;
             chips.forEach(function(c) {
                 if (c.getAttribute("data-crop") === selectedPredictorCrop) {
                     c.classList.add("active");
@@ -1554,7 +1572,24 @@ function updatePredictor() {
 
     if (!red || !yellow || !green || !vTitle || !vDesc) return;
 
-    var cropKey = selectedPredictorCrop || "Rice";
+    if (!selectedPredictorCrop) {
+        red.className = "light-indicator";
+        yellow.className = "light-indicator";
+        green.className = "light-indicator";
+
+        if (scoreVal) scoreVal.innerText = '--%';
+        if (scoreCircle) {
+            scoreCircle.style.borderColor = '#C8E6C9';
+            scoreCircle.style.color = '#349954';
+        }
+
+        vTitle.innerText = "Select a Crop to Evaluate";
+        vDesc.innerText = "Click any crop above or choose from dropdown to analyze weather suitability and generate AI recommendations.";
+        if (vFormula) vFormula.innerText = "Awaiting crop selection...";
+        return;
+    }
+
+    var cropKey = selectedPredictorCrop;
     var lang = currentLanguage || 'english';
 
     // Call API for prediction assessment
@@ -1565,7 +1600,7 @@ function updatePredictor() {
     })
     .then(function(res) { return res.json(); })
     .then(function(data) {
-        if (!data || !data.safetyIndex && data.safetyIndex !== 0) return fallbackLocalEvaluation(cropKey);
+        if (!data || (!data.safetyIndex && data.safetyIndex !== 0)) return fallbackLocalEvaluation(cropKey);
         renderPredictorResult(data);
     })
     .catch(function(err) {
@@ -2634,6 +2669,7 @@ async function changeLanguage(selectedLang) {
         
         showToast(selectedLang === 'filipino' ? 'Wika ay na-update!' : (selectedLang === 'minasbate' ? 'Wika na-update!' : 'Language preference updated!'), 'success');
         currentLanguage = selectedLang;
+        localStorage.setItem('language_pref', currentLanguage);
         
         var selectLang = document.getElementById('language-select');
         if (selectLang) selectLang.value = selectedLang;

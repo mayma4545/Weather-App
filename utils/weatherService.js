@@ -9,9 +9,9 @@
 
 const OPENWEATHER_BASE = 'https://api.openweathermap.org/data/2.5';
 
-// Default coordinates: Masbate City, Masbate, Philippines
-const DEFAULT_LAT = process.env.WEATHER_LAT || '12.3703';
-const DEFAULT_LON = process.env.WEATHER_LON || '123.6217';
+// Default coordinates: DEBESMSCAT, Mandaon, Philippines
+const DEFAULT_LAT = process.env.WEATHER_LAT || '12.2275';
+const DEFAULT_LON = process.env.WEATHER_LON || '123.2355';
 
 // ────────────────────────────────────────
 // IN-MEMORY CACHE (10-minute TTL)

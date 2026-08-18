@@ -1,5 +1,5 @@
 /**
- * @fileoverview Notification Scheduler for Project Weather.
+ * @fileoverview Notification Scheduler for AGRIDEB.
  * Uses node-cron to schedule daily weather reports (6 AM) and
  * storm checks (every 5 minutes) with deduplication logic.
  */
@@ -12,7 +12,9 @@ const { sendDailyWeatherReport, checkAndSendStormAlerts } = require('./notificat
 // ────────────────────────────────────────
 
 let dailyJob = null;
+let dailyCatchUpJob = null;
 let stormJob = null;
+let dailyRunInProgress = false;
 
 // Storm alert deduplication state
 let lastStormRiskLevel = 'NONE';
@@ -36,20 +38,43 @@ function startSchedulers() {
 
   // Daily Weather Report — 6:00 AM Manila time
   dailyJob = cron.schedule('0 6 * * *', async () => {
-    const startTime = new Date().toISOString();
-    console.log(`🔔 [Scheduler] Running daily weather report... (started: ${startTime})`);
-    try {
-      const result = await sendDailyWeatherReport();
-      console.log(`✅ [Scheduler] Daily weather report completed. Notified: ${result.usersNotified} users.`);
-    } catch (err) {
-      console.error('❌ [Scheduler] Daily weather report failed:', err.message);
-    }
+    await runDailyWeatherReport('scheduled 6:00 AM run');
   }, {
     scheduled: true,
     timezone: 'Asia/Manila'
   });
 
   console.log('🕐 [Scheduler] Daily weather report cron started (6:00 AM Asia/Manila)');
+
+  // Catch-up check every 5 minutes. If the server was offline at 6:00 AM,
+  // the first check after startup sends the report, while the service is online.
+  dailyCatchUpJob = cron.schedule('*/5 * * * *', async () => {
+    const hourInManila = Number(new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Manila',
+      hour: 'numeric',
+      hour12: false
+    }).format(new Date()));
+
+    if (hourInManila >= 6) {
+      await runDailyWeatherReport('catch-up check');
+    }
+  }, {
+    scheduled: true,
+    timezone: 'Asia/Manila'
+  });
+
+  // Check immediately when the server starts, instead of waiting up to 5 minutes.
+  const currentHourInManila = Number(new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Manila',
+    hour: 'numeric',
+    hour12: false
+  }).format(new Date()));
+  if (currentHourInManila >= 6) {
+    runDailyWeatherReport('startup catch-up check').catch(err => {
+      console.error('❌ [Scheduler] Startup daily report check failed:', err.message);
+    });
+  }
+  console.log('🔁 [Scheduler] Daily catch-up cron started (every 5 minutes after 6:00 AM Manila)');
 
   // Storm Check — Every 5 minutes
   stormJob = cron.schedule('*/5 * * * *', async () => {
@@ -110,10 +135,34 @@ function stopSchedulers() {
     dailyJob = null;
     console.log('🛑 [Scheduler] Daily weather report cron stopped.');
   }
+  if (dailyCatchUpJob) {
+    dailyCatchUpJob.stop();
+    dailyCatchUpJob = null;
+    console.log('🛑 [Scheduler] Daily catch-up cron stopped.');
+  }
   if (stormJob) {
     stormJob.stop();
     stormJob = null;
     console.log('🛑 [Scheduler] Storm check cron stopped.');
+  }
+}
+
+async function runDailyWeatherReport(reason) {
+  if (dailyRunInProgress) {
+    console.log('ℹ️ [Scheduler] Daily weather report is already running; skipping overlapping run.');
+    return;
+  }
+
+  dailyRunInProgress = true;
+  const startTime = new Date().toISOString();
+  console.log(`🔔 [Scheduler] Running daily weather report (${reason})... (started: ${startTime})`);
+  try {
+    const result = await sendDailyWeatherReport();
+    console.log(`✅ [Scheduler] Daily weather report completed. Notified: ${result.usersNotified} users.`);
+  } catch (err) {
+    console.error('❌ [Scheduler] Daily weather report failed:', err.message);
+  } finally {
+    dailyRunInProgress = false;
   }
 }
 
