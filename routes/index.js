@@ -86,21 +86,21 @@ router.post('/register', async (req, res) => {
     const identity_specification = sanitizeInput(req.body.identity_specification) || null;
 
     if (!full_name || !email || !password) {
-      return res.status(400).json({ error: 'Missing required fields.' });
+      return res.json({ success: false, error: 'Missing required fields.' });
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: 'Please provide a valid email address.' });
+      return res.json({ success: false, error: 'Please provide a valid email address.' });
     }
 
     if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/\d/.test(password)) {
-      return res.status(400).json({ error: 'Password does not meet security requirements.' });
+      return res.json({ success: false, error: 'Password does not meet security requirements.' });
     }
 
     const existing = await User.findOne({ where: { email } });
     if (existing) {
-      return res.status(409).json({ error: 'An account with this email already exists.' });
+      return res.json({ success: false, error: 'An account with this email already exists.' });
     }
 
     const password_hash = await bcrypt.hash(password, 10);
@@ -141,23 +141,21 @@ router.post('/register', async (req, res) => {
       </div>
     `;
 
-    try {
-      await sendEmail({
-        to: email,
-        subject: 'AGRIDEB - Your Verification Code (OTP)',
-        text: `Your AGRIDEB verification code is ${otp_code}. It expires in 10 minutes.`,
-        html: htmlEmail
-      });
-    } catch (emailErr) {
+    sendEmail({
+      to: email,
+      subject: 'AGRIDEB - Your Verification Code (OTP)',
+      text: `Your AGRIDEB verification code is ${otp_code}. It expires in 10 minutes.`,
+      html: htmlEmail
+    }).catch((emailErr) => {
       console.warn('⚠️ Could not send OTP email via SMTP. If testing locally without credentials, check console logs.');
       console.log(`🔑 LOCAL/DEBUG OTP CODE FOR ${email}: ${otp_code}`);
-    }
+    });
 
     req.session.pendingVerifyEmail = email;
     res.json({ success: true, redirectUrl: `/verify-otp?email=${encodeURIComponent(email)}` });
   } catch (err) {
     console.error('Registration error:', err);
-    res.status(500).json({ error: 'Registration failed. Please try again.' });
+    res.json({ success: false, error: 'Registration failed. Please try again.' });
   }
 });
 
