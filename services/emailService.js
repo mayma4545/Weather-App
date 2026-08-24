@@ -20,14 +20,19 @@ try {
 
   transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    requireTLS: true,
     auth: {
       user: user,
       pass: pass
     },
-    // Force IPv4 to prevent ENETUNREACH on environments without IPv6 support (like Render free tier)
-    tls: { rejectUnauthorized: false }
+    tls: { 
+      rejectUnauthorized: false 
+    },
+    // Force IPv4 natively at the socket level to prevent ENETUNREACH
+    // (combined with the dns.setDefaultResultOrder at the top)
+    family: 4
   });
 } catch (error) {
   console.error('❌ Failed to initialize email transporter:', error);
