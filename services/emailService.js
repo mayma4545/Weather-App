@@ -1,5 +1,11 @@
 const nodemailer = require('nodemailer');
+const dns = require('dns');
 require('dotenv').config();
+
+// Force IPv4 for DNS resolution to prevent ENETUNREACH on environments (like Render) that lack IPv6 support
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('ipv4first');
+}
 
 // Create transporter lazily or on load
 let transporter;
@@ -13,11 +19,15 @@ try {
   }
 
   transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
       user: user,
       pass: pass
-    }
+    },
+    // Force IPv4 to prevent ENETUNREACH on environments without IPv6 support (like Render free tier)
+    tls: { rejectUnauthorized: false }
   });
 } catch (error) {
   console.error('❌ Failed to initialize email transporter:', error);

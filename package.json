@@ -8,7 +8,8 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "migrate:dev": "node scripts/migrate.js --env=development",
-    "migrate:prod": "node scripts/migrate.js --env=production"
+    "migrate:prod": "node scripts/migrate.js --env=production",
+    "delete-user": "node scripts/delete-user.js"
   },
   "keywords": [],
   "author": "",
