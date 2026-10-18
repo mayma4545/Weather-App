@@ -256,7 +256,7 @@ function generateDiseaseTasks(diseaseRisks, forecastDays) {
   return tasks;
 }
 
-function generateHarvestTasks(gddData, cropName) {
+function generateHarvestTasks(gddData, cropName, forecastDays) {
   const tasks = [];
   if (!gddData || !gddData.remainingDaysToHarvest) return tasks;
 
@@ -411,7 +411,7 @@ function generateTodoList(plotData) {
   allTasks = allTasks.concat(generateIrrigationTasks(irrigation, forecastDays));
   allTasks = allTasks.concat(generateFertilizerTasks(fertilizer));
   allTasks = allTasks.concat(generateDiseaseTasks(diseaseRisk, forecastDays));
-  allTasks = allTasks.concat(generateHarvestTasks(gdd, cropName));
+  allTasks = allTasks.concat(generateHarvestTasks(gdd, cropName, forecastDays));
   allTasks = allTasks.concat(generateGrowthStageTasks(cropName, growthStage, daysGrown, forecastDays));
   allTasks = allTasks.concat(generateGeneralTasks(weatherData, forecastDays, cropName, growthStage, daysGrown, soilType));
 
