@@ -6,7 +6,7 @@
 /**
  * Approximate extraterrestrial radiation (Ra) in mm/day based on latitude and day of year.
  * @param {number} dayOfYear - 1 to 365
- * @param {number} latitude - Latitude in degrees (default 12.2275 for DEBESMSCAT, Mandaon)
+ * @param {number} latitude - Latitude in degrees (default 12.2275 for DEBESMSCAT, Cabitan)
  * @returns {number} Ra in mm/day equivalent evaporation
  */
 function estimateRa(dayOfYear, latitude = 12.2275) {

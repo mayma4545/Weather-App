@@ -1,7 +1,7 @@
 const BASE_URL = 'http://api.agromonitoring.com/agro/1.0';
 
-const MANDAON_POLYGON = {
-  name: 'Mandaon Agricultural Zone - Masbate',
+const CABITAN_POLYGON = {
+  name: 'Cabitan Agricultural Zone - Masbate',
   geo_json: {
     type: 'Feature',
     properties: {},
@@ -40,7 +40,7 @@ async function getOrCreatePolygon() {
     const listRes = await fetch(`${BASE_URL}/polygons?appid=${appId}`);
     if (listRes.ok) {
       const polygons = await listRes.json();
-      const existing = polygons.find(p => p.name === MANDAON_POLYGON.name);
+      const existing = polygons.find(p => p.name === CABITAN_POLYGON.name);
       if (existing) {
         cachedPolygonId = existing.id;
         return cachedPolygonId;
@@ -53,7 +53,7 @@ async function getOrCreatePolygon() {
   const createRes = await fetch(`${BASE_URL}/polygons?appid=${appId}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(MANDAON_POLYGON)
+    body: JSON.stringify(CABITAN_POLYGON)
   });
 
   if (!createRes.ok) {
@@ -152,5 +152,5 @@ module.exports = {
   fetchImageBuffer,
   fetchStats,
   assessVegetationHealth,
-  MANDAON_POLYGON
+  CABITAN_POLYGON
 };

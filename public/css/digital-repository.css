@@ -24,7 +24,6 @@
     color: var(--repo-text-dark);
     max-width: 1200px;
     margin: 0 auto;
-    padding-bottom: 90px; /* Space for floating bottom bar on mobile */
 }
 
 /* --- Header Section --- */
@@ -271,7 +270,7 @@
 
 .repo-2x2-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 14px;
 }
 
@@ -611,6 +610,10 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
     }
+    
+    .repo-2x2-grid > :last-child {
+        grid-column: 1 / -1;
+    }
 
     .repo-cat-card {
         height: 115px;
@@ -639,10 +642,5 @@
     .repo-ency-card-container {
         border-radius: 18px;
         padding: 16px;
-    }
-
-    /* Hide default fixed bottom navbar if present on mobile so our floating bar displays cleanly */
-    #bottomNav, .bottom-nav {
-        display: none !important;
     }
 }

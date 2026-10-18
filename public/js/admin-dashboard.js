@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'crop-repository': 'page-crop-repository',
         'digital-repository': 'page-digital-repository',
         'weather-monitor': 'page-weather-monitor',
-        'global-alerts': 'page-global-alerts'
+        'global-alerts': 'page-global-alerts',
+        'registered-users': 'page-registered-users'
     };
 
     function navigateTo(pageName) {
@@ -92,9 +93,9 @@ document.addEventListener('DOMContentLoaded', () => {
         switch (pageName) {
             case 'dashboard': loadDashboard(); break;
             case 'crop-repository': loadCrops(); break;
-            case 'digital-repository': loadTrivia(); break;
             case 'weather-monitor': loadWeatherLogs(); break;
             case 'global-alerts': loadAlerts(); break;
+            case 'registered-users': loadRegisteredUsers(); break;
         }
     }
 
@@ -106,6 +107,44 @@ document.addEventListener('DOMContentLoaded', () => {
         return String(s).replace(/[&<>"']/g, c => ({
             '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
         }[c]));
+    }
+
+    function showConfirm(title, message, confirmText, isDanger, onConfirm) {
+        const modal = document.getElementById('confirmModal');
+        if (!modal) {
+            if (confirm(message)) onConfirm();
+            return;
+        }
+        document.getElementById('confirm-title').textContent = title;
+        document.getElementById('confirm-message').textContent = message;
+        
+        let btnOk = document.getElementById('confirm-btn-ok');
+        btnOk.textContent = confirmText;
+        if (isDanger) {
+            btnOk.style.background = '#DC2626';
+            btnOk.style.borderColor = '#DC2626';
+        } else {
+            btnOk.style.background = 'var(--admin-primary)';
+            btnOk.style.borderColor = 'var(--admin-primary)';
+        }
+
+        const newBtnOk = btnOk.cloneNode(true);
+        btnOk.parentNode.replaceChild(newBtnOk, btnOk);
+        
+        const btnCancel = document.getElementById('confirm-btn-cancel');
+        const newBtnCancel = btnCancel.cloneNode(true);
+        btnCancel.parentNode.replaceChild(newBtnCancel, btnCancel);
+
+        modal.classList.add('open');
+
+        newBtnOk.addEventListener('click', () => {
+            modal.classList.remove('open');
+            onConfirm();
+        });
+
+        newBtnCancel.addEventListener('click', () => {
+            modal.classList.remove('open');
+        });
     }
 
     // Crop emoji heuristic for visual variety
@@ -132,6 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // PAGE 1: DASHBOARD
     // ==========================================
+    let dashboardPollingInterval = null;
+
     async function loadDashboard() {
         try {
             const res = await fetch('/api/admin/stats');
@@ -163,6 +204,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 lastLog.textContent = data.apiDetail || (data.lastLogTime ? 'Last data: ' + new Date(data.lastLogTime).toLocaleString() : 'No recent data');
             }
 
+            // Real-Time Live Weather Card
+            if (data.recentLogs && data.recentLogs.length > 0) {
+                const latest = data.recentLogs[0];
+                document.getElementById('lw-time').textContent = 'Last updated: ' + new Date(latest.timestamp).toLocaleTimeString();
+                document.getElementById('lw-temp').textContent = parseFloat(latest.temperature).toFixed(1) + '°C';
+                document.getElementById('lw-hum').textContent = parseFloat(latest.humidity).toFixed(0) + '%';
+                document.getElementById('lw-wind').textContent = parseFloat(latest.wind_speed || 0).toFixed(1) + ' m/s';
+                document.getElementById('lw-rain').textContent = parseFloat(latest.rainfall || 0).toFixed(1) + ' mm';
+            }
+
             // Recent logs as activity rows
             const logsEl = document.getElementById('dash-recent-logs');
             if (data.recentLogs && data.recentLogs.length > 0) {
@@ -188,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="activity-row">
                             <div class="ar-main">
                                 <div class="ar-msg">${esc(msg)}</div>
-                                <div class="ar-time">${new Date(a.created_at).toLocaleDateString()}</div>
+                                <div class="ar-time">${new Date(a.createdAt || a.created_at).toLocaleDateString()}</div>
                             </div>
                         </div>
                     `;
@@ -200,6 +251,15 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) {
             console.error('Dashboard load error:', err);
         }
+    }
+
+    // Initialize polling
+    if (!dashboardPollingInterval) {
+        dashboardPollingInterval = setInterval(() => {
+            if (document.getElementById('page-dashboard').classList.contains('active')) {
+                loadDashboard();
+            }
+        }, 5000);
     }
 
     // ==========================================
@@ -295,6 +355,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                         </div>
                         <div class="cc-actions">
+                            <button class="icon-btn btn-trivias-crop" data-id="${c.crop_id}" data-name="${esc(c.crop_name)}" aria-label="Trivias for ${esc(c.crop_name)}" title="Manage Trivias" style="color: var(--admin-primary);">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            </button>
                             <button class="icon-btn btn-edit-crop" data-id="${c.crop_id}" aria-label="Edit ${esc(c.crop_name)}" title="Edit">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                             </button>
@@ -345,6 +408,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const id = parseInt(btn.dataset.id);
                 const name = btn.dataset.name;
                 deleteCrop(id, name);
+            });
+        });
+        grid.querySelectorAll('.btn-trivias-crop').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const name = btn.dataset.name;
+                if (window.openTriviaModal) {
+                    window.openTriviaModal(name);
+                }
             });
         });
 
@@ -585,10 +656,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const submitBtn = cropForm.querySelector('button[type="submit"]');
-            const origText = submitBtn ? submitBtn.textContent : 'Save Crop';
+            const origHTML = submitBtn ? submitBtn.innerHTML : 'Save Crop';
             if (submitBtn) {
                 submitBtn.disabled = true;
-                submitBtn.textContent = 'Uploading & Saving...';
+                submitBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin" style="margin-right:8px;"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Saving...`;
             }
 
             let res;
@@ -606,7 +677,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (submitBtn) {
                 submitBtn.disabled = false;
-                submitBtn.textContent = origText;
+                submitBtn.innerHTML = origHTML;
             }
 
             if (res.ok) {
@@ -627,115 +698,237 @@ document.addEventListener('DOMContentLoaded', () => {
         if (crop) openCropModal(crop);
     }
 
-    async function deleteCrop(id, name) {
-        if (!confirm('Delete "' + name + '" from the crop repository?')) return;
-        try {
-            const res = await fetch('/api/admin/crops/' + id, { method: 'DELETE' });
-            if (res.ok) {
-                showToast('Crop deleted.');
-                loadCrops();
-            } else {
-                showToast('Failed to delete crop.');
-            }
-        } catch (err) {
-            showToast('Network error.');
-        }
-    }
-
-    // ==========================================
-    // PAGE 3: DIGITAL REPOSITORY (TRIVIA)
-    // ==========================================
-    async function loadTrivia() {
-        if (allCrops.length === 0) {
+    function deleteCrop(id, name) {
+        showConfirm('Delete Crop', `Are you sure you want to delete "${name}" from the repository?`, 'Delete', true, async () => {
+            const btn = document.querySelector(`.btn-delete-crop[data-id="${id}"]`);
+            if (btn) btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg>`;
+            
             try {
-                const res = await fetch('/api/crops');
-                allCrops = await res.json();
-                populateCropSelectors();
-            } catch (e) {}
-        }
-
-        try {
-            const res = await fetch('/api/admin/trivia');
-            const trivia = await res.json();
-            const feed = document.getElementById('trivia-feed');
-
-            if (trivia.length === 0) {
-                feed.innerHTML = `<div class="empty-state">
-                    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#9A9790" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                    <p>No trivia published yet.<br>Write your first tip above!</p>
-                </div>`;
-                return;
+                const res = await fetch('/api/admin/crops/' + id, { method: 'DELETE' });
+                if (res.ok) {
+                    showToast('Crop successfully deleted.');
+                    loadCrops();
+                } else {
+                    showToast('Failed to delete crop.');
+                    if (btn) btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>`;
+                }
+            } catch (err) {
+                showToast('Network error.');
+                if (btn) btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>`;
             }
-
-            feed.innerHTML = trivia.map(t => {
-                const isGeneral = !t.crop_tag || t.crop_tag === 'General';
-                return `
-                    <div class="trivia-item">
-                        <button class="trivia-delete btn-delete-trivia" data-id="${t.trivia_id}" title="Delete" aria-label="Delete trivia">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
-                        </button>
-                        <div class="trivia-tag-row">
-                            <span class="trivia-tag ${isGeneral ? 'general' : ''}">${esc(t.crop_tag || 'General')}</span>
-                            <span class="trivia-date">${new Date(t.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                        </div>
-                        <div class="trivia-content">${esc(t.content)}</div>
-                    </div>
-                `;
-            }).join('');
-
-            feed.querySelectorAll('.btn-delete-trivia').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const id = parseInt(btn.dataset.id);
-                    deleteTrivia(id);
-                });
-            });
-        } catch (err) {
-            console.error('Load trivia error:', err);
-        }
+        });
     }
 
-    const btnPublish = document.getElementById('btn-publish-trivia');
-    if (btnPublish) {
-        btnPublish.addEventListener('click', async () => {
-            const content = document.getElementById('trivia-content').value.trim();
-            const cropTag = document.getElementById('trivia-crop-tag').value;
+    // ==========================================
+    // TRIVIA MODAL LOGIC
+    // ==========================================
+    const triviaModal = document.getElementById('triviaModal');
+    const triviaModalClose = document.getElementById('triviaModalClose');
+    const btnAddTriviaMode = document.getElementById('btn-add-trivia-mode');
+    const addTriviaFormContainer = document.getElementById('add-trivia-form-container');
+    const btnCancelTrivia = document.getElementById('btn-cancel-trivia');
+    const btnSaveTrivia = document.getElementById('btn-save-trivia');
+    const newTriviaContent = document.getElementById('new-trivia-content');
+    const triviaSearchInput = document.getElementById('trivia-search-input');
+    
+    const triviaFormTitle = document.getElementById('trivia-form-title');
+    const triviaEditId = document.getElementById('trivia-edit-id');
+    
+    let currentTriviaCropName = '';
+    let allTrivias = [];
+    let triviaCurrentPage = 1;
+    const TRIVIAS_PER_PAGE = 5;
 
+    window.openTriviaModal = function(cropName) {
+        currentTriviaCropName = cropName;
+        document.getElementById('trivia-crop-name').textContent = cropName;
+        if(triviaSearchInput) triviaSearchInput.value = '';
+        if(addTriviaFormContainer) addTriviaFormContainer.style.display = 'none';
+        triviaCurrentPage = 1;
+        if(triviaModal) triviaModal.classList.add('open');
+        fetchAndRenderTrivias();
+    };
+
+    if (triviaModalClose) triviaModalClose.addEventListener('click', () => triviaModal.classList.remove('open'));
+    if (triviaModal) triviaModal.addEventListener('click', (e) => {
+        if (e.target === triviaModal) triviaModal.classList.remove('open');
+    });
+
+    if (btnAddTriviaMode) {
+        btnAddTriviaMode.addEventListener('click', () => {
+            if(triviaFormTitle) triviaFormTitle.textContent = 'Publish New Trivia';
+            if(triviaEditId) triviaEditId.value = '';
+            newTriviaContent.value = '';
+            addTriviaFormContainer.style.display = 'block';
+        });
+    }
+
+    if (btnCancelTrivia) {
+        btnCancelTrivia.addEventListener('click', () => {
+            addTriviaFormContainer.style.display = 'none';
+        });
+    }
+
+    if (btnSaveTrivia) {
+        btnSaveTrivia.addEventListener('click', async () => {
+            const content = newTriviaContent.value.trim();
+            const editId = triviaEditId ? triviaEditId.value : '';
             if (!content) {
                 showToast('Please write some content first.');
                 return;
             }
 
+            const origText = btnSaveTrivia.textContent;
+            btnSaveTrivia.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin" style="margin-right:6px;"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Saving...`;
+            btnSaveTrivia.disabled = true;
+
             try {
-                const res = await fetch('/api/admin/trivia', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ content, crop_tag: cropTag })
-                });
+                let res;
+                if (editId) {
+                    res = await fetch('/api/admin/trivia/' + editId, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ content, crop_tag: currentTriviaCropName })
+                    });
+                } else {
+                    res = await fetch('/api/admin/trivia', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ content, crop_tag: currentTriviaCropName })
+                    });
+                }
 
                 if (res.ok) {
-                    showToast('Trivia published to all farmers.');
-                    document.getElementById('trivia-content').value = '';
-                    document.getElementById('trivia-crop-tag').value = 'General';
-                    loadTrivia();
+                    showToast(editId ? 'Trivia updated successfully.' : 'Trivia added successfully.');
+                    addTriviaFormContainer.style.display = 'none';
+                    fetchAndRenderTrivias();
                 } else {
-                    showToast('Failed to publish trivia.');
+                    showToast('Failed to save trivia.');
                 }
             } catch (err) {
                 showToast('Network error.');
+            } finally {
+                btnSaveTrivia.innerHTML = origText;
+                btnSaveTrivia.disabled = false;
             }
         });
     }
 
-    async function deleteTrivia(id) {
-        if (!confirm('Delete this trivia entry?')) return;
+    if (triviaSearchInput) {
+        triviaSearchInput.addEventListener('input', () => {
+            triviaCurrentPage = 1;
+            renderTrivias();
+        });
+    }
+
+    async function fetchAndRenderTrivias() {
         try {
-            const res = await fetch('/api/admin/trivia/' + id, { method: 'DELETE' });
-            if (res.ok) {
-                showToast('Trivia entry deleted.');
-                loadTrivia();
-            }
+            const res = await fetch('/api/admin/trivia');
+            const data = await res.json();
+            // Filter only for the current crop
+            allTrivias = data.filter(t => t.crop_tag === currentTriviaCropName);
+            renderTrivias();
         } catch (err) {
-            showToast('Network error.');
+            console.error('Failed to fetch trivias', err);
+        }
+    }
+
+    function renderTrivias() {
+        const list = document.getElementById('trivia-list');
+        if(!list) return;
+        const q = triviaSearchInput.value.toLowerCase();
+        
+        const filtered = allTrivias.filter(t => t.content.toLowerCase().includes(q));
+        const totalPages = Math.max(1, Math.ceil(filtered.length / TRIVIAS_PER_PAGE));
+        if (triviaCurrentPage > totalPages) triviaCurrentPage = totalPages;
+        
+        const startIdx = (triviaCurrentPage - 1) * TRIVIAS_PER_PAGE;
+        const pageItems = filtered.slice(startIdx, startIdx + TRIVIAS_PER_PAGE);
+
+        if (filtered.length === 0) {
+            list.innerHTML = `<div class="empty-state" style="padding: 40px;"><p>No trivias found.</p></div>`;
+        } else {
+            list.innerHTML = pageItems.map(t => `
+                <div class="modern-trivia-card">
+                    <div class="mtc-main">
+                        <div class="mtc-content">${esc(t.content)}</div>
+                        <div class="mtc-meta">
+                            <span class="mtc-date">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                ${new Date(t.createdAt || t.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mtc-actions">
+                        <button class="icon-btn btn-edit-trivia" data-id="${t.trivia_id}" title="Edit">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="icon-btn danger btn-del-trivia" data-id="${t.trivia_id}" title="Delete">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            list.querySelectorAll('.btn-edit-trivia').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.dataset.id;
+                    const trivia = allTrivias.find(t => t.trivia_id == id);
+                    if (trivia) {
+                        if(triviaFormTitle) triviaFormTitle.textContent = 'Edit Trivia';
+                        if(triviaEditId) triviaEditId.value = id;
+                        newTriviaContent.value = trivia.content;
+                        addTriviaFormContainer.style.display = 'block';
+                    }
+                });
+            });
+
+            list.querySelectorAll('.btn-del-trivia').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.dataset.id;
+                    showConfirm('Delete Trivia', 'Are you sure you want to delete this trivia?', 'Delete', true, async () => {
+                        const origHTML = btn.innerHTML;
+                        btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg>`;
+                        btn.disabled = true;
+                        
+                        try {
+                            const res = await fetch('/api/admin/trivia/' + id, { method: 'DELETE' });
+                            if (res.ok) {
+                                showToast('Trivia deleted.');
+                                fetchAndRenderTrivias();
+                            } else {
+                                showToast('Failed to delete trivia.');
+                                btn.innerHTML = origHTML;
+                                btn.disabled = false;
+                            }
+                        } catch (err) {
+                            showToast('Network error.');
+                            btn.innerHTML = origHTML;
+                            btn.disabled = false;
+                        }
+                    });
+                });
+            });
+        }
+        renderTriviaPagination(totalPages);
+    }
+
+    function renderTriviaPagination(totalPages) {
+        const nav = document.getElementById('trivia-pagination');
+        if(!nav) return;
+        nav.innerHTML = '';
+        if (totalPages <= 1) return;
+
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            const active = i === triviaCurrentPage;
+            btn.style.cssText = `padding: 4px 10px; border: 1px solid ${active ? 'var(--admin-primary)' : '#D4D2CA'}; border-radius: 4px; background: ${active ? 'var(--admin-primary)' : '#fff'}; color: ${active ? '#fff' : '#1C1B16'}; cursor: pointer; font-size: 13px; font-weight: 600;`;
+            btn.addEventListener('click', () => {
+                triviaCurrentPage = i;
+                renderTrivias();
+            });
+            nav.appendChild(btn);
         }
     }
 
@@ -765,55 +958,62 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            list.innerHTML = logs.map(l => {
+            // Group by date
+            const grouped = {};
+            logs.forEach(l => {
                 const d = new Date(l.timestamp);
-                const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                const timeStr = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                const dateKey = d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+                if (!grouped[dateKey]) grouped[dateKey] = [];
+                grouped[dateKey].push(l);
+            });
 
-                const temp = parseFloat(l.temperature);
-                const humidity = parseFloat(l.humidity);
-                const wind = parseFloat(l.wind_speed);
-                const rainfall = parseFloat(l.rainfall);
-                const isAnomalous = rainfall > 100;
+            list.innerHTML = Object.keys(grouped).map(dateKey => {
+                const dayLogs = grouped[dateKey];
+                
+                const cardsHtml = dayLogs.map(l => {
+                    const d = new Date(l.timestamp);
+                    const timeStr = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                    
+                    const temp = parseFloat(l.temperature);
+                    const humidity = parseFloat(l.humidity);
+                    const wind = parseFloat(l.wind_speed);
+                    const rainfall = parseFloat(l.rainfall);
+                    const isAnomalous = rainfall > 100;
+                    
+                    let iconHtml = '';
+                    if (rainfall > 0) {
+                        iconHtml = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0EA5E9" stroke-width="2"><path d="M20 16.58A5 5 0 0018 7h-1.26A8 8 0 104 15.25"/><line x1="8" y1="19" x2="8" y2="21"/><line x1="12" y1="19" x2="12" y2="21"/><line x1="16" y1="19" x2="16" y2="21"/></svg>`;
+                    } else if (temp > 32) {
+                        iconHtml = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+                    } else {
+                        iconHtml = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>`;
+                    }
+
+                    return `
+                        <div class="wt-card${isAnomalous ? ' anomalous' : ''}">
+                            <div class="wt-time">${timeStr}</div>
+                            <div class="wt-icon">${iconHtml}</div>
+                            <div class="wt-temp">${temp.toFixed(1)}°</div>
+                            
+                            <div class="wt-metrics-mini">
+                                <div><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg> ${humidity.toFixed(0)}%</div>
+                                <div><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1014 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2"/></svg> ${wind.toFixed(1)} km/h</div>
+                                <div class="${isAnomalous ? 'anomaly' : ''}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg> ${rainfall.toFixed(1)} mm</div>
+                            </div>
+                            
+                            <div class="wt-source"><span class="source-badge ${l.data_source.toLowerCase()}">${esc(l.data_source)}</span></div>
+                        </div>
+                    `;
+                }).join('');
 
                 return `
-                    <div class="weather-log${isAnomalous ? ' anomalous' : ''}">
-                        <div class="wl-time">
-                            <span class="wl-date">${dateStr}</span>
-                            <span class="wl-clock">${timeStr}</span>
+                    <div class="weather-timeline-group">
+                        <div class="wt-date-heading">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            ${dateKey}
                         </div>
-                        <div class="wl-metrics">
-                            <div class="wl-metric">
-                                <span class="wlm-label">
-                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M14 14.76V3.5a2.5 2.5 0 00-5 0v11.26a4.5 4.5 0 105 0z"/></svg>
-                                    Temp
-                                </span>
-                                <span class="wlm-value">${temp.toFixed(1)}<span class="wlm-unit">°C</span></span>
-                            </div>
-                            <div class="wl-metric">
-                                <span class="wlm-label">
-                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
-                                    Humidity
-                                </span>
-                                <span class="wlm-value">${humidity.toFixed(0)}<span class="wlm-unit">%</span></span>
-                            </div>
-                            <div class="wl-metric">
-                                <span class="wlm-label">
-                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1014 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2"/></svg>
-                                    Wind
-                                </span>
-                                <span class="wlm-value">${wind.toFixed(1)}<span class="wlm-unit">km/h</span></span>
-                            </div>
-                            <div class="wl-metric">
-                                <span class="wlm-label">
-                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
-                                    Rainfall
-                                </span>
-                                <span class="wlm-value${isAnomalous ? ' anomaly' : ''}">${rainfall.toFixed(1)}<span class="wlm-unit">mm</span>${isAnomalous ? '<span class="wl-anomaly-flag">⚠ High</span>' : ''}</span>
-                            </div>
-                        </div>
-                        <div class="wl-source">
-                            <span class="source-badge ${l.data_source.toLowerCase()}">${esc(l.data_source)}</span>
+                        <div class="wt-scroll-track">
+                            ${cardsHtml}
                         </div>
                     </div>
                 `;
@@ -1115,6 +1315,128 @@ document.addEventListener('DOMContentLoaded', () => {
                     loadingModal.classList.remove('open');
                 }
             }
+        });
+    }
+
+    // ==========================================
+    // PAGE 6: REGISTERED USERS
+    // ==========================================
+    let allUsersData = [];
+    let currentFilter = 'all';
+    
+    async function loadRegisteredUsers() {
+        const grid = document.getElementById('user-grid');
+        grid.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><p>Loading users...</p></div>';
+        
+        try {
+            const res = await fetch('/api/admin/registered-users');
+            const data = await res.json();
+            allUsersData = data.users || [];
+            document.getElementById('total-users-count').textContent = allUsersData.length;
+            renderUsers();
+        } catch (err) {
+            console.error('Error fetching users:', err);
+            grid.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><p>Failed to load users.</p></div>';
+        }
+    }
+
+    function renderUsers() {
+        const grid = document.getElementById('user-grid');
+        const searchVal = (document.getElementById('user-search-input')?.value || '').toLowerCase();
+        
+        let filtered = allUsersData.filter(u => {
+            if (currentFilter !== 'all' && u.identity_type !== currentFilter) return false;
+            
+            if (searchVal) {
+                const searchStr = `${u.full_name} ${u.email} ${u.contact_number}`.toLowerCase();
+                if (!searchStr.includes(searchVal)) return false;
+            }
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            grid.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><p>No users found matching criteria.</p></div>';
+            return;
+        }
+
+        grid.innerHTML = filtered.map(u => {
+            const initials = u.full_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            const badgeClass = u.identity_type ? u.identity_type.toLowerCase() : 'farmer';
+            
+            let cropsHtml = '';
+            if (u.activeCrops && u.activeCrops.length > 0) {
+                cropsHtml = `<div class="uc-crops">
+                    ${u.activeCrops.map(c => `<span class="uc-crop-tag">${esc(c)}</span>`).join('')}
+                </div>`;
+            } else if (u.totalPlots > 0) {
+                cropsHtml = `<div class="uc-crops"><span class="uc-crop-tag" style="background:#f1f5f9; color:#64748b; border-color:#cbd5e1;">Fallow / Preparing</span></div>`;
+            }
+            
+            let dateStr = 'Unknown';
+            if (u.created_at) {
+                dateStr = new Date(u.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            }
+
+            return `
+                <div class="user-card">
+                    <div class="uc-header">
+                        <div class="uc-avatar">${initials}</div>
+                        <div class="uc-info">
+                            <div class="uc-name" title="${esc(u.full_name)}">${esc(u.full_name)}</div>
+                            <div class="uc-type-badge ${badgeClass}">${esc(u.identity_type || 'Farmer')}</div>
+                            ${u.identity_specification ? `<div style="font-size:11px; color:#64748b; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${esc(u.identity_specification)}">${esc(u.identity_specification)}</div>` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="uc-contact">
+                        <div class="uc-contact-row">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            <span style="overflow:hidden; text-overflow:ellipsis;">${esc(u.email)}</span>
+                        </div>
+                        ${u.contact_number ? `
+                        <div class="uc-contact-row">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                            <span>${esc(u.contact_number)}</span>
+                        </div>` : ''}
+                    </div>
+
+                    ${u.role !== 'Admin' && u.identity_type !== 'Admin' ? `
+                    <div class="uc-stats">
+                        <div class="uc-stat-item">
+                            <div class="uc-stat-val">${u.totalPlots}</div>
+                            <div class="uc-stat-label">Plots</div>
+                        </div>
+                        <div class="uc-stat-item">
+                            <div class="uc-stat-val">${u.totalArea}</div>
+                            <div class="uc-stat-label">Ha Area</div>
+                        </div>
+                    </div>
+                    ${cropsHtml}
+                    ` : '<div style="flex:1;"></div>'}
+                    
+                    <div class="uc-footer">
+                        Joined ${dateStr}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Filter Buttons
+    document.querySelectorAll('.user-filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.user-filter-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            currentFilter = e.target.getAttribute('data-filter');
+            renderUsers();
+        });
+    });
+
+    // Search Input
+    const userSearchInput = document.getElementById('user-search-input');
+    if (userSearchInput) {
+        userSearchInput.addEventListener('input', () => {
+            renderUsers();
         });
     }
 

@@ -52,8 +52,8 @@ var translations = {
     "Profile Page": "Pahina ng Profile",
     "Logout": "Mag-log Out",
     "Active Fields": "Aktibong mga Bukid",
-    "DEBESMSCAT Mandaon": "DEBESMSCAT Mandaon",
-    "Masbate Region": "DEBESMSCAT Mandaon",
+    "DEBESMSCAT Cabitan": "DEBESMSCAT Cabitan",
+    "Masbate Region": "DEBESMSCAT Cabitan",
     "Station ID:": "ID ng Estasyon:",
     "Status:": "Katayuan:",
     "AGRIDEB": "AGRIDEB",
@@ -130,9 +130,18 @@ var translations = {
     "To-Do List": "Darating na Iskedyul",
     "Tasks for the next 7 days": "Mga gawain para sa susunod na 7 araw",
     "Rainfall Trend (mm)": "Trend ng Ulan (mm)",
+    "Today by Time": "Ngayong Araw Kada Oras",
+    "5-Day Outlook": "5-Araw na Ulat",
+    "Rainfall by Time (mm)": "Ulan Kada Oras (mm)",
+    "5-Day Rainfall Trend (mm)": "5-Araw na Trend ng Ulan (mm)",
+    "Loading time-by-time forecast...": "Naglo-load ng oras-oras na ulat...",
     "Loading forecast...": "Naglo-load ng forecast...",
     "Loading rainfall data...": "Naglo-load ng data ng ulan...",
     "Select plot...": "Pumili ng plot...",
+    "No plots available — Add a plot in Crop Management": "Walang magagamit na plot — Magdagdag ng plot sa Pamamahala ng Pananim",
+    "No plots found. Please": "Walang nahanap na plot. Mangyaring",
+    "add a plot in Crop Management": "magdagdag ng plot sa Pamamahala ng Pananim",
+    "first.": "muna.",
     "Select crop...": "Pumili ng pananim...",
     "Select an active plot to load agronomic models...": "Pumili ng aktibong plot para mag-load ng mga agronomic model...",
     "Farm Advice": "Katalinuhang Agronomiko",
@@ -193,12 +202,12 @@ var translations = {
     // Digital Repository Page
     "Digital Repository": "Digital na Imbakan",
     "Digital Repository & Agropedia": "Digital na Imbakan at Agropedia",
-    "Central agricultural knowledge, crop vulnerabilities, and DEBESMSCAT & Mandaon region trivia.": "Pangunahing kaalaman sa agrikultura, mga kahinaan ng pananim, at trivia sa DEBESMSCAT at Mandaon.",
-    "Central agricultural knowledge, crop vulnerabilities, and Masbate region trivia.": "Pangunahing kaalaman sa agrikultura, mga kahinaan ng pananim, at trivia sa DEBESMSCAT at Mandaon.",
+    "Central agricultural knowledge, crop vulnerabilities, and DEBESMSCAT & Cabitan region trivia.": "Pangunahing kaalaman sa agrikultura, mga kahinaan ng pananim, at trivia sa DEBESMSCAT at Cabitan.",
+    "Central agricultural knowledge, crop vulnerabilities, and Masbate region trivia.": "Pangunahing kaalaman sa agrikultura, mga kahinaan ng pananim, at trivia sa DEBESMSCAT at Cabitan.",
     "Agropedia Knowledge Base": "Basehan ng Kaalaman sa Agropedia",
     "Official crop parameters and growth details": "Opisyal na parameter ng pananim at mga detalye ng paglaki",
-    "DEBESMSCAT Agricultural Trivia": "Trivia sa Agrikultura sa DEBESMSCAT / Mandaon",
-    "Masbate Agricultural Trivia": "Trivia sa Agrikultura sa DEBESMSCAT / Mandaon",
+    "DEBESMSCAT Agricultural Trivia": "Trivia sa Agrikultura sa DEBESMSCAT / Cabitan",
+    "Masbate Agricultural Trivia": "Trivia sa Agrikultura sa DEBESMSCAT / Cabitan",
     "Fun facts and local farming stories": "Kagiliw-giliw na katotohanan at lokal na kwento ng pagsasaka",
     "Crop Guidelines": "Mga Alituntunin sa Pananim",
     "Best practices for local growers": "Pinakamahusay na kasanayan para sa mga lokal na magsasaka",
@@ -214,8 +223,8 @@ var translations = {
     "Profile Page": "Pahina sang Profile",
     "Logout": "Mag-log Out",
     "Active Fields": "Aktibo na mga Talamnan",
-    "DEBESMSCAT Mandaon": "DEBESMSCAT Mandaon",
-    "Masbate Region": "DEBESMSCAT Mandaon",
+    "DEBESMSCAT Cabitan": "DEBESMSCAT Cabitan",
+    "Masbate Region": "DEBESMSCAT Cabitan",
     "Station ID:": "Estasyon ID:",
     "Status:": "Estado:",
     "AGRIDEB": "AGRIDEB",
@@ -292,9 +301,18 @@ var translations = {
     "To-Do List": "Kadi na mga Iskedyul",
     "Tasks for the next 7 days": "Mga buluhaton sa masunod na 7 ka adlaw",
     "Rainfall Trend (mm)": "Dagan sang Uran (mm)",
+    "Today by Time": "Subong na Adlaw Kada Oras",
+    "5-Day Outlook": "5-Adlaw na Ulat",
+    "Rainfall by Time (mm)": "Uran Kada Oras (mm)",
+    "5-Day Rainfall Trend (mm)": "5-Adlaw na Trend sang Uran (mm)",
+    "Loading time-by-time forecast...": "Ginaload an kada oras na ulat...",
     "Loading forecast...": "Ginaload an forecast...",
     "Loading rainfall data...": "Ginaload an data sang uran...",
     "Select plot...": "Pili-a an plot...",
+    "No plots available — Add a plot in Crop Management": "Wara sing plot — Magdugang sang plot sa Pamamahala sang Pananom",
+    "No plots found. Please": "Wara sing plot na nakita. Palihog",
+    "add a plot in Crop Management": "magdugang sang plot sa Pamamahala sang Pananom",
+    "first.": "anay.",
     "Select crop...": "Pili-a an tanom...",
     "Select an active plot to load agronomic models...": "Pili-a an aktibo na plot para mag-load sang mga model sang uma...",
     "Farm Advice": "Katalinuhan sa Pag-uma",
@@ -355,12 +373,12 @@ var translations = {
     // Digital Repository Page
     "Digital Repository": "Digital na Burutangan",
     "Digital Repository & Agropedia": "Digital na Imbakan kag Agropedia",
-    "Central agricultural knowledge, crop vulnerabilities, and DEBESMSCAT & Mandaon region trivia.": "Pang-una na kaalaman sa agrikultura, mga kahinaan sang tanom, kag trivia sa DEBESMSCAT kag Mandaon.",
-    "Central agricultural knowledge, crop vulnerabilities, and Masbate region trivia.": "Pang-una na kaalaman sa agrikultura, mga kahinaan sang tanom, kag trivia sa DEBESMSCAT kag Mandaon.",
+    "Central agricultural knowledge, crop vulnerabilities, and DEBESMSCAT & Cabitan region trivia.": "Pang-una na kaalaman sa agrikultura, mga kahinaan sang tanom, kag trivia sa DEBESMSCAT kag Cabitan.",
+    "Central agricultural knowledge, crop vulnerabilities, and Masbate region trivia.": "Pang-una na kaalaman sa agrikultura, mga kahinaan sang tanom, kag trivia sa DEBESMSCAT kag Cabitan.",
     "Agropedia Knowledge Base": "Basehan sang Kaalaman sa Agropedia",
     "Official crop parameters and growth details": "Opisyal na parameter sang tanom kag detalye sang pagtubo",
-    "DEBESMSCAT Agricultural Trivia": "Trivia sa Agrikultura sang DEBESMSCAT / Mandaon",
-    "Masbate Agricultural Trivia": "Trivia sa Agrikultura sang DEBESMSCAT / Mandaon",
+    "DEBESMSCAT Agricultural Trivia": "Trivia sa Agrikultura sang DEBESMSCAT / Cabitan",
+    "Masbate Agricultural Trivia": "Trivia sa Agrikultura sang DEBESMSCAT / Cabitan",
     "Fun facts and local farming stories": "Mga makalingaw na katotohanan kag kwento sang pag-uma",
     "Crop Guidelines": "Mga Alituntunin sa Tanom",
     "Best practices for local growers": "Pinakamaayo na kasanayan para sa mga lokal na parauma",
@@ -460,13 +478,15 @@ var activeCrops = [];
                     forecastedRain = liveWeather.rainfall || 0;
                     
                     // Dynamically update location strings everywhere on the page
-                    var locationString = liveWeather.location + ', ' + liveWeather.country;
+                    var locName = (liveWeather.location === 'Lantangan' || liveWeather.location === 'Mandaon') ? 'Cabitan' : liveWeather.location;
+                    var locationString = locName + ', ' + liveWeather.country;
                     document.querySelectorAll('.dynamic-location').forEach(function(el) {
                         el.textContent = locationString;
                     });
                     document.querySelectorAll('.dynamic-location-city').forEach(function(el) {
-                        el.textContent = liveWeather.location;
+                        el.textContent = locName;
                     });
+                    decorateLocationTriggers();
 
                     renderWeatherMetrics(liveWeather);
                     renderActiveAlerts(liveWeather);
@@ -483,8 +503,7 @@ var activeCrops = [];
                     if (liveForecast.days && liveForecast.days.length > 0) {
                         forecastedRain = Math.max(...liveForecast.days.map(function(d) { return d.rainfall; }));
                     }
-                    renderForecastRow(liveForecast);
-                    renderRainfallTrend(liveForecast);
+                    renderForecastView(liveForecast);
                     renderRiskForecast(liveForecast);
                     renderForecastSummary(liveForecast);
                     renderWeatherArchive(liveForecast);
@@ -656,14 +675,160 @@ var activeCrops = [];
             if (alertCountEl) alertCountEl.textContent = alertCount + ' Alert' + (alertCount !== 1 ? 's' : '');
         }
 
+        var selectedForecastDayDate = null;
+        var currentForecastViewMode = 'hourly';
+
+        function renderForecastView(forecast) {
+            if (!forecast) return;
+            renderForecastDayPills(forecast);
+            renderHourlyForecast(forecast);
+            renderForecastRow(forecast);
+            renderRainfallTrend(forecast);
+            setupForecastToggleListeners();
+        }
+
+        function setupForecastToggleListeners() {
+            var btnHourly = document.getElementById('btn-fc-hourly');
+            var btnDaily = document.getElementById('btn-fc-daily');
+            if (btnHourly && !btnHourly._hasListener) {
+                btnHourly._hasListener = true;
+                btnHourly.addEventListener('click', function () {
+                    switchForecastView('hourly');
+                });
+            }
+            if (btnDaily && !btnDaily._hasListener) {
+                btnDaily._hasListener = true;
+                btnDaily.addEventListener('click', function () {
+                    switchForecastView('daily');
+                });
+            }
+        }
+
+        function switchForecastView(view) {
+            currentForecastViewMode = view;
+            var hourlySection = document.getElementById('forecast-hourly-section');
+            var dailySection = document.getElementById('forecast-daily-section');
+            var dayPills = document.getElementById('fc-day-pills-container');
+            var btnHourly = document.getElementById('btn-fc-hourly');
+            var btnDaily = document.getElementById('btn-fc-daily');
+
+            if (view === 'hourly') {
+                if (hourlySection) hourlySection.style.display = 'block';
+                if (dailySection) dailySection.style.display = 'none';
+                if (dayPills) dayPills.style.display = 'flex';
+                if (btnHourly) btnHourly.classList.add('active');
+                if (btnDaily) btnDaily.classList.remove('active');
+            } else {
+                if (hourlySection) hourlySection.style.display = 'none';
+                if (dailySection) dailySection.style.display = 'flex';
+                if (dayPills) dayPills.style.display = 'none';
+                if (btnHourly) btnHourly.classList.remove('active');
+                if (btnDaily) btnDaily.classList.add('active');
+            }
+            if (liveForecast) {
+                renderRainfallTrend(liveForecast);
+            }
+            applyTranslations(currentLanguage);
+        }
+
+        function renderForecastDayPills(forecast) {
+            var container = document.getElementById('fc-day-pills-container');
+            if (!container || !forecast || !forecast.days || forecast.days.length === 0) return;
+
+            if (!selectedForecastDayDate) {
+                selectedForecastDayDate = forecast.days[0].date;
+            }
+
+            var html = '';
+            forecast.days.forEach(function (day, idx) {
+                var isSelected = day.date === selectedForecastDayDate;
+                var isToday = idx === 0;
+                var label = isToday ? 'Today' : day.day_name;
+                html += '<button type="button" class="fc-day-pill' + (isSelected ? ' active' : '') + '" data-date="' + day.date + '">' +
+                    '<span>' + label + '</span>' +
+                    '<span style="font-size:11px; opacity:0.85; margin-left:4px;">' + day.temp_max + '\u00B0/' + day.temp_min + '\u00B0</span>' +
+                    '</button>';
+            });
+            container.innerHTML = html;
+
+            container.querySelectorAll('.fc-day-pill').forEach(function (pill) {
+                pill.addEventListener('click', function () {
+                    selectedForecastDayDate = this.getAttribute('data-date');
+                    renderForecastDayPills(forecast);
+                    renderHourlyForecast(forecast);
+                    renderRainfallTrend(forecast);
+                    applyTranslations(currentLanguage);
+                });
+            });
+        }
+
+        function renderHourlyForecast(forecast) {
+            var container = document.getElementById('forecast-hourly-container');
+            if (!container) return;
+
+            var hourlyList = forecast.hourly || [];
+            if (hourlyList.length === 0) {
+                container.innerHTML = '<div style="text-align:center; color:#349954; padding:16px; font-size:13px; width:100%;">No time-by-time data available.</div>';
+                return;
+            }
+
+            var targetDate = selectedForecastDayDate || (forecast.days && forecast.days[0] ? forecast.days[0].date : null);
+            var filteredHourly = [];
+
+            if (targetDate) {
+                filteredHourly = hourlyList.filter(function (h) {
+                    return h.date === targetDate;
+                });
+            }
+
+            var isFirstDay = forecast.days && forecast.days[0] && targetDate === forecast.days[0].date;
+            if (isFirstDay && filteredHourly.length < 3) {
+                filteredHourly = hourlyList.slice(0, 8);
+            } else if (filteredHourly.length === 0) {
+                filteredHourly = hourlyList.slice(0, 8);
+            }
+
+            var nowTs = Math.floor(Date.now() / 1000);
+            var closestIdx = 0;
+            var minDiff = Infinity;
+            filteredHourly.forEach(function (h, idx) {
+                var actualDt = h.dt_raw || h.dt || 0;
+                var diff = Math.abs(actualDt - nowTs);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closestIdx = idx;
+                }
+            });
+
+            var html = '';
+            filteredHourly.forEach(function (h, idx) {
+                var isNow = (idx === closestIdx && isFirstDay);
+                var rainDisplay = h.rainfall > 0 ? (h.rainfall + ' mm') : (h.pop > 0 ? (h.pop + '% rain') : '0 mm');
+                var rainBadgeClass = h.rainfall >= 10 ? 'fc-rain-heavy' : (h.rainfall > 0 ? 'fc-rain-mod' : 'fc-rain-none');
+
+                html += '<div class="fc-hourly-card' + (isNow ? ' now' : '') + '">' +
+                    (isNow ? '<span class="fc-now-badge">LIVE</span>' : '<span class="fc-hour-sub">' + (h.day_name || '') + '</span>') +
+                    '<div class="fc-hour-time">' + h.time + '</div>' +
+                    '<div class="fc-hour-icon"><img src="' + h.weather_icon_url + '" alt="' + h.weather_main + '" width="36" height="36" style="display:block;margin:0 auto;"></div>' +
+                    '<div class="fc-hour-temp">' + h.temp + '\u00B0C</div>' +
+                    '<div class="fc-hour-desc">' + h.weather_description + '</div>' +
+                    '<div class="fc-hour-rain ' + rainBadgeClass + '">\uD83D\uDCA7 ' + rainDisplay + '</div>' +
+                    '<div class="fc-hour-meta">\uD83D\uDCA8 ' + h.wind_speed + ' km/h &bull; ' + h.humidity + '%</div>' +
+                    '</div>';
+            });
+
+            container.innerHTML = html;
+        }
+
         function renderForecastRow(forecast) {
             var container = document.getElementById('forecast-row-container');
             if (!container || !forecast.days) return;
 
             var html = '';
             forecast.days.forEach(function(day, idx) {
+                var isSelected = day.date === selectedForecastDayDate;
                 var isToday = idx === 0;
-                html += '<div class="forecast-day' + (isToday ? ' today' : '') + '">' +
+                html += '<div class="forecast-day' + (isSelected ? ' today' : '') + '" data-date="' + day.date + '">' +
                     '<div class="fc-day">' + (isToday ? 'Today' : day.day_name) + '</div>' +
                     '<div class="fc-icon"><img src="' + day.weather_icon_url + '" alt="' + day.weather_main + '" width="32" height="32" style="display:block;margin:0 auto;"></div>' +
                     '<div class="fc-temp">' + day.temp_max + '\u00B0</div>' +
@@ -671,12 +836,64 @@ var activeCrops = [];
                 '</div>';
             });
             container.innerHTML = html;
+
+            container.querySelectorAll('.forecast-day').forEach(function(el) {
+                el.addEventListener('click', function() {
+                    var date = this.getAttribute('data-date');
+                    if (date) {
+                        selectedForecastDayDate = date;
+                        switchForecastView('hourly');
+                        renderForecastDayPills(forecast);
+                        renderHourlyForecast(forecast);
+                        renderRainfallTrend(forecast);
+                        applyTranslations(currentLanguage);
+                    }
+                });
+            });
         }
 
         function renderRainfallTrend(forecast) {
             var container = document.getElementById('rainfall-trend-container');
-            if (!container || !forecast.days) return;
+            var headerEl = document.getElementById('rainfall-trend-header');
+            if (!container || !forecast) return;
 
+            var targetDate = selectedForecastDayDate || (forecast.days && forecast.days[0] ? forecast.days[0].date : null);
+            var isHourlyMode = currentForecastViewMode === 'hourly';
+
+            if (isHourlyMode && forecast.hourly && forecast.hourly.length > 0) {
+                var hourlyForDay = forecast.hourly.filter(function(h) { return h.date === targetDate; });
+                var isFirstDay = forecast.days && forecast.days[0] && targetDate === forecast.days[0].date;
+                if (isFirstDay && hourlyForDay.length < 3) {
+                    hourlyForDay = forecast.hourly.slice(0, 8);
+                }
+                
+                if (hourlyForDay.length > 0) {
+                    var selectedDayObj = forecast.days.find(function(d) { return d.date === targetDate; });
+                    var dayLabel = selectedDayObj ? (selectedDayObj.date === forecast.days[0].date ? 'Today' : selectedDayObj.day_name) : '';
+                    if (headerEl) {
+                        headerEl.textContent = 'Rainfall by Time (mm)' + (dayLabel ? ' \u2014 ' + dayLabel : '');
+                    }
+
+                    var maxRain = Math.max(...hourlyForDay.map(function(h) { return h.rainfall; }), 1);
+                    var html = '';
+                    hourlyForDay.forEach(function(h) {
+                        var pct = Math.round((h.rainfall / maxRain) * 100);
+                        var barColor = h.rainfall >= 10 ? '#C0531A' : (h.rainfall >= 3 ? '#D4870A' : (h.rainfall > 0 ? '#349954' : '#E0E0E0'));
+                        html += '<div class="rain-bar-row">' +
+                            '<div class="rain-bar-label" style="width: 58px; font-size: 11px;">' + h.time + '</div>' +
+                            '<div class="rain-bar-track"><div class="rain-bar-fill" style="width:' + (h.rainfall > 0 ? Math.max(pct, 6) : 0) + '%; background:' + barColor + ';"></div></div>' +
+                            '<div class="rain-bar-val" style="width: 48px; text-align: right;">' + h.rainfall + ' mm</div>' +
+                        '</div>';
+                    });
+                    container.innerHTML = html;
+                    return;
+                }
+            }
+
+            if (!forecast.days) return;
+            if (headerEl) {
+                headerEl.textContent = '5-Day Rainfall Trend (mm)';
+            }
             var maxRain = Math.max(...forecast.days.map(function(d) { return d.rainfall; }), 1);
             var html = '';
             forecast.days.forEach(function(day) {
@@ -684,8 +901,8 @@ var activeCrops = [];
                 var barColor = day.rainfall >= 20 ? '#C0531A' : (day.rainfall >= 10 ? '#D4870A' : '#5A8A42');
                 html += '<div class="rain-bar-row">' +
                     '<div class="rain-bar-label">' + day.day_name + '</div>' +
-                    '<div class="rain-bar-track"><div class="rain-bar-fill" style="width:' + pct + '%; background:' + barColor + ';"></div></div>' +
-                    '<div class="rain-bar-val">' + day.rainfall + '</div>' +
+                    '<div class="rain-bar-track"><div class="rain-bar-fill" style="width:' + (day.rainfall > 0 ? Math.max(pct, 6) : 0) + '%; background:' + barColor + ';"></div></div>' +
+                    '<div class="rain-bar-val">' + day.rainfall + ' mm</div>' +
                 '</div>';
             });
             container.innerHTML = html;
@@ -996,6 +1213,29 @@ var activeCrops = [];
                 return { score: null, label: "Available", badgeClass: "badge-gray" };
             }
 
+            // Check if farmer has manually specified health status (override automated score)
+            if (plot.health_status && plot.health_status !== 'Auto') {
+                var manualStatus = plot.health_status;
+                var manualScore = 95;
+                var manualBadgeClass = "badge-green";
+
+                if (manualStatus === "Satisfactory") {
+                    manualScore = 70;
+                    manualBadgeClass = "badge-blue";
+                } else if (manualStatus === "At Risk") {
+                    manualScore = 40;
+                    manualBadgeClass = "badge-amber";
+                } else if (manualStatus === "Critical") {
+                    manualScore = 15;
+                    manualBadgeClass = "badge-red";
+                } else if (manualStatus === "Healthy") {
+                    manualScore = 95;
+                    manualBadgeClass = "badge-green";
+                }
+
+                return { score: manualScore, label: manualStatus, badgeClass: manualBadgeClass, isManual: true };
+            }
+
             var cropInfo = cropDataRepo[plot.crop];
             if (!cropInfo) {
                 return { score: 50, label: "Satisfactory", badgeClass: "badge-blue" };
@@ -1101,7 +1341,14 @@ var activeCrops = [];
                     // Update greeting in dashboard with actual first name
                     var pageTitleEl = document.querySelector('#page-dashboard .page-title') || document.querySelector('.page-title');
                     if (pageTitleEl) {
-                        var baseGreeting = 'Good morning, ' + firstName + '.';
+                        var hour = new Date().getHours();
+                        var timeGreeting = 'Good morning';
+                        if (hour >= 12 && hour < 17) {
+                            timeGreeting = 'Good afternoon';
+                        } else if (hour >= 17) {
+                            timeGreeting = 'Good evening';
+                        }
+                        var baseGreeting = timeGreeting + ', ' + firstName + '.';
                         pageTitleEl.textContent = baseGreeting;
                         pageTitleEl.originalValue = baseGreeting;
                     }
@@ -1190,6 +1437,7 @@ var activeCrops = [];
                             plot: plot.plot_name,
                             crop: cropName,
                             planted: activeRecord.planting_date,
+                            health_status: activeRecord.health_status || 'Healthy',
                             size: parseFloat(plot.area_size).toFixed(1) + " ha",
                             sensitivity: sensitivity,
                             damage: estDamage,
@@ -1205,6 +1453,7 @@ var activeCrops = [];
                             plot: plot.plot_name,
                             crop: "None (Soil Prep)",
                             planted: null,
+                            health_status: null,
                             size: parseFloat(plot.area_size).toFixed(1) + " ha",
                             sensitivity: "Low",
                             damage: "0%",
@@ -1357,16 +1606,36 @@ var activeCrops = [];
         function renderQuickActions() {
             var plotSelect = document.getElementById("qp-plot");
             var cropSelect = document.getElementById("qp-crop");
+            var noPlotsHint = document.getElementById("qp-no-plots-hint");
             if (!plotSelect || !cropSelect) return;
 
-            plotSelect.innerHTML = '<option value="">Select plot...</option>';
-            dbPlots.forEach(function (plot) {
-                var opt = document.createElement("option");
-                opt.value = plot.plot_id;
-                opt.text = plot.plot_name;
-                plotSelect.appendChild(opt);
-            });
+            if (dbPlots && dbPlots.length > 0) {
+                var prevVal = plotSelect.value;
+                plotSelect.innerHTML = '';
+                dbPlots.forEach(function (plot) {
+                    var opt = document.createElement("option");
+                    opt.value = plot.plot_id;
+                    opt.text = plot.plot_name;
+                    plotSelect.appendChild(opt);
+                });
 
+                var hasPrev = dbPlots.some(function (p) { return String(p.plot_id) === String(prevVal); });
+                plotSelect.value = hasPrev ? prevVal : dbPlots[0].plot_id;
+                plotSelect.disabled = false;
+
+                if (noPlotsHint) {
+                    noPlotsHint.style.display = "none";
+                }
+            } else {
+                plotSelect.innerHTML = '<option value="" disabled selected>No plots available &mdash; Add a plot in Crop Management</option>';
+                plotSelect.disabled = true;
+
+                if (noPlotsHint) {
+                    noPlotsHint.style.display = "block";
+                }
+            }
+
+            var prevCrop = cropSelect.value;
             cropSelect.innerHTML = '<option value="">Select crop...</option>';
             dbCrops.forEach(function (crop) {
                 var opt = document.createElement("option");
@@ -1374,6 +1643,9 @@ var activeCrops = [];
                 opt.text = crop.crop_name;
                 cropSelect.appendChild(opt);
             });
+            if (prevCrop && dbCrops.some(function (c) { return String(c.crop_id) === String(prevCrop); })) {
+                cropSelect.value = prevCrop;
+            }
         }
 
         // Get health label for a crop (needed for filtering)
@@ -1440,24 +1712,32 @@ var activeCrops = [];
                     '<td><span class="badge ' + badgeClass + '">' + healthText + '</span></td>' +
                     '<td>' + c.damage + '</td>' +
                     '<td>' +
-                        (c.record_id ? '<button class="btn btn-sm btn-outline edit-btn" data-record-id="' + c.record_id + '">Edit</button>' : '') +
+                        (c.record_id ? '<div style="display:flex;gap:6px;align-items:center;">' +
+                            '<button class="btn btn-sm btn-outline update-health-btn" data-record-id="' + c.record_id + '" title="Update Crop Health Status" style="padding:6px 10px; font-size:12px;">Update Health</button>' +
+                            '<button class="btn btn-sm btn-outline edit-btn" data-record-id="' + c.record_id + '" style="padding:6px 10px; font-size:12px;">Edit</button>' +
+                        '</div>' : '') +
                     '</td></tr>';
 
                 var metaParts = [c.crop, c.size];
                 if (c.planted && days > 0) metaParts.push('Day ' + days);
                 var cardBadge = c.planted ? 'plot-card-badge ' + badgeClass : 'plot-card-badge badge-gray';
+                var badgeAttr = c.record_id ? 'class="' + cardBadge + ' update-health-btn" style="cursor:pointer;" title="Click to update crop health status" data-record-id="' + c.record_id + '"' : 'class="' + cardBadge + '"';
                 gridHtml += '<div class="plot-card">' +
                     '<div class="plot-card-header">' +
                         '<div>' +
                             '<div class="plot-card-name">' + c.plot + '</div>' +
                             '<div class="plot-card-meta">' + metaParts.join(' \u00B7 ') + '</div>' +
                         '</div>' +
-                        '<span class="' + cardBadge + '">' + healthText + '</span>' +
+                        '<span ' + badgeAttr + '>' + healthText + '</span>' +
                     '</div>' +
                     '<div class="plot-card-body">' +
                         '<div class="plot-card-advice">' + advice + '</div>' +
                     '</div>' +
-                    (c.record_id ? '<div class="plot-card-actions"><button class="action-btn analytics-btn" data-analytics-id="' + c.record_id + '">View analytics <span>&rarr;</span></button><button class="btn btn-sm btn-outline edit-btn" data-record-id="' + c.record_id + '">Edit</button></div>' : '') +
+                    (c.record_id ? '<div class="plot-card-actions">' +
+                        '<button class="action-btn analytics-btn" data-analytics-id="' + c.record_id + '">View analytics <span>&rarr;</span></button>' +
+                        '<button class="btn btn-sm btn-outline update-health-btn" data-record-id="' + c.record_id + '" style="color:#2e7d32; border-color:#a8e0a8; background:#f4fbf4;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Update Health</button>' +
+                        '<button class="btn btn-sm btn-outline edit-btn" data-record-id="' + c.record_id + '">Edit</button>' +
+                    '</div>' : '') +
                 '</div>';
             });
             statusContainer.innerHTML = statusHtml + '</tbody></table>';
@@ -2537,6 +2817,12 @@ function openCropAnalytics(recordId) {
         editBtn.style.display = recordId ? 'inline-flex' : 'none';
     }
 
+    var healthUpdateBtn = document.getElementById('analytics-modal-update-health-btn');
+    if (healthUpdateBtn) {
+        healthUpdateBtn.setAttribute('data-record-id', recordId || '');
+        healthUpdateBtn.style.display = recordId ? 'inline-flex' : 'none';
+    }
+
     modal.classList.add('is-open');
     document.body.style.overflow = 'hidden';
 }
@@ -2547,7 +2833,7 @@ function closeCropAnalytics() {
     document.body.style.overflow = '';
 }
 
-// Delegated click for analytics, edit, and close buttons
+// Delegated click for analytics, edit, update-health, and close buttons
 document.addEventListener('click', function (e) {
     var analyticsBtn = e.target.closest('.analytics-btn');
     if (analyticsBtn) {
@@ -2568,6 +2854,22 @@ document.addEventListener('click', function (e) {
     var modal = document.getElementById('crop-analytics-modal');
     if (modal && e.target === modal) {
         closeCropAnalytics();
+        return;
+    }
+
+    // Location click to open DEBESMSCAT Cabitan campus map modal
+    var locTrigger = e.target.closest('.loc') || e.target.closest('.dynamic-location') || e.target.closest('[data-open-school-location]');
+    if (locTrigger) {
+        e.preventDefault();
+        openSchoolLocationModal();
+        return;
+    }
+
+    // Update Health button click (from cards, table, or analytics modal)
+    var updateHealthBtn = e.target.closest('.update-health-btn');
+    if (updateHealthBtn) {
+        var recId = updateHealthBtn.getAttribute('data-record-id');
+        if (recId) openUpdateHealthModal(recId);
         return;
     }
 
@@ -2595,7 +2897,12 @@ if (analyticsModal) analyticsModal.addEventListener('click', function (e) {
     if (e.target === analyticsModal) closeCropAnalytics();
 });
 document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') closeCropAnalytics();
+    if (e.key === 'Escape') {
+        closeCropAnalytics();
+        if (typeof closeSchoolLocationModal === 'function') closeSchoolLocationModal();
+        if (typeof closeUpdateHealthModal === 'function') closeUpdateHealthModal();
+        if (typeof closeEditModal === 'function') closeEditModal();
+    }
 });
 
 // Initial load from API
@@ -2681,25 +2988,32 @@ if (editForm) {
         var recordId = document.getElementById("edit-record-id").value;
         var cropId = document.getElementById("edit-plant-crop").value;
         var plantDate = document.getElementById("edit-plant-date").value;
+        var healthSelect = document.getElementById("edit-plant-health");
+        var healthStatus = healthSelect ? healthSelect.value : undefined;
 
         if (!recordId || !cropId || !plantDate) return;
 
         try {
+            var payload = {
+                crop_id: cropId,
+                planting_date: plantDate
+            };
+            if (healthStatus) {
+                payload.health_status = healthStatus;
+            }
+
             const response = await fetch('/api/planting-records/' + recordId, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    crop_id: cropId,
-                    planting_date: plantDate
-                })
+                body: JSON.stringify(payload)
             });
 
             if (!response.ok) throw new Error('Failed to update crop');
 
             closeEditModal();
-            alert("Planting details successfully updated!");
+            alert("Planting details and health status successfully updated!");
             await loadFarmerData();
         } catch (err) {
             console.error(err);
@@ -2786,7 +3100,19 @@ if (qpBtn) {
         var plantDate = document.getElementById("qp-date").value;
         var resultEl = document.getElementById("qp-result");
 
-        if (!plotId || !cropId || !plantDate) {
+        if (!plotId) {
+            if (resultEl) {
+                resultEl.className = "qp-result qp-result-error";
+                if (!dbPlots || dbPlots.length === 0) {
+                    resultEl.innerHTML = 'No plot available. Please <a href="/farmer/crop-management" style="color:inherit;font-weight:700;text-decoration:underline;">add a plot in Crop Management</a> first.';
+                } else {
+                    resultEl.textContent = "Please select a plot.";
+                }
+            }
+            return;
+        }
+
+        if (!cropId || !plantDate) {
             if (resultEl) {
                 resultEl.className = "qp-result qp-result-error";
                 resultEl.textContent = "Please fill in all fields.";
@@ -2795,6 +3121,9 @@ if (qpBtn) {
         }
 
         try {
+            qpBtn.disabled = true;
+            qpBtn.innerHTML = '<span class="qp-btn-spinner"></span>Planting...';
+
             const response = await fetch('/api/planting-records', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -2805,11 +3134,15 @@ if (qpBtn) {
 
             if (resultEl) {
                 resultEl.className = "qp-result qp-result-success";
-                resultEl.textContent = "Batch registered! Initial stage: Seedling.";
+                resultEl.textContent = "Data successfully saved! Batch registered.";
                 setTimeout(function () { resultEl.className = "qp-result"; resultEl.textContent = ""; }, 4000);
             }
 
-            document.getElementById("qp-plot").value = "";
+            if (dbPlots && dbPlots.length > 0) {
+                document.getElementById("qp-plot").value = dbPlots[0].plot_id;
+            } else {
+                document.getElementById("qp-plot").value = "";
+            }
             document.getElementById("qp-crop").value = "";
             document.getElementById("qp-date").value = getTodayStr();
 
@@ -2821,6 +3154,9 @@ if (qpBtn) {
                 resultEl.className = "qp-result qp-result-error";
                 resultEl.textContent = "Failed to register planting batch.";
             }
+        } finally {
+            qpBtn.disabled = false;
+            qpBtn.innerHTML = 'Plant Now';
         }
     });
 }
@@ -2890,6 +3226,10 @@ function openEditModal(recordId) {
             if (dateInput && activeCrop.planted) {
                 dateInput.value = new Date(activeCrop.planted).toISOString().split('T')[0];
             }
+            var healthSelect = document.getElementById("edit-plant-health");
+            if (healthSelect) {
+                healthSelect.value = activeCrop.health_status || "Healthy";
+            }
         }
         modal.classList.add("active-modal");
     }
@@ -2897,6 +3237,91 @@ function openEditModal(recordId) {
 function closeEditModal() {
     var modal = document.getElementById("crop-edit-modal");
     if (modal) modal.classList.remove("active-modal");
+}
+
+// 
+// QUICK UPDATE CROP HEALTH MODAL HANDLERS
+// 
+window.openUpdateHealthModal = function(recordId) {
+    var modal = document.getElementById("update-health-modal");
+    if (!modal) return;
+
+    var recordInput = document.getElementById("health-record-id");
+    if (recordInput) recordInput.value = recordId;
+
+    var activeCrop = activeCrops.find(function(c) { return String(c.record_id) === String(recordId); });
+    if (activeCrop) {
+        var infoEl = document.getElementById("health-modal-crop-info");
+        if (infoEl) {
+            infoEl.textContent = "Plot: " + activeCrop.plot + " • " + activeCrop.crop + " (" + activeCrop.size + ")";
+        }
+        var select = document.getElementById("health-status-select");
+        if (select) {
+            var currentHealth = activeCrop.health_status || "Healthy";
+            select.value = currentHealth;
+            if (!select.value) select.value = "Healthy";
+        }
+    }
+    modal.classList.add("active-modal");
+};
+
+window.closeUpdateHealthModal = function() {
+    var modal = document.getElementById("update-health-modal");
+    if (modal) modal.classList.remove("active-modal");
+};
+
+var updateHealthForm = document.getElementById("update-health-form");
+if (updateHealthForm) {
+    updateHealthForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        var recordId = document.getElementById("health-record-id").value;
+        var healthStatus = document.getElementById("health-status-select").value;
+
+        if (!recordId || !healthStatus) return;
+
+        var submitBtn = updateHealthForm.querySelector('button[type="submit"]');
+        var origText = submitBtn ? submitBtn.textContent : "Save Health Status";
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Updating...";
+        }
+
+        try {
+            const response = await fetch('/api/planting-records/' + recordId + '/health', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ health_status: healthStatus })
+            });
+
+            if (!response.ok) throw new Error('Failed to update crop health status');
+
+            closeUpdateHealthModal();
+            if (typeof closeCropAnalytics === 'function') {
+                closeCropAnalytics();
+            }
+            alert("Planted crop health status successfully updated to " + healthStatus + "!");
+            await loadFarmerData();
+        } catch (err) {
+            console.error(err);
+            alert("Failed to update crop health status.");
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = origText;
+            }
+        }
+    });
+}
+
+var btnCloseHealthModal = document.getElementById("btn-close-health-modal");
+if (btnCloseHealthModal) {
+    btnCloseHealthModal.addEventListener("click", closeUpdateHealthModal);
+}
+var updateHealthModalEl = document.getElementById("update-health-modal");
+if (updateHealthModalEl) {
+    updateHealthModalEl.addEventListener("click", function(e) {
+        if (e.target === updateHealthModalEl) closeUpdateHealthModal();
+    });
 }
 
 window.openAddCropModal = function() {
@@ -3199,7 +3624,7 @@ async function loadSatelliteImagery() {
             loadingEl.style.display = 'none';
             errorEl.style.display = 'block';
             errorEl.innerHTML = '<strong>Satellite Data Pending</strong><br>' +
-                (data.message || 'No recent satellite passes over DEBESMSCAT, Mandaon. Sentinel-2 revisits every 3-5 days. Check back soon.');
+                (data.message || 'No recent satellite passes over DEBESMSCAT, Cabitan. Sentinel-2 revisits every 3-5 days. Check back soon.');
             if (refreshBtn) refreshBtn.disabled = false;
             return;
         }
@@ -3257,7 +3682,7 @@ function renderSatelliteMeta(latest, data) {
         '</div>' +
         '<div class="satellite-meta-item">' +
             '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
-            '<span>DEBESMSCAT, Mandaon</span>' +
+            '<span>DEBESMSCAT, Cabitan</span>' +
         '</div>';
 }
 
@@ -3371,3 +3796,294 @@ if (btnRefreshSatellite) {
 if (document.getElementById('satellite-loading')) {
     loadSatelliteImagery();
 }
+
+// ==========================================================================
+// DEBESMSCAT CABITAN CAMPUS LOCATION MODAL & ANIMATED LEAFLET MAP
+// ==========================================================================
+var schoolLocationMap = null;
+var schoolLocationMarker = null;
+var schoolLocationPolygon = null;
+
+function decorateLocationTriggers() {
+    document.querySelectorAll('.loc').forEach(function(locEl) {
+        locEl.setAttribute('role', 'button');
+        locEl.setAttribute('tabindex', '0');
+        locEl.setAttribute('title', 'Click to view DEBESMSCAT Cabitan verified campus location & live map');
+        
+        if (!locEl.querySelector('.loc-live-dot')) {
+            var dot = document.createElement('span');
+            dot.className = 'loc-live-dot';
+            dot.setAttribute('aria-hidden', 'true');
+            locEl.insertBefore(dot, locEl.firstChild);
+        }
+        
+        if (!locEl.querySelector('.loc-badge-tag')) {
+            var tag = document.createElement('span');
+            tag.className = 'loc-badge-tag';
+            tag.innerHTML = 'Map 📍';
+            locEl.appendChild(tag);
+        }
+    });
+
+    document.querySelectorAll('.dynamic-location').forEach(function(dynEl) {
+        if (!dynEl.closest('.loc')) {
+            dynEl.style.cursor = 'pointer';
+            dynEl.setAttribute('title', 'Click to view DEBESMSCAT Cabitan verified campus location & live map');
+        }
+    });
+}
+
+function ensureSchoolLocationModal() {
+    var modal = document.getElementById('school-location-modal');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.id = 'school-location-modal';
+    modal.className = 'school-loc-modal';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-labelledby', 'school-loc-modal-title');
+
+    modal.innerHTML = 
+        '<div class="school-loc-dialog">' +
+            '<div class="school-loc-header">' +
+                '<div class="school-loc-title-wrap">' +
+                    '<div class="school-loc-badge-icon">🏛️</div>' +
+                    '<div class="school-loc-title-text">' +
+                        '<h3 id="school-loc-modal-title">' +
+                            'DEBESMSCAT Cabitan Main Campus ' +
+                            '<span class="school-verified-tag">✓ Verified Ground Station</span>' +
+                        '</h3>' +
+                        '<p>Dr. Emilio B. Espinosa, Sr. Memorial State College of Agriculture and Technology • Mandaon, Masbate</p>' +
+                    '</div>' +
+                '</div>' +
+                '<button type="button" class="school-loc-close-btn" id="btn-close-school-modal" aria-label="Close campus map">&times;</button>' +
+            '</div>' +
+
+            '<div class="school-proof-grid">' +
+                '<div class="school-proof-item">' +
+                    '<span class="school-proof-label">📍 Campus Address</span>' +
+                    '<span class="school-proof-val">Brgy. Cabitan, Mandaon, Masbate</span>' +
+                '</div>' +
+                '<div class="school-proof-item">' +
+                    '<span class="school-proof-label">🎯 GPS Coordinates</span>' +
+                    '<span class="school-proof-val coord-val" id="school-coords-copy" title="Click to copy coordinates">' +
+                        '12.2275° N, 123.2355° E ' +
+                        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>' +
+                    '</span>' +
+                '</div>' +
+                '<div class="school-proof-item">' +
+                    '<span class="school-proof-label">📡 Station Unit</span>' +
+                    '<span class="school-proof-val">DEBESMSCAT-01 (Agro-Met)</span>' +
+                '</div>' +
+                '<div class="school-proof-item">' +
+                    '<span class="school-proof-label">🌾 Target Zone</span>' +
+                    '<span class="school-proof-val">Agricultural Research Farm</span>' +
+                '</div>' +
+            '</div>' +
+
+            '<div class="school-map-wrapper">' +
+                '<div id="school-leaflet-map"></div>' +
+                '<div class="school-loc-toast" id="school-coords-toast">✅ GPS Coordinates Copied to Clipboard!</div>' +
+            '</div>' +
+
+            '<div class="school-loc-footer">' +
+                '<div class="school-loc-footer-left">' +
+                    '<button type="button" class="school-loc-btn school-loc-btn-outline" id="btn-recenter-campus">' +
+                        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>' +
+                        'Recenter Campus' +
+                    '</button>' +
+                    '<a href="https://www.google.com/maps?q=12.2275,123.2355" target="_blank" rel="noopener noreferrer" class="school-loc-btn school-loc-btn-outline">' +
+                        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>' +
+                        'Open in Google Maps' +
+                    '</a>' +
+                '</div>' +
+                '<button type="button" class="school-loc-btn school-loc-btn-primary" id="btn-done-school-modal">Close Map</button>' +
+            '</div>' +
+        '</div>';
+
+    document.body.appendChild(modal);
+
+    var closeBtn = modal.querySelector('#btn-close-school-modal');
+    if (closeBtn) closeBtn.addEventListener('click', closeSchoolLocationModal);
+    var doneBtn = modal.querySelector('#btn-done-school-modal');
+    if (doneBtn) doneBtn.addEventListener('click', closeSchoolLocationModal);
+    
+    var recenterBtn = modal.querySelector('#btn-recenter-campus');
+    if (recenterBtn) {
+        recenterBtn.addEventListener('click', function() {
+            if (schoolLocationMap) {
+                schoolLocationMap.setView([12.2275, 123.2355], 13);
+                schoolLocationMap.flyTo([12.2275, 123.2355], 16, { duration: 1.3, easeLinearity: 0.25 });
+                if (schoolLocationMarker) {
+                    setTimeout(function() { schoolLocationMarker.openPopup(); }, 1350);
+                }
+            }
+        });
+    }
+
+    var copyCoordsEl = modal.querySelector('#school-coords-copy');
+    if (copyCoordsEl) {
+        copyCoordsEl.addEventListener('click', function() {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText('12.2275, 123.2355').then(function() {
+                    var toast = document.getElementById('school-coords-toast');
+                    if (toast) {
+                        toast.classList.add('show');
+                        setTimeout(function() { toast.classList.remove('show'); }, 2600);
+                    }
+                }).catch(function() {
+                    alert('DEBESMSCAT Cabitan Coordinates: 12.2275, 123.2355');
+                });
+            } else {
+                alert('DEBESMSCAT Cabitan Coordinates: 12.2275, 123.2355');
+            }
+        });
+    }
+
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeSchoolLocationModal();
+    });
+
+    return modal;
+}
+
+window.openSchoolLocationModal = function() {
+    var modal = ensureSchoolLocationModal();
+    modal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+
+    // If Leaflet is not yet defined, dynamically load leaflet.js
+    if (typeof L === 'undefined') {
+        var script = document.createElement('script');
+        script.src = '/vendor/leaflet/leaflet.js';
+        script.onload = function() { setupLeafletMap(); };
+        document.head.appendChild(script);
+    } else {
+        setupLeafletMap();
+    }
+};
+
+window.closeSchoolLocationModal = function() {
+    var modal = document.getElementById('school-location-modal');
+    if (modal) modal.classList.remove('is-open');
+    document.body.style.overflow = '';
+};
+
+function setupLeafletMap() {
+    var mapEl = document.getElementById('school-leaflet-map');
+    if (!mapEl || typeof L === 'undefined') return;
+
+    var campusLat = 12.2275;
+    var campusLon = 123.2355;
+
+    if (!schoolLocationMap) {
+        schoolLocationMap = L.map('school-leaflet-map', {
+            center: [campusLat, campusLon],
+            zoom: 13,
+            zoomControl: true,
+            attributionControl: true
+        });
+
+        // 1. Street Map Layer (OpenStreetMap)
+        var streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        });
+
+        // 2. High-resolution Satellite Aerial Layer (Esri World Imagery)
+        var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19,
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics'
+        });
+
+        // Add street layer as default
+        streetLayer.addTo(schoolLocationMap);
+
+        var baseMaps = {
+            "🗺️ Street Map": streetLayer,
+            "🛰️ Satellite View": satelliteLayer
+        };
+        L.control.layers(baseMaps, null, { position: 'topright' }).addTo(schoolLocationMap);
+
+        // Clean Campus Pin Marker without radar pulse rings
+        var customIcon = L.divIcon({
+            className: 'custom-campus-icon',
+            html: '<div class="campus-marker-beacon">' +
+                    '<div class="beacon-core">🏫</div>' +
+                  '</div>',
+            iconSize: [38, 38],
+            iconAnchor: [19, 19],
+            popupAnchor: [0, -19]
+        });
+
+        schoolLocationMarker = L.marker([campusLat, campusLon], { icon: customIcon }).addTo(schoolLocationMap);
+
+        var popupHtml = '<div class="campus-popup-card">' +
+            '<div class="campus-popup-header">' +
+                '<span class="campus-popup-badge">STATION DEBESMSCAT-01</span>' +
+                '<span style="font-size:10px;color:#15803d;font-weight:800;">● BROADCASTING</span>' +
+            '</div>' +
+            '<div class="campus-popup-title">DEBESMSCAT Agro-Meteorological Station</div>' +
+            '<div class="campus-popup-sub">Dr. Emilio B. Espinosa, Sr. Memorial State College of Agriculture and Technology</div>' +
+            '<div class="campus-popup-meta">' +
+                '<strong>Campus:</strong> Cabitan, Mandaon, Masbate<br>' +
+                '<strong>Coordinates:</strong> 12.2275° N, 123.2355° E<br>' +
+                '<strong>Elevation:</strong> ~38m ASL<br>' +
+                '<strong>Role:</strong> Official campus weather telemetry anchor for AGRIDEB' +
+            '</div>' +
+        '</div>';
+
+        schoolLocationMarker.bindPopup(popupHtml);
+
+        // Campus Agricultural Polygon (DEBESMSCAT Cabitan Agricultural Zone)
+        var campusPolygonCoords = [
+            [12.215, 123.225],
+            [12.215, 123.240],
+            [12.225, 123.245],
+            [12.235, 123.243],
+            [12.242, 123.238],
+            [12.242, 123.228],
+            [12.235, 123.223],
+            [12.225, 123.222]
+        ];
+
+        schoolLocationPolygon = L.polygon(campusPolygonCoords, {
+            color: '#166534',
+            weight: 2,
+            opacity: 0.9,
+            fillColor: '#22c55e',
+            fillOpacity: 0.16,
+            dashArray: '5, 5'
+        }).addTo(schoolLocationMap);
+
+        schoolLocationPolygon.bindTooltip("🌾 DEBESMSCAT Agricultural Research Zone & Farm Plots", {
+            sticky: true,
+            direction: 'top'
+        });
+    }
+
+    // Refresh dimensions after modal transition and execute smooth flyTo camera glide
+    setTimeout(function() {
+        if (schoolLocationMap) {
+            schoolLocationMap.invalidateSize();
+            schoolLocationMap.setView([campusLat, campusLon], 13);
+            schoolLocationMap.flyTo([campusLat, campusLon], 16, {
+                duration: 1.6,
+                easeLinearity: 0.25
+            });
+
+            setTimeout(function() {
+                if (schoolLocationMarker) {
+                    schoolLocationMarker.openPopup();
+                }
+            }, 1650);
+        }
+    }, 300);
+}
+
+// Ensure location triggers are decorated on startup
+document.addEventListener("DOMContentLoaded", function() {
+    decorateLocationTriggers();
+});
+setTimeout(decorateLocationTriggers, 400);

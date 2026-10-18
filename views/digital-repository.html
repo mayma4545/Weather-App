@@ -6,6 +6,7 @@
     <title>AGRIDEB — Digital Repository</title>
     <link rel="stylesheet" href="/css/farmer-dashboard.css">
     <link rel="stylesheet" href="/css/digital-repository.css">
+    <link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
 </head>
 <body>
 <div class="dash">
@@ -22,18 +23,6 @@
                     <circle cx="12" cy="9" r="2.5" />
                 </svg>
                 <span class="dynamic-location">Detecting Location...</span> 
-            </div>
-            <div class="alert-pill">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                    <line x1="12" y1="9" x2="12" y2="13" />
-                    <line x1="12" y1="17" x2="12.01" y2="17" />
-                </svg>
-                2 Active Alerts
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:#349954;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#FFFFFF;">
-                    JR</div>
             </div>
         </div>
     </div>
@@ -79,7 +68,7 @@
                     </svg>
                     Profile Page
                 </a>
-                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 2px solid #E9ECEF; padding-top: 18px; color: #D44A1A;">
+                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; color: #D44A1A;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                         <polyline points="16 17 21 12 16 7" />
@@ -97,7 +86,7 @@
             </div>
 
             <div class="sidebar-section">
-                <div class="sidebar-label">DEBESMSCAT Mandaon</div>
+                <div class="sidebar-label">DEBESMSCAT Cabitan</div>
                 <div style="font-size: 12px; color: #349954; padding-left: 12px;">
                     Station ID: <span style="font-family:monospace; font-weight:700; color:#349954;">DEBESMSCAT-01</span><br>
                     Status: <span style="color:#349954; font-weight:700;">CONNECTED</span>
@@ -159,7 +148,7 @@
                             <div class="repo-spotlight-details">
                                 <div class="repo-spotlight-tag">RECOMMENDED &raquo; <span>PALAY (RICE)</span></div>
                                 <h3 class="repo-spotlight-heading">Root Rot Prevention Guide</h3>
-                                <p class="repo-spotlight-sub">Early seedling humidity checks &amp; optimal drainage practices for DEBESMSCAT &amp; Mandaon rainy season.</p>
+                                <p class="repo-spotlight-sub">Early seedling humidity checks &amp; optimal drainage practices for DEBESMSCAT &amp; Cabitan rainy season.</p>
                                 <button class="repo-btn-secondary" id="btn-spotlight-action">Read Best Practices</button>
                             </div>
                         </div>
@@ -183,10 +172,6 @@
                             <div class="repo-cat-card veg" data-category="veg">
                                 <div class="repo-cat-card-icon">🥬</div>
                                 <h4 class="repo-cat-card-title">Vegetables &amp; Roots</h4>
-                            </div>
-                            <div class="repo-cat-card pest" data-category="pest">
-                                <div class="repo-cat-card-icon">🐛</div>
-                                <h4 class="repo-cat-card-title">Pest &amp; Disease Control</h4>
                             </div>
                         </div>
                     </div>
@@ -219,6 +204,7 @@
                     </div>
 
                 </div>
+
             </div>
         </div>
     </div>
@@ -235,43 +221,47 @@
     </div>
 </div>
 
-<!-- Floating Mobile Navigation Bar (Screenshot Style) -->
-<div class="repo-mobile-floating-nav">
-    <a href="/farmer/dashboard" class="repo-mnav-link" title="Dashboard">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-            <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-            <rect x="14" y="14" width="7" height="7" rx="1.5"/>
-            <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-        </svg>
-    </a>
-    <a href="/farmer/crop-management" class="repo-mnav-link" title="Crops">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-        </svg>
-    </a>
-    
-    <!-- Central Floating Accent Button -->
-    <div class="repo-mnav-float-btn" id="repo-mnav-action-btn" title="Add Crop / Search">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <line x1="12" y1="5" x2="12" y2="19"/>
-            <line x1="5" y1="12" x2="19" y2="12"/>
-        </svg>
+<!-- Bottom Navigation (Mobile Tabpane View) -->
+<nav class="bottom-nav" id="bottomNav" aria-label="Mobile navigation">
+    <div class="bottom-nav-inner">
+        <a class="bnav-item" href="/farmer/dashboard" id="mob-nav-dashboard">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            Dashboard
+        </a>
+        <a class="bnav-item" href="/farmer/crop-management" id="mob-nav-crop-management">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" />
+                <path d="M12 8v8M8 12h8" />
+            </svg>
+            Crops
+        </a>
+        <a class="bnav-item" href="/farmer/weather-analytics" id="mob-nav-weather-analytics">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+            Weather
+        </a>
+        <a class="bnav-item" href="/farmer/digital-repository" id="mob-nav-digital-repository">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+            Library
+        </a>
+        <a class="bnav-item" href="/farmer/profile" id="mob-nav-profile">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+            </svg>
+            Profile
+        </a>
     </div>
-
-    <a href="/farmer/digital-repository" class="repo-mnav-link active" title="Digital Repository">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-        </svg>
-    </a>
-    <a href="/farmer/profile" class="repo-mnav-link" title="Profile">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
-        </svg>
-    </a>
-</div>
+</nav>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -279,10 +269,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if(!path || path === "farmer") path = "dashboard";
     let nav = document.getElementById("nav-" + path);
     if(nav) nav.classList.add("active");
+    let mobNav = document.getElementById("mob-nav-" + path);
+    if(mobNav) mobNav.classList.add("active");
 });
 </script>
+<script src="/vendor/leaflet/leaflet.js"></script>
 <script src="/js/farmer-dashboard.js"></script>
 </body>
 </html>
-
-

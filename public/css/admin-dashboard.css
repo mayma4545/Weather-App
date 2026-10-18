@@ -1045,111 +1045,122 @@ select.form-control {
   outline: none;
 }
 
-.weather-log-list {
+.weather-timeline-group {
+  margin-bottom: 28px;
+}
+
+.wt-date-heading {
+  font-family: 'Outfit', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--admin-text-heading);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wt-date-heading svg {
+  color: var(--admin-primary);
+}
+
+.wt-scroll-track {
+  display: flex;
+  overflow-x: auto;
+  gap: 16px;
+  padding: 4px 4px 16px 4px;
+  scrollbar-width: thin;
+}
+
+.wt-scroll-track::-webkit-scrollbar {
+  height: 6px;
+}
+.wt-scroll-track::-webkit-scrollbar-track {
+  background: var(--admin-border-soft);
+  border-radius: 4px;
+}
+.wt-scroll-track::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+.wt-card {
+  min-width: 140px;
+  background: var(--admin-surface);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--admin-shadow-sm);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
 }
 
-.weather-log {
-  background: var(--admin-surface);
-  border-radius: 12px;
-  padding: 14px 18px;
-  box-shadow: var(--admin-shadow-sm);
-  display: grid;
-  grid-template-columns: 160px 1fr auto;
-  gap: 16px;
-  align-items: center;
-  transition: transform 0.16s ease, box-shadow 0.16s ease;
-}
-
-.weather-log:hover {
-  transform: translateY(-1px);
+.wt-card:hover {
+  transform: translateY(-4px);
   box-shadow: var(--admin-shadow);
 }
 
-.weather-log.anomalous {
+.wt-card.anomalous {
   background: #FFFBEB;
 }
 
-.wl-time {
-  display: flex;
-  flex-direction: column;
-}
-
-.wl-time .wl-date {
-  font-family: 'Outfit', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--admin-text-heading);
-  letter-spacing: -0.2px;
-}
-
-.wl-time .wl-clock {
+.wt-time {
   font-size: 11px;
+  font-weight: 800;
   color: var(--admin-text-muted);
-  font-weight: 500;
+  text-align: center;
+  margin-bottom: 12px;
+  background: var(--admin-surface-tint);
+  padding: 4px 8px;
+  border-radius: 8px;
+  letter-spacing: 0.5px;
 }
 
-.wl-metrics {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+.wt-icon {
+  text-align: center;
+  margin-bottom: 8px;
 }
 
-.wl-metric {
+.wt-temp {
+  font-family: 'Outfit', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--admin-text-heading);
+  text-align: center;
+  margin-bottom: 14px;
+  line-height: 1;
+}
+
+.wt-metrics-mini {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 6px;
+  margin-bottom: 16px;
 }
 
-.wl-metric .wlm-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--admin-text-muted);
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.wl-metric .wlm-value {
-  font-family: 'Outfit', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--admin-text-heading);
-  letter-spacing: -0.3px;
-  display: flex;
-  align-items: baseline;
-  gap: 3px;
-}
-
-.wl-metric .wlm-value.anomaly {
-  color: #B45309;
-}
-
-.wl-metric .wlm-unit {
+.wt-metrics-mini div {
   font-size: 11px;
   color: var(--admin-text-muted);
   font-weight: 600;
-}
-
-.wl-anomaly-flag {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #B45309;
-  background: #FEF3C7;
-  padding: 3px 9px;
-  border-radius: 6px;
-  margin-left: 6px;
+  gap: 6px;
 }
 
-.wl-source {
-  text-align: right;
+.wt-metrics-mini div.anomaly {
+  color: #B45309;
+  font-weight: 700;
+}
+
+.wt-metrics-mini div.anomaly svg {
+  color: #B45309;
+}
+
+.wt-source {
+  margin-top: auto;
+  text-align: center;
 }
 
 /* ==========================================================
@@ -1940,3 +1951,66 @@ select.form-control {
 .btn-remove-preview:hover {
   background: #FCDAD7;
 }
+/* Live Weather Additions */
+.live-indicator { font-size: 11px; font-weight: 800; color: #DC2626; background: #FEF2F2; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.8px; display: inline-flex; align-items: center; gap: 6px; }
+.pulse-dot { width: 8px; height: 8px; background: #DC2626; border-radius: 50%; box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); animation: pulse-red 1.5s infinite cubic-bezier(0.66, 0, 0, 1); }
+@keyframes pulse-red { to { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); } }
+.live-weather-card { background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-primary-dark) 100%); border-radius: var(--admin-radius); padding: 24px; color: #fff; margin-bottom: 22px; box-shadow: var(--admin-shadow-lg); display: flex; flex-direction: column; gap: 16px; position: relative; overflow: hidden; }
+.live-weather-card::after { content: ''; position: absolute; right: -50px; top: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.05); border-radius: 50%; pointer-events: none; }
+.lw-header { display: flex; justify-content: space-between; align-items: flex-start; z-index: 1; }
+.lw-title { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.2px; }
+.lw-time { font-size: 12px; opacity: 0.8; font-weight: 600; }
+.lw-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; z-index: 1; }
+.lw-item { background: rgba(0,0,0,0.15); border-radius: 12px; padding: 16px; backdrop-filter: blur(4px); }
+.lw-label { font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px; opacity: 0.7; margin-bottom: 6px; }
+.lw-val { font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 800; line-height: 1; }
+
+/* Modern Trivia Card */
+.modern-trivia-card { background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: 12px; padding: 18px; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; transition: transform 0.15s, box-shadow 0.15s; }
+.modern-trivia-card:hover { transform: translateY(-2px); box-shadow: var(--admin-shadow-sm); }
+.mtc-content { font-size: 14px; color: var(--admin-text); line-height: 1.6; }
+.mtc-meta { display: flex; align-items: center; gap: 10px; margin-top: 10px; font-size: 12px; color: var(--admin-text-muted); }
+.mtc-date { display: inline-flex; align-items: center; gap: 4px; }
+.mtc-actions { display: flex; gap: 6px; }
+
+/* ==========================================================
+   Registered Users Page Additions
+   ========================================================== */
+.user-filter-tabs { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
+.user-filter-tabs::-webkit-scrollbar { height: 4px; }
+.user-filter-tabs::-webkit-scrollbar-thumb { background: var(--admin-border); border-radius: 4px; }
+.user-filter-btn { padding: 8px 16px; border: 1px solid var(--admin-border); background: var(--admin-surface); color: var(--admin-text-muted); border-radius: 999px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; white-space: nowrap; }
+.user-filter-btn:hover { border-color: var(--admin-primary); color: var(--admin-primary); }
+.user-filter-btn.active { background: var(--admin-primary); color: #fff; border-color: var(--admin-primary); box-shadow: 0 2px 6px rgba(4, 120, 87, 0.2); }
+
+.user-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-bottom: 30px; }
+
+.user-card { background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: 14px; padding: 20px; transition: all 0.2s ease; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+.user-card:hover { transform: translateY(-3px); box-shadow: var(--admin-shadow); border-color: var(--admin-border-soft); }
+
+.uc-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.uc-avatar { width: 48px; height: 48px; border-radius: 12px; background: var(--admin-surface-tint); color: var(--admin-primary-dark); display: flex; justify-content: center; align-items: center; font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 700; border: 1px solid var(--admin-border); }
+.uc-info { flex: 1; min-width: 0; }
+.uc-name { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 16px; color: var(--admin-text-heading); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.uc-type-badge { display: inline-flex; align-items: center; padding: 3px 8px; background: #F1F5F9; color: #475569; font-size: 11px; font-weight: 700; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+.uc-type-badge.farmer { background: #FEF3C7; color: #B45309; }
+.uc-type-badge.student { background: #E0E7FF; color: #4338CA; }
+.uc-type-badge.researcher { background: #FCE7F3; color: #BE185D; }
+.uc-type-badge.admin { background: #FEE2E2; color: #B91C1C; }
+
+.uc-contact { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px dashed var(--admin-border); font-size: 13px; color: var(--admin-text-muted); display: flex; flex-direction: column; gap: 6px; }
+.uc-contact-row { display: flex; align-items: center; gap: 8px; }
+
+.uc-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.uc-stat-item { background: #F8FAFC; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #F1F5F9; }
+.uc-stat-val { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 18px; color: var(--admin-text); line-height: 1.2; }
+.uc-stat-label { font-size: 11px; color: var(--admin-text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+
+.uc-crops { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.uc-crop-tag { background: var(--admin-surface-tint); border: 1px solid var(--admin-primary-light); color: var(--admin-primary-dark); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
+
+.uc-footer { margin-top: auto; font-size: 12px; color: var(--admin-text-muted); text-align: right; font-style: italic; }
+
+/* Utility classes */
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.spin { animation: spin 1s linear infinite; }

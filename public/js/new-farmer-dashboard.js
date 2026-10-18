@@ -546,12 +546,13 @@ var activeCrops = [];
                     forecastedRain = liveWeather.rainfall || 0;
                     
                     // Dynamically update location strings everywhere on the page
-                    var locationString = liveWeather.location + ', ' + liveWeather.country;
+                    var locName = (liveWeather.location === 'Lantangan' || liveWeather.location === 'Mandaon') ? 'Cabitan' : liveWeather.location;
+                    var locationString = locName + ', ' + liveWeather.country;
                     document.querySelectorAll('.dynamic-location').forEach(function(el) {
                         el.textContent = locationString;
                     });
                     document.querySelectorAll('.dynamic-location-city').forEach(function(el) {
-                        el.textContent = liveWeather.location;
+                        el.textContent = locName;
                     });
 
                     renderWeatherMetrics(liveWeather);
@@ -900,7 +901,7 @@ var activeCrops = [];
                 'Temperature range: <strong>' + minTemp + '\u00B0C \u2014 ' + maxTemp + '\u00B0C</strong><br>' +
                 'Total expected rainfall: <strong>' + totalRain + ' mm</strong><br>' +
                 'Average humidity: <strong>' + avgHumidity + '%</strong><br>' +
-                '<span style="font-size:11px; color:#5A7A90; margin-top:4px; display:inline-block;">Data from OpenWeather API \u00B7 DEBESMSCAT, Mandaon</span>';
+                '<span style="font-size:11px; color:#5A7A90; margin-top:4px; display:inline-block;">Data from OpenWeather API \u00B7 DEBESMSCAT, Cabitan</span>';
         }
 
         function renderWeatherArchive(forecast) {
@@ -1142,7 +1143,14 @@ var activeCrops = [];
                     // Update greeting in dashboard with actual first name
                     var pageTitleEl = document.querySelector('#page-dashboard .page-title') || document.querySelector('.page-title');
                     if (pageTitleEl) {
-                        var baseGreeting = 'Good morning, ' + firstName + '.';
+                        var hour = new Date().getHours();
+                        var timeGreeting = 'Good morning';
+                        if (hour >= 12 && hour < 17) {
+                            timeGreeting = 'Good afternoon';
+                        } else if (hour >= 17) {
+                            timeGreeting = 'Good evening';
+                        }
+                        var baseGreeting = timeGreeting + ', ' + firstName + '.';
                         pageTitleEl.textContent = baseGreeting;
                         pageTitleEl.originalValue = baseGreeting;
                     }

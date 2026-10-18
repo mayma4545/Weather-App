@@ -450,9 +450,9 @@ const getAdminDashboard = (req, res) => {
 router.get('/admin', requireAuth, requireAdmin, (req, res) => res.redirect('/admin/dashboard'));
 router.get('/admin/dashboard', requireAuth, requireAdmin, getAdminDashboard);
 router.get('/admin/crop-repository', requireAuth, requireAdmin, getAdminDashboard);
-router.get('/admin/digital-repository', requireAuth, requireAdmin, getAdminDashboard);
 router.get('/admin/weather-monitor', requireAuth, requireAdmin, getAdminDashboard);
 router.get('/admin/global-alerts', requireAuth, requireAdmin, getAdminDashboard);
+router.get('/admin/registered-users', requireAuth, requireAdmin, getAdminDashboard);
 
 // ==========================================
 // 🌾 AGRICULTURIST & FARMER REST API ROUTES
@@ -523,7 +523,7 @@ router.get('/api/farmer/data', requireAuth, async (req, res) => {
 // 1. Create a new planting record (Register planting batch)
 router.post('/api/planting-records', requireAuth, async (req, res) => {
   try {
-    const { plot_id, crop_id, planting_date } = req.body;
+    const { plot_id, crop_id, planting_date, health_status } = req.body;
 
     if (!plot_id || !crop_id || !planting_date) {
       return res.status(400).json({ error: 'Missing required fields: plot_id, crop_id, planting_date' });
@@ -545,7 +545,8 @@ router.post('/api/planting-records', requireAuth, async (req, res) => {
       plot_id: parseInt(plot_id),
       crop_id: parseInt(crop_id),
       planting_date,
-      status: 'Growing'
+      status: 'Growing',
+      health_status: health_status || 'Healthy'
     });
 
     // Fetch full detailed record to return
@@ -567,7 +568,7 @@ router.post('/api/planting-records', requireAuth, async (req, res) => {
 router.put('/api/planting-records/:id', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const { crop_id, planting_date, plot_id, status } = req.body;
+    const { crop_id, planting_date, plot_id, status, health_status } = req.body;
 
     const record = await PlantingRecord.findByPk(id);
     if (!record) {
@@ -578,6 +579,7 @@ router.put('/api/planting-records/:id', requireAuth, async (req, res) => {
     if (planting_date) record.planting_date = planting_date;
     if (plot_id) record.plot_id = parseInt(plot_id);
     if (status) record.status = status;
+    if (health_status !== undefined) record.health_status = health_status;
 
     await record.save();
 
@@ -591,6 +593,69 @@ router.put('/api/planting-records/:id', requireAuth, async (req, res) => {
     res.json(detailedRecord);
   } catch (err) {
     console.error('API Error PUT /api/planting-records:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// 2b. Quick update crop health status
+router.put('/api/planting-records/:id/health', requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { health_status } = req.body;
+
+    if (!health_status) {
+      return res.status(400).json({ error: 'Missing required field: health_status' });
+    }
+
+    const record = await PlantingRecord.findByPk(id);
+    if (!record) {
+      return res.status(404).json({ error: 'Planting record not found' });
+    }
+
+    record.health_status = health_status;
+    await record.save();
+
+    const detailedRecord = await PlantingRecord.findByPk(record.record_id, {
+      include: [
+        { model: FarmPlot, as: 'plot', attributes: ['plot_id', 'user_id', 'plot_name', 'area_size'] },
+        { model: CropRepository, as: 'crop' }
+      ]
+    });
+
+    res.json(detailedRecord);
+  } catch (err) {
+    console.error('API Error PUT /api/planting-records/:id/health:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.patch('/api/planting-records/:id/health', requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { health_status } = req.body;
+
+    if (!health_status) {
+      return res.status(400).json({ error: 'Missing required field: health_status' });
+    }
+
+    const record = await PlantingRecord.findByPk(id);
+    if (!record) {
+      return res.status(404).json({ error: 'Planting record not found' });
+    }
+
+    record.health_status = health_status;
+    await record.save();
+
+    const detailedRecord = await PlantingRecord.findByPk(record.record_id, {
+      include: [
+        { model: FarmPlot, as: 'plot', attributes: ['plot_id', 'user_id', 'plot_name', 'area_size'] },
+        { model: CropRepository, as: 'crop' }
+      ]
+    });
+
+    res.json(detailedRecord);
+  } catch (err) {
+    console.error('API Error PATCH /api/planting-records/:id/health:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
@@ -815,31 +880,13 @@ function pruneGeminiThrottleMap() {
 }
 
 function localizeStaticRecommendations(evaluation, language) {
-  if (language !== 'filipino' || !evaluation || typeof evaluation !== 'object') return;
-  const cropName = evaluation.crop && evaluation.crop.name ? evaluation.crop.name : 'pananim';
-  const metrics = evaluation.metrics || {};
-  const rain = Number.isFinite(metrics.maxDailyRain) ? metrics.maxDailyRain.toFixed(1) : null;
-  const temp = Number.isFinite(metrics.maxTemp) ? metrics.maxTemp : null;
-
-  if (evaluation.trafficLight === 'RED') {
-    evaluation.recommendations = [
-      `Ipagpaliban ang pagtatanim ng ${cropName} hanggang maging matatag ang lagay ng panahon.`,
-      rain ? `Maglinis ng mga kanal bago ang inaasahang ${rain} mm/araw na ulan.` : 'Maglinis ng mga kanal bago magtanim upang maiwasan ang pagbaha.',
-      'Itago ang binhi sa tuyo at may bubong na lugar; magtanim kapag lampas 75% ang safety index.'
-    ];
-  } else if (evaluation.trafficLight === 'YELLOW') {
-    evaluation.recommendations = [
-      `Maaaring itanim ang ${cropName}, ngunit ihanda muna ang mga kanal sa paligid ng taniman.`,
-      temp ? `Maglagay ng malts sa punlaan kung umabot sa ${temp}°C ang init.` : 'Maglagay ng malts sa punlaan upang mapanatili ang halumigmig ng lupa.',
-      'Suriin ang forecast araw-araw bago maghasik o maglipat ng punla.'
-    ];
-  } else {
-    evaluation.recommendations = [
-      `Maayos ang panahon para ihanda at itanim ang ${cropName}.`,
-      'Panatilihing mamasa-masa ang lupa at tiyaking bukas ang mga daluyan ng tubig.',
-      'Suriin ang forecast araw-araw sa susunod na 5 araw bago maghasik.'
-    ];
-  }
+  // The plantingPredictorService now generates rich, crop-specific recommendations
+  // for all crops. We no longer override them with generic Filipino text.
+  // The AI service (gemini) handles language translation when available.
+  // Static recommendations stay in English as a quality baseline — they contain
+  // detailed agronomic advice (fertilizer amounts, pest names, specific techniques)
+  // that would be lost if overwritten with generic Filipino phrases.
+  return;
 }
 
 // Safe to plant predictor calculation API (auth required — T-07-04)
@@ -1486,6 +1533,68 @@ router.put('/api/farmer/profile', requireAuth, async (req, res) => {
 // 🛡️ ADMIN REST API ROUTES
 // ==========================================
 
+// Admin Registered Users API — returns all users with plot/crop counts grouped by identity_type
+router.get('/api/admin/registered-users', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: ['user_id', 'full_name', 'role', 'email', 'contact_number', 'identity_type', 'identity_specification', 'language_pref', 'sms_opt_in', 'created_at', 'updated_at'],
+      order: [['created_at', 'DESC']],
+      include: [{
+        model: FarmPlot,
+        as: 'plots',
+        attributes: ['plot_id', 'plot_name', 'area_size', 'soil_type'],
+        required: false,
+        include: [{
+          model: PlantingRecord,
+          as: 'plantingRecords',
+          attributes: ['record_id', 'status', 'planting_date'],
+          required: false,
+          where: { status: 'Growing' },
+          include: [{
+            model: CropRepository,
+            as: 'crop',
+            attributes: ['crop_name'],
+            required: false
+          }]
+        }]
+      }]
+    });
+
+    const result = users.map(u => {
+      const plain = u.get({ plain: true });
+      const plots = plain.plots || [];
+      const totalPlots = plots.length;
+      const totalArea = plots.reduce((sum, p) => sum + (parseFloat(p.area_size) || 0), 0);
+      const activeCrops = [];
+      plots.forEach(p => {
+        (p.plantingRecords || []).forEach(r => {
+          if (r.crop && r.crop.crop_name) activeCrops.push(r.crop.crop_name);
+        });
+      });
+      return {
+        user_id: plain.user_id,
+        full_name: plain.full_name,
+        role: plain.role,
+        email: plain.email,
+        contact_number: plain.contact_number,
+        identity_type: plain.identity_type || 'Farmer',
+        identity_specification: plain.identity_specification || '',
+        language_pref: plain.language_pref || 'filipino',
+        sms_opt_in: plain.sms_opt_in,
+        created_at: plain.created_at,
+        totalPlots,
+        totalArea: Math.round(totalArea * 100) / 100,
+        activeCrops: [...new Set(activeCrops)]
+      };
+    });
+
+    res.json({ users: result });
+  } catch (err) {
+    console.error('API Error /api/admin/registered-users:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // Admin Dashboard Stats
 router.get('/api/admin/stats', requireAuth, requireAdmin, async (req, res) => {
   try {
@@ -1713,6 +1822,30 @@ router.post('/api/admin/trivia', requireAuth, requireAdmin, async (req, res) => 
   }
 });
 
+router.put('/api/admin/trivia/:id', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { content, crop_tag } = req.body;
+    
+    if (!content) {
+      return res.status(400).json({ error: 'Content is required' });
+    }
+
+    const trivia = await Trivia.findByPk(id);
+    if (!trivia) {
+      return res.status(404).json({ error: 'Trivia not found' });
+    }
+
+    trivia.content = content;
+    if (crop_tag) trivia.crop_tag = crop_tag;
+    await trivia.save();
+
+    res.json(trivia);
+  } catch (err) {
+    console.error('API Error PUT /api/admin/trivia:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 router.delete('/api/admin/trivia/:id', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -2100,7 +2233,7 @@ router.get('/api/satellite/imagery', requireAuth, async (req, res) => {
     if (!images || images.length === 0) {
       return res.json({
         available: false,
-        message: 'No recent satellite imagery available for Mandaon area yet. Sentinel-2 revisits every 3-5 days. If this polygon was recently created, please allow a few days for Agromonitoring to download satellite data for this region.',
+        message: 'No recent satellite imagery available for Cabitan area yet. Sentinel-2 revisits every 3-5 days. If this polygon was recently created, please allow a few days for Agromonitoring to download satellite data for this region.',
         images: []
       });
     }
@@ -2137,7 +2270,7 @@ router.get('/api/satellite/imagery', requireAuth, async (req, res) => {
 
     res.json({
       available: true,
-      polygon: 'Mandaon Agricultural Zone - Masbate',
+      polygon: 'Cabitan Agricultural Zone - Masbate',
       images: results
     });
   } catch (err) {

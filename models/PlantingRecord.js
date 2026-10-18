@@ -32,6 +32,11 @@ const PlantingRecord = sequelize.define('PlantingRecord', {
     type: DataTypes.STRING,
     allowNull: false,
     defaultValue: 'Growing'
+  },
+  health_status: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: 'Healthy'
   }
 }, {
   tableName: 'planting_records',

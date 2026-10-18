@@ -9,7 +9,7 @@
 
 const OPENWEATHER_BASE = 'https://api.openweathermap.org/data/2.5';
 
-// Default coordinates: DEBESMSCAT, Mandaon, Philippines
+// Default coordinates: DEBESMSCAT, Cabitan, Philippines
 const DEFAULT_LAT = process.env.WEATHER_LAT || '12.2275';
 const DEFAULT_LON = process.env.WEATHER_LON || '123.2355';
 
@@ -80,7 +80,7 @@ async function fetchCurrentWeather(lat = DEFAULT_LAT, lon = DEFAULT_LON) {
     weather_icon_url: `https://openweathermap.org/img/wn/${raw.weather[0].icon}@2x.png`,
     sunrise: raw.sys.sunrise * 1000,
     sunset: raw.sys.sunset * 1000,
-    location: raw.name,
+    location: (raw.name === 'Lantangan' || raw.name === 'Mandaon') ? 'Cabitan' : raw.name,
     country: raw.sys.country,
     dt: raw.dt * 1000,
     fetched_at: Date.now(),
@@ -120,11 +120,17 @@ async function fetchForecast(lat = DEFAULT_LAT, lon = DEFAULT_LON) {
 
   const raw = await response.json();
 
-  // Group 3-hour intervals into daily buckets
+  // Get timezone offset in seconds from UTC (if missing, default to 0)
+  const tzOffset = (raw.city && raw.city.timezone !== undefined) ? raw.city.timezone : 0;
+
+  // Group 3-hour intervals into daily buckets using local time
   const dailyBuckets = {};
 
   raw.list.forEach(entry => {
-    const dateKey = entry.dt_txt.split(' ')[0]; // e.g. "2026-05-24"
+    // Add timezone offset to dt and format as ISO to get the local date/time string
+    const localDt = entry.dt + tzOffset;
+    const isoString = new Date(localDt * 1000).toISOString();
+    const dateKey = isoString.split('T')[0]; // e.g. "2026-08-24"
 
     if (!dailyBuckets[dateKey]) {
       dailyBuckets[dateKey] = {
@@ -189,11 +195,61 @@ async function fetchForecast(lat = DEFAULT_LAT, lon = DEFAULT_LON) {
   days.sort((a, b) => a.date.localeCompare(b.date));
   const forecastDays = days.slice(0, 5);
 
+  const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  // Map 3-hour time-to-time intervals for hourly breakdown
+  const hourly = (raw.list || []).map(entry => {
+    const icon = entry.weather && entry.weather[0] ? entry.weather[0].icon : '01d';
+    
+    // Adjust time to local timezone
+    // The tzOffset is from raw.city.timezone
+    const tzOffset = (raw.city && raw.city.timezone !== undefined) ? raw.city.timezone : 0;
+    const localDt = entry.dt + tzOffset;
+    
+    const isoString = new Date(localDt * 1000).toISOString();
+    const dateKey = isoString.split('T')[0];
+    const timePart = isoString.split('T')[1].substring(0, 8);
+    
+    const hourNum = parseInt(timePart.split(':')[0], 10);
+    const ampm = hourNum >= 12 ? 'PM' : 'AM';
+    const hour12 = hourNum % 12 === 0 ? 12 : hourNum % 12;
+    const timeDisplay = `${hour12} ${ampm}`;
+
+    let dayName = '';
+    if (dateKey) {
+      const dateObj = new Date(dateKey + 'T12:00:00');
+      dayName = DAY_NAMES[dateObj.getDay()] || '';
+    }
+
+    return {
+      dt: localDt,
+      dt_raw: entry.dt,
+      dt_txt: entry.dt_txt,
+      date: dateKey,
+      time: timeDisplay,
+      time_raw: timePart.substring(0, 5),
+      day_name: dayName,
+      temp: Math.round(entry.main.temp),
+      feels_like: Math.round(entry.main.feels_like),
+      temp_min: Math.round(entry.main.temp_min),
+      temp_max: Math.round(entry.main.temp_max),
+      humidity: entry.main.humidity,
+      wind_speed: Math.round(entry.wind.speed * 3.6 * 10) / 10,
+      pop: Math.round((entry.pop || 0) * 100),
+      rainfall: entry.rain && entry.rain['3h'] ? Math.round(entry.rain['3h'] * 10) / 10 : 0,
+      weather_main: entry.weather && entry.weather[0] ? entry.weather[0].main : 'Clear',
+      weather_description: entry.weather && entry.weather[0] ? entry.weather[0].description : 'Clear',
+      weather_icon: icon,
+      weather_icon_url: `https://openweathermap.org/img/wn/${icon}@2x.png`
+    };
+  });
+
   // Compute max rain across forecast for rainfall bar scaling
   const maxRain = Math.max(...forecastDays.map(d => d.rainfall), 1);
 
   const data = {
     days: forecastDays,
+    hourly: hourly,
     max_rain: maxRain,
     total_forecast_rain: Math.round(forecastDays.reduce((s, d) => s + d.rainfall, 0) * 10) / 10,
     fetched_at: Date.now()

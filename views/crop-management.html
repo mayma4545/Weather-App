@@ -6,6 +6,7 @@
     <title>AGRIDEB — Crop Management</title>
     <link rel="stylesheet" href="/css/farmer-dashboard.css">
     <link rel="stylesheet" href="/css/crop-management.css">
+    <link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
 </head>
 <body>
 <div class="dash">
@@ -22,19 +23,6 @@
                     <circle cx="12" cy="9" r="2.5" />
                 </svg>
                 <span class="dynamic-location">Detecting Location...</span> 
-            </div>
-            <div class="alert-pill">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                    <line x1="12" y1="9" x2="12" y2="13" />
-                    <line x1="12" y1="17" x2="12.01" y2="17" />
-                </svg>
-                2 Active Alerts
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-                <div
-                    style="width:28px;height:28px;border-radius:50%;background:#3B3B38;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#D6D3CB;">
-                    JR</div>
             </div>
         </div>
     </div>
@@ -81,6 +69,14 @@
                     </svg>
                     Profile Page
                 </a>
+                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; color: #D44A1A;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                    Logout
+                </a>
             </div>
 
             <div class="sidebar-section">
@@ -91,7 +87,7 @@
             </div>
 
             <div class="sidebar-section">
-                <div class="sidebar-label">DEBESMSCAT Mandaon</div>
+                <div class="sidebar-label">DEBESMSCAT Cabitan</div>
                 <div style="font-size: 11px; color: #7A7773; padding-left: 8px;">
                     Station ID: <span
                         style="font-family:monospace; font-weight:600; color:#349954;">DEBESMSCAT-01</span><br>
@@ -261,7 +257,44 @@
                 <label for="edit-plant-date">Planting Date</label>
                 <input type="date" class="form-control" id="edit-plant-date" required>
             </div>
+            <div class="form-group">
+                <label for="edit-plant-health">Crop Health Status</label>
+                <select class="form-control" id="edit-plant-health" required>
+                    <option value="Healthy">🟢 Healthy (Optimal Condition)</option>
+                    <option value="Satisfactory">🔵 Satisfactory (Minor Stress)</option>
+                    <option value="At Risk">🟡 At Risk (Pest / Moisture / Stress)</option>
+                    <option value="Critical">🔴 Critical (Severe Damage / Threat)</option>
+                    <option value="Auto">⚙️ Auto (Calculate from Weather Forecast)</option>
+                </select>
+            </div>
             <button type="submit" class="btn-submit" style="margin-top:12px;">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<!-- Dedicated Quick Update Crop Health Modal -->
+<div id="update-health-modal" class="edit-modal" aria-labelledby="update-health-title" role="dialog" aria-modal="true">
+    <div class="edit-modal-content" style="max-width: 440px;">
+        <div class="edit-modal-header">
+            <h2 class="edit-modal-title" id="update-health-title">Update Crop Health Status</h2>
+            <button type="button" class="close-modal-btn" id="btn-close-health-modal" aria-label="Close modal">&times;</button>
+        </div>
+        <form id="update-health-form">
+            <input type="hidden" id="health-record-id">
+            <div id="health-modal-crop-info" style="font-size: 13px; color: #4b6358; background: #eef7ee; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; font-weight: 600;">
+                Plot: North Plot A &bull; Palay (IR64)
+            </div>
+            <div class="form-group">
+                <label for="health-status-select">Current Health Assessment</label>
+                <select class="form-control" id="health-status-select" required>
+                    <option value="Healthy">🟢 Healthy &mdash; Optimal vigor &amp; growth</option>
+                    <option value="Satisfactory">🔵 Satisfactory &mdash; Minor stress / manageable</option>
+                    <option value="At Risk">🟡 At Risk &mdash; Pest, water, or climate stress</option>
+                    <option value="Critical">🔴 Critical &mdash; Severe damage / immediate threat</option>
+                    <option value="Auto">⚙️ Auto &mdash; Calculate from OpenWeather forecast</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-submit" style="margin-top: 14px; width: 100%;">Save Health Status</button>
         </form>
     </div>
 </div>
@@ -433,6 +466,13 @@
 
         <div class="analytics-modal-footer">
             <button type="button" class="btn-analytics-close" data-analytics-close>Close</button>
+            <button type="button" class="btn-analytics-edit update-health-btn" id="analytics-modal-update-health-btn" data-record-id="" style="background: #eef7ee; color: #2e7d32; border: 1.5px solid #a8e0a8;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                Update Health
+            </button>
             <button type="button" class="btn-analytics-edit edit-btn" id="analytics-modal-edit-btn" data-record-id="">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -454,6 +494,7 @@
         if(mobNav) mobNav.classList.add("active");
     })
 </script>
+<script src="/vendor/leaflet/leaflet.js"></script>
 <script src="/js/farmer-dashboard.js"></script>
 <!-- JavaScript Engine -->
 </body>

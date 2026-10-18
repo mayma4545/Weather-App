@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AGRIDEB — Farmer Dashboard</title>
     <link rel="stylesheet" href="/css/farmer-dashboard.css">
+    <link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
 </head>
 <body>
 <div class="dash">
@@ -21,19 +22,6 @@
                     <circle cx="12" cy="9" r="2.5" />
                 </svg>
                 <span class="dynamic-location">Detecting Location...</span> 
-            </div>
-            <div class="alert-pill" id="topbar-alert-pill">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                    <line x1="12" y1="9" x2="12" y2="13" />
-                    <line x1="12" y1="17" x2="12.01" y2="17" />
-                </svg>
-                <span id="topbar-alert-count">0 Alerts</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-                <div
-                    style="width:34px;height:34px;border-radius:50%;background:#349954;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#FFFFFF;">
-                    JR</div>
             </div>
         </div>
     </div>
@@ -83,7 +71,7 @@
                     </svg>
                     Profile Page
                 </a>
-                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; border-top: 2px solid #349954; padding-top: 18px; color: #D44A1A;">
+                <a class="nav-item" href="/logout" id="nav-logout" style="margin-top: 20px; color: #D44A1A;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                         <polyline points="16 17 21 12 16 7" />
@@ -101,7 +89,7 @@
             </div>
 
             <div class="sidebar-section">
-                <div class="sidebar-label">DEBESMSCAT Mandaon</div>
+                <div class="sidebar-label">DEBESMSCAT Cabitan</div>
                 <div style="font-size: 12px; color: #349954; padding-left: 12px;">
                     Station ID: <span
                         style="font-family:monospace; font-weight:700; color:#349954;">DEBESMSCAT-01</span><br>
@@ -195,29 +183,56 @@
                     <!-- Left Column: Forecast & Active Crops -->
                     <div class="main-left-col">
                         <!-- Weather Forecast Card (LIVE from OpenWeather) -->
-                        <div class="card">
-                            <div class="card-title">Weather Forecast</div>
-                            <div class="card-sub"><span class="dynamic-location">Detecting Location...</span> &mdash; OpenWeather Live Feed</div>
-                            <div class="forecast-row" id="forecast-row-container">
-                                <div style="text-align:center; color:#349954; padding:20px; font-size:13px; width:100%;">Loading forecast...</div>
+                        <div class="card" id="weather-forecast-card">
+                            <div class="forecast-card-header">
+                                <div>
+                                    <div class="card-title">Weather Forecast</div>
+                                    <div class="card-sub"><span class="dynamic-location">Detecting Location...</span> &mdash; OpenWeather Live Feed</div>
+                                </div>
+                                <div class="fc-view-toggle">
+                                    <button type="button" class="fc-toggle-btn active" id="btn-fc-hourly">Today by Time</button>
+                                    <button type="button" class="fc-toggle-btn" id="btn-fc-daily">5-Day Outlook</button>
+                                </div>
                             </div>
+
+                            <!-- Day Selector Pills (For viewing time-to-time forecast on any day) -->
+                            <div class="fc-day-pills-row" id="fc-day-pills-container">
+                                <!-- Rendered dynamically -->
+                            </div>
+
+                            <!-- Time-to-Time (Hourly) Forecast Container -->
+                            <div id="forecast-hourly-section">
+                                <div class="fc-hourly-scroll" id="forecast-hourly-container">
+                                    <div style="text-align:center; color:#349954; padding:20px; font-size:13px; width:100%;">Loading time-by-time forecast...</div>
+                                </div>
+                            </div>
+
+                            <!-- 5-Day Daily Summary Container -->
+                            <div id="forecast-daily-section" style="display: none;">
+                                <div class="forecast-row" id="forecast-row-container">
+                                    <div style="text-align:center; color:#349954; padding:20px; font-size:13px; width:100%;">Loading forecast...</div>
+                                </div>
+                            </div>
+
                             <div style="margin-top:14px;">
-                                <div style="font-size:12px;color:#349954;margin-bottom:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;">
+                                <div style="font-size:12px;color:#349954;margin-bottom:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;" id="rainfall-trend-header">
                                     Rainfall Trend (mm)</div>
                                 <div id="rainfall-trend-container">
                                     <div style="text-align:center; color:#349954; padding:12px; font-size:13px;">Loading rainfall data...</div>
                                 </div>
                             </div>
                         </div>
-
                         <!-- Quick Plant Card -->
                         <div class="card">
                             <div class="card-title" style="font-size: 20px;">Fast Planting</div>
                             <div class="card-sub" style="font-size: 15px;">Add a new crop easily</div>
                             <div id="quick-plant-container">
-                                <div class="qp-field">
+                                <div class="qp-field" id="qp-plot-field">
                                     <label class="qp-label">Plot</label>
                                     <select id="qp-plot" class="qp-input"><option value="">Select plot...</option></select>
+                                    <div id="qp-no-plots-hint" style="display: none; margin-top: 8px; font-size: 13px; color: #b71c1c; background: #ffebee; border: 1px solid #ffcdd2; border-radius: 8px; padding: 8px 12px; line-height: 1.4;">
+                                        No plots found. Please <a href="/farmer/crop-management" style="color: #2e7d32; font-weight: 700; text-decoration: underline;">add a plot in Crop Management</a> first.
+                                    </div>
                                 </div>
                                 <div class="qp-field">
                                     <label class="qp-label">Crop</label>
@@ -230,13 +245,6 @@
                                 <button class="qp-btn" id="qp-plant-btn">Plant Now</button>
                                 <div id="qp-result" class="qp-result"></div>
                             </div>
-                            <!-- <div class="qp-quick-actions">
-                                <div class="qp-qa-label">Quick Actions</div>
-                                <div class="qp-qa-buttons">
-                                    <button class="qa-btn" id="qa-full-planting">+ New Planting</button>
-                                    <button class="qa-btn" id="qa-add-plot">+ Add Plot</button>
-                                </div>
-                            </div> -->
                         </div>
                     </div>
 
@@ -268,84 +276,53 @@
                                 <div style="text-align:center; color:#349954; padding:18px; font-size:13px; font-weight:600;">Generating insights from weather data...</div>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>
-</div>
-<!-- Bottom Navigation (Mobile Tabpane View) -->
-<nav class="bottom-nav" id="bottomNav" aria-label="Mobile navigation">
-    <div class="bottom-nav-inner">
-        <a class="bnav-item" href="/farmer/dashboard" id="mob-nav-dashboard">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="7" height="7" />
-                <rect x="14" y="3" width="7" height="7" />
-                <rect x="14" y="14" width="7" height="7" />
-                <rect x="3" y="14" width="7" height="7" />
-            </svg>
-            Dashboard
-        </a>
-        <a class="bnav-item" href="/farmer/crop-management" id="mob-nav-crop-management">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" />
-                <path d="M12 8v8M8 12h8" />
-            </svg>
-            Crops
-        </a>
-        <a class="bnav-item" href="/farmer/weather-analytics" id="mob-nav-weather-analytics">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-            </svg>
-            Weather
-        </a>
-                    </div>
-                </div>
-            </div>
-</div>
-<!-- Bottom Navigation (Mobile Tabpane View) -->
-<nav class="bottom-nav" id="bottomNav" aria-label="Mobile navigation">
-    <div class="bottom-nav-inner">
-        <a class="bnav-item" href="/farmer/dashboard" id="mob-nav-dashboard">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="7" height="7" />
-                <rect x="14" y="3" width="7" height="7" />
-                <rect x="14" y="14" width="7" height="7" />
-                <rect x="3" y="14" width="7" height="7" />
-            </svg>
-            Dashboard
-        </a>
-        <a class="bnav-item" href="/farmer/crop-management" id="mob-nav-crop-management">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" />
-                <path d="M12 8v8M8 12h8" />
-            </svg>
-            Crops
-        </a>
-        <a class="bnav-item" href="/farmer/weather-analytics" id="mob-nav-weather-analytics">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-            </svg>
-            Weather
-        </a>
-        <a class="bnav-item" href="/farmer/digital-repository" id="mob-nav-digital-repository">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-            </svg>
-            Library
-        </a>
-        <a class="bnav-item" href="/farmer/profile" id="mob-nav-profile">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-            </svg>
-            Profile
-        </a>
-    </div>
-</nav>
+        </div> <!-- Close .main -->
+    </div> <!-- Close .layout -->
 
-</div> <!-- Close .layout -->
+    <!-- Bottom Navigation (Mobile Tabpane View) -->
+    <nav class="bottom-nav" id="bottomNav" aria-label="Mobile navigation">
+        <div class="bottom-nav-inner">
+            <a class="bnav-item" href="/farmer/dashboard" id="mob-nav-dashboard">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                </svg>
+                Dashboard
+            </a>
+            <a class="bnav-item" href="/farmer/crop-management" id="mob-nav-crop-management">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" />
+                    <path d="M12 8v8M8 12h8" />
+                </svg>
+                Crops
+            </a>
+            <a class="bnav-item" href="/farmer/weather-analytics" id="mob-nav-weather-analytics">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+                Weather
+            </a>
+            <a class="bnav-item" href="/farmer/digital-repository" id="mob-nav-digital-repository">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                </svg>
+                Library
+            </a>
+            <a class="bnav-item" href="/farmer/profile" id="mob-nav-profile">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                </svg>
+                Profile
+            </a>
+        </div>
+    </nav>
 </div> <!-- Close .dash -->
 
 <!-- Crop Analytics Modal -->
@@ -480,6 +457,7 @@
         if(mobNav) mobNav.classList.add("active");
     });
 </script>
+<script src="/vendor/leaflet/leaflet.js"></script>
 <script src="/js/farmer-dashboard.js"></script>
 <!-- JavaScript Engine -->
 </body>
